@@ -1,0 +1,40 @@
+"BibleThump":[
+	{"emotion":"sad","confidence":100},
+	{"emotion":"very sad","confidence":100}
+],
+":)":[
+	{"emotion":"happy","confidence":100}
+],
+":(":[
+	{"emotion":"sad","confidence":100}
+],
+":D":[
+	{"emotion":"happy","confidence":100},
+	{"emotion":"very happy","confidence":90}
+],
+":O":[
+	{"emotion":"surprised","confidence":100}
+],
+":P":[
+	{"emotion":"kidding","confidence":65}
+],
+"^^":[
+	{"emotion":"happy","confidence":90}
+],
+":'(":[
+	{"emotion":"sad","confidence":100},
+	{"emotion":"kidding","confidence":15}
+],
+"<3":[
+	{"emotion":"loving","confidence":100}
+],
+":/":[
+	{"emotion":"sad","confidence":90}
+],
+";)":[
+	{"emotion":"happy","confidence":50},
+	{"emotion":"aroused","confidence":40}
+],
+"fuck":[
+	{"emotion":"angry","confidence":85}
+]
