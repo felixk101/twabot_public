@@ -58,7 +58,7 @@ function get_sender(data){
 
 function getTimestamp(){
 	let date=new Date();
-	return (date.getDay()+'.'+date.getMonth()+'.'+date.getFullYear()+'|'+date.getHours() +
+	return (date.getDate()+'.'+date.getMonth()+1+'.'+date.getFullYear()+'|'+date.getHours() +
 	':'+date.getMinutes()+':'+date.getSeconds()+':'+date.getMilliseconds());
 
 }
