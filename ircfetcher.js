@@ -30,7 +30,7 @@ function getChannelHost(chan){
 			host=body.chat_servers[0].split(":")[0];
 			port=parseInt(body.chat_servers[0].split(":")[1]);
 			//callback
-			connectToChat({host: host, port: port});
+			connectToChat({host: host, port: port},chan);
 		} else {
 			console.log('ERROR: Could not find any info about channel \''+chan+'\'. (error:'+error+')');
 			return {error};
@@ -68,7 +68,7 @@ function getTimestamp(){
 
 }
 
-function connectToChat(options) {
+function connectToChat(options,chan) {
 	console.log('Connecting to server with arguments:',options);
 	var client = net.connect(options, function () {
 		console.log('Connected to Server');
@@ -106,6 +106,7 @@ function connectToChat(options) {
 	});
 }
 
-fetchChat(chan);
+//fetchChat(chan);
+exports.fetchChat=fetchChat;
 
 
