@@ -15,13 +15,13 @@ var url='https://api.twitch.tv/kraken/streams';
 
 var activeChannels=[];
 function getChannels(offset) {
-    request({url: url+'?limit=50&offset='+offset, jason:true}, function (err, response, body) {
+    request({url: url+'?limit=50&offset='+offset, json:true}, function (err, response, body) {
         //console.log(err);
         //console.log(response);
         //console.log(body);
-        let json = JSON.parse(body);
+
         for (let x=0;x<50;x++){
-            ircfetcher.fetchChat(json.streams[x].channel.name);
+            ircfetcher.fetchChat(body.streams[x].channel.name);
         }
         //console.log(json.streams[x].channel.name);
     });
