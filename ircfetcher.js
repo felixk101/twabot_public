@@ -19,7 +19,7 @@ function fetchChat(chan){
 		url: 'https://api.twitch.tv/api/channels/'+chan+'/chat_properties',
 		json: true
 	}, function (error, response, body) {
-		
+
 		if (!error && response.statusCode === 200) {
 			//Use the first chat server for the channel that Twitch's API gives us
 			host=body.chat_servers[0].split(":")[0];
