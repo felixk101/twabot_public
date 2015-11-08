@@ -2,6 +2,7 @@
 /**
  * Created by Lukas on 07.11.2015. modified by felix 08.11.15
  */
+var fs=require('fs');
 var net=require('net');
 var request=require('request');
 var host ;//= 'irc.twitch.tv';
@@ -11,8 +12,12 @@ var PASS = 'oauth:lhq4ad0tqxgkxu9kxbo65jtpppqm47';
 
 var chan = process.argv[2] || 'bobross'; //no # sign!
 
-
 function fetchChat(chan){
+	//fs.open(chan+'_log.json', a);
+	getChannelHost(chan);
+}
+
+function getChannelHost(chan){
 	console.log('Looking up https://api.twitch.tv/api/channels/'+chan+'/chat_properties');
 	//Ask Twitch for information about the channel, including chat servers
 	request({
@@ -86,6 +91,9 @@ function connectToChat(options) {
 				let message = get_message(input);
 				let sender = get_sender(input);
 				console.log(getTimestamp()+'|'+sender + ":" + message);
+				fs.appendFile(chan+'_log.json', getTimestamp()+'|'+message+'\n', function (err) {
+					console.log('error writing log:',err);
+				});
 			}
 		});
 		client.on('end', function () {
@@ -94,6 +102,7 @@ function connectToChat(options) {
 	});
 }
 //var options={port:port,host:host};
+
 fetchChat(chan);
 //connectToChat();
 
