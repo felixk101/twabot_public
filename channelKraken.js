@@ -15,7 +15,7 @@ var url='https://api.twitch.tv/kraken/streams';
 
 var activeChannels=[];
 function getChannels(offset) {
-    request({url: url+'?limit=50&offset='+offset, json:true}, function (err, response, body) {
+    request({url: url+'?limit=50&offset='+offset}, function (err, response, body) {
         //console.log(err);
         //console.log(response);
         //console.log(body);
