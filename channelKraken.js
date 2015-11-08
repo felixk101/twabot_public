@@ -7,7 +7,7 @@
 !!!!  ACHTUNG das Script nur einmal alle 30 sekunden ausführen !!!!!
 ----------------------------------------------------------------------*/
 
-
+//der channelkraken holt sich 50 Streams und verbindet sich über die fetchChat Methode mit deren IRC-Chats.
 
 var request=require('request');
 var ircfetcher=require('./ircfetcher.js')
