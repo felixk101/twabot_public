@@ -90,9 +90,13 @@ function connectToChat(options) {
 
 				let message = get_message(input);
 				let sender = get_sender(input);
-				console.log(getTimestamp()+'|'+sender + ":" + message);
-				fs.appendFile(chan+'_log.json', getTimestamp()+'|'+message+'\n', function (err) {
-					console.log('error writing log:',err);
+				var dateobject = new Date();
+				var timestamp = dateobject.toJSON();
+				console.log(timestamp+'|'+sender + ":" + message);
+				fs.appendFile(chan+'.log', timestamp+'|'+message+'\n', function (err) {
+					if(err) {
+						console.log('error writing log:',err);
+					}
 				});
 			}
 		});
@@ -101,9 +105,7 @@ function connectToChat(options) {
 		});
 	});
 }
-//var options={port:port,host:host};
 
 fetchChat(chan);
-//connectToChat();
 
 
