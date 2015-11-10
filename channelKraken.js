@@ -4,10 +4,10 @@
  */
 
 /*--------------------------------------------------------------------
-!!!!  ACHTUNG das Script nur einmal alle 30 sekunden ausführen !!!!!
+!!!!  ACHTUNG das Script nur einmal alle 30 sekunden ausfÃ¼hren !!!!!
 ----------------------------------------------------------------------*/
 
-//der channelkraken holt sich 50 Streams und verbindet sich über die fetchChat Methode mit deren IRC-Chats.
+//der channelkraken holt sich 50 Streams und verbindet sich Ã¼ber die fetchChat Methode mit deren IRC-Chats.
 
 var request=require('request');
 var ircfetcher=require('./ircfetcher.js')
@@ -15,14 +15,22 @@ var url='https://api.twitch.tv/kraken/streams';
 
 var activeChannels=[];
 function getChannels(offset) {
+	console.log('Attempting to access Twitch API...');
+
     request({url: url+'?limit=50&offset='+offset}, function (err, response, body) {
         //console.log(err);
         //console.log(response);
         //console.log(body);
-        let json = JSON.parse(body);
-        for (let x=0;x<50;x++){
-            ircfetcher.fetchChat(json.streams[x].channel.name);
-        }
+		if (!err) {
+        	let json = JSON.parse(body);
+        	for (let x=0;x<50;x++){
+				console.log('fetching channel number',x);           		 
+				ircfetcher.fetchChat(json.streams[x].channel.name);
+        	}
+		} else {
+
+			console.log('error',err);
+		}
         //console.log(json.streams[x].channel.name);
     });
 }

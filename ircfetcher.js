@@ -92,8 +92,8 @@ function connectToChat(options,chan) {
 				let sender = get_sender(input);
 				var dateobject = new Date();
 				var timestamp = dateobject.toJSON();
-				console.log(timestamp+'|'+sender + ":" + message);
-				fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
+				console.log(timestamp+'|'+sender + ':' + message);
+				fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\r\n', function (err) {
 					if(err) {
 						console.log('error writing log:',err);
 					}
