@@ -92,6 +92,9 @@ function connectToChat(options,chan) {
 				let sender = get_sender(input);
 				var dateobject = new Date();
 				var timestamp = dateobject.toJSON();
+
+
+
 				console.log(timestamp+'|'+sender + ":" + message);
 				fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
 					if(err) {
@@ -100,6 +103,7 @@ function connectToChat(options,chan) {
 				});
 			}
 		});
+
 		client.on('end', function () {
 			console.log('Disconectd');
 		});
@@ -108,5 +112,6 @@ function connectToChat(options,chan) {
 
 //fetchChat(chan);
 exports.fetchChat=fetchChat;
+
 
 
