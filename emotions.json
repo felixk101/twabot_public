@@ -36,7 +36,8 @@
 	{"emotion":"aroused","confidence":40}
 ],
 "fuck":[
-	{"emotion":"angry","confidence":85}
+	{"emotion":"angry","confidence":45},
+	{"emotion":"annoyed","confidence":20}
 ],
 "Kappa":[
 	{"emotion":"kidding","confidence":90}

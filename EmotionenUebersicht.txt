@@ -1,0 +1,16 @@
+Spezial:
+neutral
+ironisch
+
+Grundstimmungen:
+happy - sad
+loving - hate/insulting
+supprised - bored
+excited - bored
+aroused - disgusted
+rage - happy
+provoking - (praise)
+embarassed - (relaxed)
+envious - ?
+amused - bored
+annoyed - amused

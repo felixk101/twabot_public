@@ -4,18 +4,21 @@
  */
 
 /*--------------------------------------------------------------------
-!!!!  ACHTUNG das Script nur einmal alle 30 sekunden ausführen !!!!!
+!!!!  ACHTUNG das Script nur einmal alle 30 sekunden ausfÃ¼hren !!!!!
 ----------------------------------------------------------------------*/
 
-//der channelkraken holt sich 50 Streams und verbindet sich über die fetchChat Methode mit deren IRC-Chats.
+//der channelkraken holt sich 50 Streams und verbindet sich Ã¼ber die fetchChat Methode mit deren IRC-Chats.
 
 var request=require('request');
-var ircfetcher=require('./ircfetcher.js')
+var ircfetcher=require('./ircfetcher.js');
+var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
+var viewerLimit=15000;
 
 var activeChannels=[];
 
 function getChannels(offset) {
+    console.log('Attempting to access Twitch API...');
     /*This function creates a GET-Request to the address url with the arguments limit and offset.
      * Twitch holds a list of all active streams ordered by the Viewer count. The stream at the start of the list
      * has the most viewers.
@@ -27,36 +30,76 @@ function getChannels(offset) {
      * params:
      *  offset: The starting position of the list of streams.
      * */
-    request({url: url+'?limit=50&offset='+offset, json:true}, function (err, response, body) {
+    return new Promise(function(resolve,reject){
+        request({url: url + '?limit=50&offset=' + offset, json: true}, function (err, response, body) {
 
-        for (let x=0;x<50;x++){
-            ircfetcher.fetchChat(body.streams[x].channel.name);
-        }
-        //console.log(json.streams[x].channel.name);
-    });
+            let newChannels=[]
+            let viewerCount=-1;
+            for (let x = 0; x < 50; x++) {
+
+                if(viewerCount===-1){
+                    viewerCount=parseInt(body.streams[x].viewers);
+                }else if(parseInt(body.streams[x].viewers)<viewerCount){
+                    viewerCount=parseInt(body.streams[x].viewers);
+                }
+
+                if(activeChannels[body.streams[x].channel.name]===undefined) {
+                    newChannels.push(body.streams[x].channel.name);
+                }
+
+            }
+            console.log(newChannels)
+            let fetchChannels=newChannels.map(function(name){
+                let channel=new Channel.Channel(name);
+                activeChannels[channel.getName()]=channel;
+                return channel.connect();
+            });
+
+            Promise.all(fetchChannels).then(function(result){
+
+                resolve(viewerCount);
+
+            }).catch(function (err) {
+                //console.log("Test");
+                reject(err);
+            });
+
+        });
+    })
 }
+    function getChannelCount(){
+        request({url: 'https://api.twitch.tv/kraken/streams/', json: true}, function (err, response, body) {
+            console.log(body.streams[0].viewers);
+            let channelCount = parseInt(body.channels);}
+        );
+    }
+    function* registerChannels(offset) {
+        /*This function creates a GET-Request to the address 'https://api.twitch.tv/kraken/streams/summary.'
+         * Twitch will send a json object wich contains three vaules, first one is the number of active streamms
+         * the second one is the total number of viewers on Twitch at the moment and the third value is a list of
+         * links with one link*/
 
+            yield setTimeout(function(){
 
-function registerChannels(){
-    /*This function creates a GET-Request to the address 'https://api.twitch.tv/kraken/streams/summary.'
-    * Twitch will send a json object wich contains three vaules, first one is the number of active streamms
-    * the second one is the total number of viewers on Twitch at the moment and the third value is a list of
-    * links with one link*/
-    let channelCount=0;
-    let registerChannels=0;
-    let callbacksDone=false;
-    request({url:'https://api.twitch.tv/kraken/streams/summary',json:true},function(err,response,body){
-        console.log(body.channels);
-        channelCount=parseInt(body.channels);
+                getChannels(offset).then(function(result){
+                    if(result>viewerLimit) {
 
+                        console.log("Channel kraken cooldown. Streams: "+activeChannels.length);
+                        registerChannels(offset+50).next();
+                    }else{
+                        console.log("Channel kraken ends.Streams: "+activeChannels.length);
+                        console.log(activeChannels)
 
-           getChannels(0);
+                    }
 
+                }).catch(function(err){
+                    console.log("Promise error: "+err)
+                });
 
+            },31000)
+    }
 
-        console.log(Math.floor(channelCount/50));
-    });
-}
-getChannels()
+registerChannels(0).next();
+
 
 
