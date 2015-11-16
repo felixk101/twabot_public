@@ -6,14 +6,15 @@
 var fs=require('fs');
 var net=require('net');
 var request=require('request');
-var credentials=require('./credentials.js')
+var credentials=require('./credentials.js');
+var analyzer=require('./analyzer.js');
 class Channel{
 
     constructor(name){
         this.online=false;
         this.name=name;
         this.writer=undefined;
-        this.analyser=undefined;
+        this.analyser=new analyzer.Analyzer();
         this.client;
     }
 
@@ -97,10 +98,11 @@ class Channel{
                 } else if (input[0].split(' ')[0] === 'PART') {
 
                 } else if (input[0].split(' ')[1] == 'PRIVMSG') {
-                    let message = Channel.get_message(input);
-                    let sender = Channel.get_sender(input);
+                    //let message = Channel.get_message(input);
+                    //let sender = Channel.get_sender(input);
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
+                    this.analyser.analyzeData(input);
                     //console.log(timestamp+'|'+sender + ":" + message);
                    // fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
                    //     if(err) {
@@ -114,29 +116,29 @@ class Channel{
             });
         });
     }
-
-    static get_message(data){
-        /*This function filters the message out of the received data.*/
-        let returnValue='';
-        if(data.length-1>1){
-
-            data=data.splice(1);
-            returnValue=data.join(':');
-
-        }else{
-            returnValue=data[1];
-        }
-        returnValue=returnValue.replace(/\r\n/g,'');
-        return returnValue;
-    }
-
-    static get_sender(data){
-        /*This funciton filters the sender out of the received data.*/
-        let user=data[0].split('!');
-
-        user[1]=user[1].split('@')[0];
-        return user[0];
-    }
+/* The analyzer has now the function getMessage and getSender */
+//    static get_message(data){
+//        /*This function filters the message out of the received data.*/
+//        let returnValue='';
+//        if(data.length-1>1){
+//
+//            data=data.splice(1);
+//            returnValue=data.join(':');
+//
+//        }else{
+//            returnValue=data[1];
+//        }
+//        returnValue=returnValue.replace(/\r\n/g,'');
+//        return returnValue;
+//    }
+//
+//    static get_sender(data){
+//        /*This funciton filters the sender out of the received data.*/
+//        let user=data[0].split('!');
+//
+//        user[1]=user[1].split('@')[0];
+//        return user[0];
+//    }
 
     getName(){
         return this.name;
@@ -144,3 +146,6 @@ class Channel{
 }
 
 exports.Channel=Channel;
+
+let chann=new Channel('sissorstream');
+chann.connect();
