@@ -31,7 +31,7 @@ class Channel{
 
     connect(){
         /*This function will start the connection attempt*/
-        console.log("Start Connecting")
+        console.log("Start Connecting");
         return new Promise(function(resolve,reject){
             let err=this.fetchChat(this.name);
 
@@ -46,7 +46,7 @@ class Channel{
 
     fetchChat(chan){
 
-        //fs.open(chan+'_log.json', a);
+        fs.open('logs/'+chan+'.json', 'a');
 
         return this.getChannelHost(chan,this.client);
     }
@@ -102,13 +102,13 @@ class Channel{
                     //let sender = Channel.get_sender(input);
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
-                    this.analyser.analyzeData(input);
+                    this.analyser.analyzeData(getTimestamp()+"|"+input);
                     //console.log(timestamp+'|'+sender + ":" + message);
-                   // fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
-                   //     if(err) {
-                   //         console.log('error writing log:',err);
-                   //     }
-                   // });
+                    fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
+                        if(err) {
+                            console.log('error writing log:',err);
+                        }
+                    });
                 }
             });
             this.client.on('end', function () {
@@ -139,13 +139,24 @@ class Channel{
 //        user[1]=user[1].split('@')[0];
 //        return user[0];
 //    }
+//
 
+
+    getTimestamp() {
+        let date = new Date();
+        return (date.getUTCDate() + '.' + date.getUTCMonth() + '.' + date.getUTCFullYear() + ';' + date.getUTCHours() +
+        ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + ':' + date.getUTCMilliseconds());
+    }
     getName(){
         return this.name;
     }
+
 }
 
 exports.Channel=Channel;
 
-let chann=new Channel('sissorstream');
-chann.connect();
+//let chann=new Channel('sissorstream');
+//chann.connect();
+//let chan=new Channel('cohhcarnage');
+//chan.connect();
+//console.log(chan.getTimestamp())

@@ -13,7 +13,9 @@ var PASS = 'oauth:lhq4ad0tqxgkxu9kxbo65jtpppqm47';
 var chan = process.argv[2] || 'bobross'; //no # sign!
 
 function fetchChat(chan){
-	//fs.open(chan+'_log.json', a);
+	fs.open('logs/'+chan+'.log', 'a', function (err) {
+		console.log("Error by create: "+err);
+	});
 	getChannelHost(chan);
 }
 
@@ -87,12 +89,12 @@ function connectToChat(options,chan) {
 			} else if (input[0].split(' ')[0] === 'PART') {
 
 			} else if (input[0].split(' ')[1] == 'PRIVMSG') {
-
+				console.log(data.toString()+"\r\n"+input)
 				let message = get_message(input);
 				let sender = get_sender(input);
 				var dateobject = new Date();
 				var timestamp = dateobject.toJSON();
-				console.log(timestamp+'|'+sender + ':' + message);
+				//console.log(timestamp+'|'+sender + ':' + message);
 				fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\r\n', function (err) {
 					if(err) {
 						console.log('error writing log:',err);
@@ -107,7 +109,7 @@ function connectToChat(options,chan) {
 	});
 }
 
-//fetchChat(chan);
+fetchChat('dotamajorru');
 exports.fetchChat=fetchChat;
 
 

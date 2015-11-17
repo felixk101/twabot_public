@@ -43,7 +43,7 @@ function getChannels(offset) {
                     viewerCount=parseInt(body.streams[x].viewers);
                 }
 
-                if(activeChannels[body.streams[x].channel.name]===undefined) {
+                if(!(activeChannels[body.streams[x].channel.name] in activeChannels)) {
                     newChannels.push(body.streams[x].channel.name);
                 }
 
