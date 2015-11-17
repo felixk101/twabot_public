@@ -13,12 +13,11 @@ var request=require('request');
 var ircfetcher=require('./ircfetcher.js');
 var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
-var viewerLimit=15000;
+var viewerLimit=15;
 
 var activeChannels=[];
 
 function getChannels(offset) {
-    console.log('Attempting to access Twitch API...');
     /*This function creates a GET-Request to the address url with the arguments limit and offset.
      * Twitch holds a list of all active streams ordered by the Viewer count. The stream at the start of the list
      * has the most viewers.
@@ -30,6 +29,7 @@ function getChannels(offset) {
      * params:
      *  offset: The starting position of the list of streams.
      * */
+    console.log('Attempting to access Twitch API...');
     return new Promise(function(resolve,reject){
         request({url: url + '?limit=50&offset=' + offset, json: true}, function (err, response, body) {
 
