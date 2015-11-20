@@ -13,7 +13,7 @@ var request=require('request');
 var ircfetcher=require('./ircfetcher.js');
 var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
-var viewerLimit=15;
+var viewerLimit=15000;
 
 var activeChannels=[];
 
@@ -96,7 +96,7 @@ function getChannels(offset) {
                     console.log("Promise error: "+err)
                 });
 
-            },31000)
+            },1000)
     }
 
 registerChannels(0).next();
