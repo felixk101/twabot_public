@@ -109,7 +109,7 @@ function connectToChat(options,chan) {
 	});
 }
 
-fetchChat('dotamajorru');
+//fetchChat('dotamajorru');
 exports.fetchChat=fetchChat;
 
 
