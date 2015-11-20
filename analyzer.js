@@ -23,7 +23,7 @@ class Analyzer{
     analyzeData(rawData) {
         let sender = this.get_sender(rawData);
         let message = this.get_message(rawData);
-        //let timeStamp=getTimeStamp(rawData);
+        let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
         if (this.trainmode === false) {
             setTimeout(this.fractalAnalyze(), 0);
@@ -35,35 +35,31 @@ class Analyzer{
 
     }
     wordspersecond(sender,message){
-        let words=message.split(" ");
-        console.log(words)
+//        let words=message.split(" ");
+   //     console.log(words)
     }
 
-    getTimeStamp(){
-
+    getTimeStamp(data){
+        let timeStamp=data.split('|')[0]
+        return timeStamp;
     }
 
     get_message(data){
         /*This function filters the message out of the received data.*/
-        let returnValue='';
-        if(data.length-1>1){
+        data=data.split(',');
+        let returnValue=data.splice(1).join(',');
 
-            data=data.splice(1);
-            returnValue=data.join(':');
-
-        }else{
-            returnValue=data[1];
-        }
         returnValue=returnValue.replace(/\r\n/g,'');
         return returnValue;
     }
 
     get_sender(data){
         /*This funciton filters the sender out of the received data.*/
-        let user=data[0].split('!');
+        let user=data.split('|')[1].split('!');
 
-        user[1]=user[1].split('@')[0];
-        return user[0];
+        user=user[1].split('@')[0];
+
+        return user;
     }
 }
 

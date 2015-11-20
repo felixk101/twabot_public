@@ -46,7 +46,11 @@ class Channel{
 
     fetchChat(chan){
 
-        fs.open('logs/'+chan+'.json', 'a');
+        fs.open('logs/'+chan+'.json', 'a',function(err,fd){
+            if(err){
+                return err;
+            }
+        });
 
         return this.getChannelHost(chan,this.client);
     }
@@ -102,9 +106,9 @@ class Channel{
                     //let sender = Channel.get_sender(input);
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
-                    this.analyser.analyzeData(getTimestamp()+"|"+input);
+                    this.analyser.analyzeData(this.getTimestamp()+"|"+input);
                     //console.log(timestamp+'|'+sender + ":" + message);
-                    fs.appendFile('logs/'+chan+'.log', timestamp+'|'+message+'\n', function (err) {
+                    fs.appendFile('logs/'+chan+'.log', timestamp+'|'+input+'\n', function (err) {
                         if(err) {
                             console.log('error writing log:',err);
                         }

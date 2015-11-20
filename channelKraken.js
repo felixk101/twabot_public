@@ -36,7 +36,7 @@ class ChannelCrawler{
         console.log('Attempting to access Twitch API...');
 
         return new Promise(function(resolve,reject){
-            request({url: url + '?limit=50&offset=' + offset, json: true}, function (err, response, body) {
+            request({url: url + '?limit=20&offset=' + offset, json: true}, function (err, response, body) {
                 console.log(this)
                 let newChannels=[]
                 let viewerCount=-1;
@@ -91,7 +91,7 @@ class ChannelCrawler{
             if(result>this.viewerLimit) {
 
                 console.log("Channel kraken cooldown. Streams: "+this.activeChannels.length);
-                this.registerChannels(offset+50).next();
+                this.registerChannels(offset+20).next();
             }else{
                 console.log("Channel kraken ends.Streams: "+this.activeChannels.length);
                 console.log(this.activeChannels)
