@@ -12,7 +12,7 @@
 var request=require('request');
 var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
-var viewerLimit=15;
+var viewerLimit=15000;
 
 
 class ChannelCrawler{

@@ -10,7 +10,7 @@ var port ;//= 6667;
 var NICK = 'hochschuleaugsburg';
 var PASS = 'oauth:lhq4ad0tqxgkxu9kxbo65jtpppqm47';
 
-var chan = process.argv[2] || 'bobross'; //no # sign!
+//var chan = process.argv[2] || 'bobross'; //no # sign!
 
 function fetchChat(chan){
 	fs.open('logs/'+chan+'.log', 'a', function (err) {
@@ -109,7 +109,7 @@ function connectToChat(options,chan) {
 	});
 }
 
-//fetchChat('dotamajorru');
+//fetchChat('bobross');
 exports.fetchChat=fetchChat;
 
 

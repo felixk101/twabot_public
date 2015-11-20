@@ -31,7 +31,7 @@ class Channel{
 
     connect(){
         /*This function will start the connection attempt*/
-        console.log("Start Connecting");
+        console.log("Start Connecting to",this.name);
         return new Promise(function(resolve,reject){
             let err=this.fetchChat(this.name);
 
