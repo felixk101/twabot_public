@@ -9,7 +9,6 @@ var request=require('request');
 var credentials=require('./credentials.js');
 var analyzer=require('./analyzer.js');
 class Channel{
-
     constructor(name){
         this.online=false;
         this.name=name;
