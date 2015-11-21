@@ -2,8 +2,11 @@
 /**
  * Created by Lukas on 16.11.2015.
  */
-var fs = require('fs');
-let emotions;
+let fs = require('fs');
+//analyzers
+let mpt = require('./msgPerTime.js');
+
+let emotions = [];
 fs.readFile('emotions.json','utf-8',function(err,data){
     if (err) {
 		throw err; 
@@ -15,30 +18,22 @@ class Analyzer{
 
     constructor(){
         this.trainmode=false;
-		console.log(this.test())
-    }
-
-    test(){
-        return emotions;
+		//this.analyzers=[new mpt.Analyzer()];
+		this.mptAnalyzer = new mpt.Analyzer();
+		
     }
 
     analyzeData(rawData) {
         let sender = this.get_sender(rawData);
         let message = this.get_message(rawData);
-        let timeStamp=this.getTimeStamp(rawData);
+		let timeStamp = Date.now();
+        //let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
         if (this.trainmode === false) {
-            setTimeout(this.fractalAnalyze(), 0);
-            setTimeout(this.wordspersecond(sender,message), 0);
+            //setTimeout(this.fractalAnalyze(), 0);
+            //setTimeout(this.wordspersecond(sender,message), 0);
+			setTimeout(this.mptAnalyzer.process(message, timeStamp), 0);
         }
-    }
-
-    fractalAnalyze(sender,message){
-
-    }
-    wordspersecond(sender,message){
-//        let words=message.split(" ");
-   //     console.log(words)
     }
 
     getTimeStamp(data){
