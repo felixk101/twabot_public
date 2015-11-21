@@ -1,44 +1,50 @@
-"BibleThump":[
-	{"emotion":"sad","confidence":100},
-	{"emotion":"very sad","confidence":100}
-],
-":)":[
-	{"emotion":"happy","confidence":100}
-],
-":(":[
-	{"emotion":"sad","confidence":100}
-],
-":D":[
-	{"emotion":"happy","confidence":100},
-	{"emotion":"very happy","confidence":90}
-],
-":O":[
-	{"emotion":"surprised","confidence":100}
-],
-":P":[
-	{"emotion":"kidding","confidence":65}
-],
-"^^":[
-	{"emotion":"happy","confidence":90}
-],
-":'(":[
-	{"emotion":"sad","confidence":100},
-	{"emotion":"kidding","confidence":15}
-],
-"<3":[
-	{"emotion":"loving","confidence":100}
-],
-":/":[
-	{"emotion":"sad","confidence":90}
-],
-";)":[
-	{"emotion":"happy","confidence":50},
-	{"emotion":"aroused","confidence":40}
-],
-"fuck":[
-	{"emotion":"angry","confidence":45},
-	{"emotion":"annoyed","confidence":20}
-],
-"Kappa":[
-	{"emotion":"kidding","confidence":90}
-]
+{ 
+  "BibleThump": 
+  {
+	  "sad": {"confidence":100, "strength":100},
+	  "canBeChanged": false
+  },
+  ":)":
+  {
+    "happy": {"confidence":100, "strength":60},
+	  "canBeChanged": false
+  },
+  ":(":
+  {
+    "sad": {"confidence":100, "strength":40},
+	  "canBeChanged": false
+  },
+  ":D":
+  {
+    "happy": {"confidence":100, "strength":95},
+	  "canBeChanged": false
+  },
+  ":O":
+  {
+    "surprised": {"confidence":100, "strength":80},
+	  "canBeChanged": false
+  },
+  ":P":
+  {
+    "happy": {"confidence":100, "strength":20},
+    "amused": {"confidence":100, "strength":50},
+	  "canBeChanged": false
+  },
+  "^^":
+  {
+    "happy": {"confidence":100, "strength":50},
+    "amused": {"confidence":100, "strength":30},
+	  "canBeChanged": false
+  },
+  ":'(":
+  {
+    "sad": {"confidence":100, "strength":50},
+	  "canBeChanged": false
+  },
+  "<3":
+  {
+    "loving":{"confidence":100},
+    "canBeChanged": false"
+  },
+  
+}
