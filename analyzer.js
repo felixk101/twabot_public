@@ -2,18 +2,20 @@
 /**
  * Created by Lukas on 16.11.2015.
  */
-
-var emotions=require('fs').readFile('emotions.json','utf-8',function(err,data){
-    emotions="";
+var fs = require('fs');
+let emotions;
+fs.readFile('emotions.json','utf-8',function(err,data){
+    if (err) {
+		throw err; 
+	}
+	emotions = JSON.parse(data);
 });
 
 class Analyzer{
 
-
     constructor(){
         this.trainmode=false;
-
-
+		console.log(this.test())
     }
 
     test(){
