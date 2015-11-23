@@ -105,9 +105,9 @@ class Channel{
                     //let sender = Channel.get_sender(input);
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
-                    this.analyser.analyzeData(this.getTimestamp()+"|"+input);
+					this.analyser.analyzeData(Date.now()+"|"+input);
                     //console.log(timestamp+'|'+sender + ":" + message);
-                    fs.appendFile('logs/'+chan+'.log', timestamp+'|'+input+'\n', function (err) {
+                    fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
                         if(err) {
                             console.log('error writing log:',err);
                         }

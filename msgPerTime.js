@@ -1,13 +1,13 @@
 "use strict";
 /*
  * The MessagesPerSecond Analyzer determines how many words are sent per second
- * TODO: implement a rolling time period, so the counter doesn't totally reset 
+ * TODO: implement a rolling time period, so that every message counts
  */
 
 //how often we print the analysis to terminal/push to the Database, in ms
-let timeBetweenOutputs = 5000;
+//let timeBetweenOutputs = 1000;
 //over what time period to measure, in ms
-let periodLength = 20000;
+let periodLength = 1000;
 
 class Analyzer{
 
@@ -16,35 +16,47 @@ class Analyzer{
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
 		this.counter = 0
+	
+
+	
 		//schedule output
+		//		//setInterval(function(){
+		//	console.log(self.analysis(),'words per second');
+		//}, timeBetweenOutputs);
+		
 		let self = this;
-		setInterval(function(){
-			console.log(self.analysis(),'words per second');
-		}, timeBetweenOutputs);
+
+
 		//advance the period of measurement and reset counter
 		setInterval(function(){
-			this.periodStart += periodLength;
-			this.periodEnd += periodLength;
-			this.counter = 0;
+			//only push the analysis when this period is done
+			self.pushAnalysis();
+			self.periodStart = Date.now();
+			self.periodEnd = self.periodStart + periodLength;
+			self.counter = 0;
+			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
 		}, periodLength);
 		
     }
 	process(message, timeStamp) {
-		if (!(timeStamp > this.periodStart && timeStamp < this.periodEnd)) {
-			//should not be possible!!!
-			console.log('Warning: current timestamp outside measurement period!')
-		} else {
+		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.counter += 1;
+		} else {
+			//should not be possible!!!
+			if (timeStamp > this.periodEnd) {
+				console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
+			} else {
+				console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
+			}
 		}
 		
+	}
+	pushAnalysis() {
+		console.log(this.counter,'messages in last period');
 	}
 	analysis() {
 		//find the average words per second
 		return this.counter * 1000/periodLength;
-	}
-	updatePeriod() {
-		this.periodStart += 1000;
-		this.periodEnd += 1000;
 	}
 }
 

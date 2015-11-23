@@ -26,8 +26,7 @@ class Analyzer{
     analyzeData(rawData) {
         let sender = this.get_sender(rawData);
         let message = this.get_message(rawData);
-		let timeStamp = Date.now();
-        //let timeStamp=this.getTimeStamp(rawData);
+        let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
         if (this.trainmode === false) {
             //setTimeout(this.fractalAnalyze(), 0);
