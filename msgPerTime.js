@@ -19,7 +19,7 @@ class Analyzer{
 		//schedule output
 		let self = this;
 		setInterval(function(){
-			console.log(self.analysis(),'words per second');
+			//console.log(self.analysis(),'words per second');
 		}, timeBetweenOutputs);
 		//advance the period of measurement and reset counter
 		setInterval(function(){
@@ -32,7 +32,7 @@ class Analyzer{
 	process(message, timeStamp) {
 		if (!(timeStamp > this.periodStart && timeStamp < this.periodEnd)) {
 			//should not be possible!!!
-			console.log('Warning: current timestamp outside measurement period!')
+			//console.log('Warning: current timestamp outside measurement period!')
 		} else {
 			this.counter += 1;
 		}

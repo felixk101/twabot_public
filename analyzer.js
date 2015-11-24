@@ -16,8 +16,9 @@ fs.readFile('emotions.json','utf-8',function(err,data){
 
 class Analyzer{
 
-    constructor(){
+    constructor(rethinkDB){
         this.trainmode=false;
+        this.rethinkDB=rethinkDB;
 		//this.analyzers=[new mpt.Analyzer()];
 		this.mptAnalyzer = new mpt.Analyzer();
 		
@@ -26,7 +27,15 @@ class Analyzer{
     analyzeData(rawData) {
         let sender = this.get_sender(rawData);
         let message = this.get_message(rawData);
-		let timeStamp = Date.now();
+		let timeStamp = this.getTimeStamp(rawData);
+        let text={type:'raw',data:{timeStamp:timeStamp,rawData:rawData}};
+        let testData=JSON.parse(JSON.stringify(text));
+
+        console.log(testData.type);
+        this.rethinkDB.writeData(testData);
+        if(message==='read'){
+            this.rethinkDB.readData();
+        }
         //let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
         if (this.trainmode === false) {

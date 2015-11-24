@@ -12,16 +12,16 @@
 var request=require('request');
 var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
-var viewerLimit=15000;
+
 
 
 
 class ChannelCrawler{
     constructor(){
-        this.viewerLimit=15;
+        this.viewerLimit=15000;
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels=[];
-        this.channelLimit=50
+        this.channelLimit=1
     }
     getChannels(offset) {
         /*This function creates a GET-Request to the address url with the arguments limit and offset.
@@ -39,7 +39,7 @@ class ChannelCrawler{
 
         return new Promise(function(resolve,reject){
             request({url: url + '?limit='+this.channelLimit+'&offset=' + offset, json: true}, function (err, response, body) {
-                console.log(this)
+
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
@@ -55,7 +55,7 @@ class ChannelCrawler{
                     }
 
                 }
-                console.log(newChannels)
+
                 let fetchChannels=newChannels.map(function(name){
                     let channel=new Channel.Channel(name);
                     this.activeChannels[channel.getName()]=channel;
@@ -95,7 +95,7 @@ class ChannelCrawler{
                 this.registerChannels(offset+this.channelLimit).next();
             }else{
                 console.log("Channel kraken ends.Streams: "+this.activeChannels.length);
-                console.log(this.activeChannels)
+
 
             }
 
@@ -108,7 +108,8 @@ class ChannelCrawler{
 
 
 }
+let crawler=new ChannelCrawler();
+crawler.registerChannels(2000).next()
 exports.ChannelCrawler=ChannelCrawler;
-//let crawler=new ChannelCrawler();
-//crawler.registerChannels(0).next()
+
 

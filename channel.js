@@ -8,12 +8,13 @@ var net=require('net');
 var request=require('request');
 var credentials=require('./credentials.js');
 var analyzer=require('./analyzer.js');
+var db=require('./rethinkdb.js');
 class Channel{
     constructor(name){
         this.online=false;
         this.name=name;
-        this.writer=undefined;
-        this.analyser=new analyzer.Analyzer();
+        this.rethinkDB=new db.RethinkDB(name);
+        this.analyser=new analyzer.Analyzer(this.rethinkDB);
         this.client;
     }
 
@@ -32,6 +33,7 @@ class Channel{
         /*This function will start the connection attempt*/
         console.log("Start Connecting to",this.name);
         return new Promise(function(resolve,reject){
+            this.rethinkDB.connect();
             let err=this.fetchChat(this.name);
 
             if(err){
@@ -64,7 +66,6 @@ class Channel{
             url: 'https://api.twitch.tv/api/channels/'+chan+'/chat_properties',
             json: true
         },  (error, response, body)=>{
-
             if (!error && response.statusCode === 200) {
                 //Use the first chat server for the channel that Twitch's API gives us
                 this.host=body.chat_servers[0].split(":")[0];
@@ -91,6 +92,7 @@ class Channel{
             this.client.write('JOIN #' + chan + '\r\n');
             this.online=true;
             this.client.on('data',  data =>{
+
                 data = data.toString();
                 let input = data.split(':');
                 if (input[0] === '') {
@@ -158,8 +160,8 @@ class Channel{
 
 exports.Channel=Channel;
 
-//let chann=new Channel('sissorstream');
-//chann.connect();
+let chann=new Channel('kbncsgo');
+chann.connect();
 //let chan=new Channel('cohhcarnage');
 //chan.connect();
 //console.log(chan.getTimestamp())
