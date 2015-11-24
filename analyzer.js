@@ -5,6 +5,7 @@
 let fs = require('fs');
 //analyzers
 let mpt = require('./msgPerTime.js');
+let ept = require('./emotionPerTime.js');
 
 let emotions = [];
 fs.readFile('emotions.json','utf-8',function(err,data){
@@ -16,10 +17,11 @@ fs.readFile('emotions.json','utf-8',function(err,data){
 
 class Analyzer{
 
-    constructor(){
+    constructor(channelName){
         this.trainmode=false;
 		//this.analyzers=[new mpt.Analyzer()];
-		this.mptAnalyzer = new mpt.Analyzer();
+		this.mptAnalyzer = new mpt.Analyzer(channelName);
+		this.eptAnalyzer = new ept.Analyzer(channelName);
 		
     }
 
@@ -32,6 +34,7 @@ class Analyzer{
             //setTimeout(this.fractalAnalyze(), 0);
             //setTimeout(this.wordspersecond(sender,message), 0);
 			setTimeout(this.mptAnalyzer.process(message, timeStamp), 0);
+			setTimeout(this.eptAnalyzer.process(message, timeStamp), 0);
         }
     }
 

@@ -7,12 +7,13 @@
 //how often we print the analysis to terminal/push to the Database, in ms
 //let timeBetweenOutputs = 1000;
 //over what time period to measure, in ms
-let periodLength = 1000;
+let periodLength = 10000;
 
 class Analyzer{
 
 
-    constructor() {
+    constructor(channelName) {
+		this.channelName=channelName;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
 		this.counter = 0
@@ -52,7 +53,8 @@ class Analyzer{
 		
 	}
 	pushAnalysis() {
-		console.log(this.counter,'messages in last period');
+		//replace this with a database push
+		console.log('msgperTime:',this.counter,'messages in last period for channel',this.channelName);
 	}
 	analysis() {
 		//find the average words per second

@@ -13,7 +13,7 @@ class Channel{
         this.online=false;
         this.name=name;
         this.writer=undefined;
-        this.analyser=new analyzer.Analyzer();
+        this.analyser=new analyzer.Analyzer(this.name);
         this.client;
     }
 
