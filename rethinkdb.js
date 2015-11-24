@@ -41,6 +41,7 @@ class RethinkDB{
                             this.createNewStreamTable(this.streamName)
                             .then((result)=> {
                                 console.log("The module is using now " + this.streamName + " table in "+this.channelName+" database");
+                                    this.connected=true;
                             }).catch((err)=>{
                                 if(err[0]===0){
                                     console.log("Error by request of a list of tables:\n"+err[1]);
