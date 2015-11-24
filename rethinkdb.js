@@ -11,6 +11,7 @@ class RethinkDB{
         this.streamName=streamName;
         this.con=undefined;
         this.currentTable=streamName;
+        this.connected=false;
     }
 
     connect(){
@@ -71,6 +72,9 @@ class RethinkDB{
     }
 
     createNewStreamTable(streamName){
+        if(!this.connected){
+            return;
+        }
         streamName=streamName+"";
         let tableNames = ['Fractal', 'msgPerTime', 'raw'];
 
@@ -139,6 +143,9 @@ class RethinkDB{
     }
 
     createStreamNameMapTable(){
+        if(!this.connected){
+            return;
+        }
         return new Promise((resolve,reject)=>{
             this.con.use(this.channelName);
 
@@ -185,6 +192,9 @@ class RethinkDB{
     }
 
     writeData(message){
+        if(!this.connected){
+            return;
+        }
         console.log(typeof message);
         r.table(this.streamName+"_"+message.type).insert({
             id:new Date(),
@@ -197,6 +207,9 @@ class RethinkDB{
     }
 
     readData(){
+        if(!this.connected){
+            return;
+        }
         r.table(this.streamName+"_raw").run(this.con,(err,cursor)=>{
             console.log(err);
             cursor.toArray((err,result)=>{
@@ -208,9 +221,14 @@ class RethinkDB{
         })
     }
 
-
+    isConnected(){
+        return this.connected;
+    }
 
     close(){
+        if(!this.connected){
+            return;
+        }
 
     }
 

@@ -33,7 +33,9 @@ class Channel{
         /*This function will start the connection attempt*/
         console.log("Start Connecting to",this.name);
         return new Promise(function(resolve,reject){
-            this.rethinkDB.connect();
+            if(credentials.DBACTIVE) {
+                this.rethinkDB.connect();
+            }
             let err=this.fetchChat(this.name);
 
             if(err){
