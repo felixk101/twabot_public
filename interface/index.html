@@ -1,14 +1,48 @@
-<html>
-	<head>
-		<title>Test</title>
-		<script src="charts.js/Chart.js"></script>
-		<script type="application/javascript;version=1.8" src="createCharts.js"></script>
-		<style type="text/css">
-		@import url("style.css") screen;
-		</style>
-	</head>
-	<body onload="draw();">
-		<canvas id="barchart" height=300 width=500>Hier sollte ein Balkendiagramm sein.</canvas>
-		<canvas id="radarchart" height=300 width=500>Hier sollte ein Radardiagramm sein.</canvas>
-	</body>
-</html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>TWABOT - Twitch Analysing Bot</title>
+
+<script type="application/javascript" src="charts.js/Chart.js"></script>
+<script type="application/ecmascript" src="canvas_factory.js"></script>
+<style type="text/css">
+@import url("style.css") screen;
+</style>
+</head>
+<body onload="draw();">
+<h1>TWABOT</h1>
+Choose the Channel of your favour<br>
+<textarea cols="1" rows="1" name="channelName"></textarea><br>
+<h2>Most Active Channels</h2>
+<br>
+<table cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td><canvas id="canvasActiveChannel1" width="330" height="180"></canvas></td>
+<td><canvas id="canvasActiveChannel2" width="330" height="180"></canvas></td>
+<td><canvas id="canvasActiveChannel3" width="330" height="180"></canvas></td>
+</tr>
+<tr>
+<td><canvas id="canvasActiveChannel4" width="330" height="180"></canvas></td>
+<td><canvas id="canvasActiveChannel5" width="330" height="180"></canvas></td>
+<td><canvas id="canvasActiveChannel6" width="330" height="180"></canvas></td>
+</tr>
+</tbody>
+</table>
+<h2>Most Emotional Channels</h2>
+<table cellpadding="2" cellspacing="2">
+<tbody>
+<tr>
+<td><canvas id="canvasEmotionChannel1" width="330" height="180"></canvas></td>
+<td><canvas id="canvasEmotionChannel2" width="330" height="180"></canvas></td>
+<td><canvas id="canvasEmotionChannel3" width="330" height="180"></canvas></td>
+</tr>
+<tr>
+<td><canvas id="canvasEmotionChannel4" width="330" height="180"></canvas></td>
+<td><canvas id="canvasEmotionChannel5" width="330" height="180"></canvas></td>
+<td><canvas id="canvasEmotionChannel6" width="330" height="180"></canvas></td>
+</tr>
+</tbody>
+</table>
+<h2>Overall Emotions</h2>
+<canvas id="canvasOverall" width="330" height="180"></canvas>
+</body></html>
