@@ -14,7 +14,7 @@ class Channel{
         this.online=false;
         this.name=name;
         this.rethinkDB=new db.RethinkDB(name);
-        this.analyser=new analyzer.Analyzer(this.name);
+        this.analyser=new analyzer.Analyzer(this.name,this.rethinkDB);
         this.client;
     }
 

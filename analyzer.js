@@ -17,13 +17,13 @@ fs.readFile('emotions.json','utf-8',function(err,data){
 
 class Analyzer{
 
-    constructor(channelName){
-    constructor(rethinkDB){
+    constructor(channelName,rethinkDB){
+
         this.trainmode=false;
         this.rethinkDB=rethinkDB;
 		//this.analyzers=[new mpt.Analyzer()];
-		this.mptAnalyzer = new mpt.Analyzer(channelName);
-		this.eptAnalyzer = new ept.Analyzer(channelName);
+		this.mptAnalyzer = new mpt.Analyzer(channelName,rethinkDB);
+		this.eptAnalyzer = new ept.Analyzer(channelName,rethinkDB);
 		
     }
 
@@ -40,13 +40,13 @@ class Analyzer{
             this.rethinkDB.readData();
         }
         //let timeStamp=this.getTimeStamp(rawData);
-        let timeStamp=this.getTimeStamp(rawData);
+        //let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
         if (this.trainmode === false) {
             //setTimeout(this.fractalAnalyze(), 0);
             //setTimeout(this.wordspersecond(sender,message), 0);
-			setTimeout(this.mptAnalyzer.process(message, timeStamp), 0);
-			setTimeout(this.eptAnalyzer.process(message, timeStamp), 0);
+			setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
         }
     }
 

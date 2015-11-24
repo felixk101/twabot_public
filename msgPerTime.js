@@ -12,7 +12,8 @@ let periodLength = 10000;
 class Analyzer{
 
 
-    constructor(channelName) {
+    constructor(channelName,rethinkDB) {
+		this.rethinkDB=rethinkDB;
 		this.channelName=channelName;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
@@ -40,6 +41,7 @@ class Analyzer{
 		
     }
 	process(message, timeStamp) {
+		/*message per second or word per second?*/
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.counter += 1;
 		} else {

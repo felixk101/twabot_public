@@ -12,7 +12,8 @@ let periodLength = 10000;
 class Analyzer{
 
 
-    constructor(channelName) {
+    constructor(channelName,rethinkDB) {
+		this.rethinkDB=rethinkDB;
 		this.channelName=channelName;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
