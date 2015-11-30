@@ -1,7 +1,8 @@
 "use strict";
-let jsonfile = require('./emotions.json')
+let jsonfile = require('./jsonemotions.json')
+let equal = require('deep-equal');
 //console.log(jsonfile);
-//let emotionMap=JSON.parse(jsonfile);
+//jsonfile=JSON.parse(x);
 /*
  * The EmotionPerTime Analyzer determines what emotions are sent per period
  */
@@ -19,22 +20,22 @@ class Analyzer{
 		this.periodEnd=Date.now() + periodLength;
 		this.counter = 0
 		this.startemotion = {
-				"excited":0.0,
-                "amused":0.0,
-                "happy":0.0,
-                "praising":0.0,
-                "loving":0.0,
-                "surprised":0.0,
-                "bored":0.0,
-                "annoyed":0.0,
-                "angry":0.0,
-                "provoking":0.0,
-                "envious":0.0,
-                "hating":0.0,
-                "sad":0.0,
+				"amused":0.0,
+				"annoyed":0.0,
+				"aroused":0.0,
+				"bored":0.0,
                 "embarassed":0.0,
+				"excited":0.0,
+				"happy":0.0,
+                "hating":0.0,
+				"loving":0.0,
+                "provoking":0.0,
+				"rage":0.0,
+                "sad":0.0,
+                "surprised":0.0,
 		}
-		this.emotion = this.startemotion
+		//deep copy, but fast
+		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
 		let self = this;
 
 		//advance the period of measurement and reset counter
@@ -63,32 +64,67 @@ class Analyzer{
 	}
 	pushAnalysis() {
 		//replace this with a database push
-		if (this.emotion == this.startemotion) {
-			console.log('emotionAna: Failed to register any emotions for this channel');
+		if (equal(this.emotion,this.startemotion)) {
+			console.log(this.emotion,'has zeroes everyhwere for channel',this.channelName);
+			
 		} else {
-			console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName);
+			console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 		}
 	}
 	
 	analyzeEmotions(message) {
-		for (var substring in jsonfile){
-			//if the substring occurs at least once in the message
+		let substrings = Object.keys(jsonfile);
+		substrings.map((substring) => {
 			if (message.indexOf(substring) > -1) {
-				console.log(substring,'exists in a message in',this.channelName);
-				//look at every emotion for that substring
-				for (var emotionForSubstring in substring) {
-					//console.log(emotionForSubstring);
-					if (substring[emotionForSubstring][0]) {
-						console.log('changing emotion',this.emotion.emotionForSubstring);
-						this.emotion.emotionForSubstring += emotionForSubstring.strength;
-					} else {
-						console.log('no strength property for',emotionForSubstring);
+				let properties = Object.keys(jsonfile[substring]);
+				properties.map((property) => {
+					if (jsonfile[substring][property].strength) {
+						//console.log('incrementing emotion.'+this.emotion[property]);
+						this.emotion[property] += jsonfile[substring][property].strength;				
+						//console.log('this.emotion is now:',this.emotion);
+						
 					}
-					
-				}
+				});
+				//console.log(jsonfile[substring]);
 			}
-		}
+			//console.log(key);
+			//console.log(jsonfile[key]);
+		});
+
+		
+
+		
+		//for (let substring in substrings) {
+		//	console.log(substring);
+			//console.log('1',substrings[substring]);
+			//substring = substrings[substring];
+			//console.log(substring);
+			//console.log(jsonfile[substrings[substring]]);
+			//console.log('jsonfile.'+substrings[substring]+':'+jsonfile[substrings[substring]].toString());
+			
+			//if the substring exists at least once in the message
+			/*
+			if (message.indexOf(substring) > -1) {
+				//console.log('keys for jsonfile:',substrings);
+				//console.log('keys for jsonfile.'+substring+':',jsonfile.substring);
+				console.log('jsonfile.'+substrings[substring]+':');
+				console.log(jsonfile[substrings[substring]]);
+				console.log('Object.keys(jsonfile.'+substrings[substring]+'):');
+				console.log(Object.keys(jsonfile[substrings[substring]]));
+				let propertiesForSubstring = Object.keys(jsonfile[substrings[substring]]);
+				for (let property in propertiesForSubstring) {
+					//if the property is an emotion
+					let strength = jsonfile[substrings[substring]][propertiesForSubstring[property]].strength;
+					if () {
+						this.emotion[property] += jsonfile[substring][property].strength;
+					}
+				}
+			}*/
+	//	}
 	}
 }
 
 exports.Analyzer=Analyzer;
+//let a = new Analyzer('TestChannel');
+//a.analyzeEmotions('<3 ^^ BibleThump I\'m sad');
+
