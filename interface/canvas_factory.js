@@ -71,10 +71,13 @@ function createThumbnail(canvas, channel){
 
 function drawChannelThumb(channelName, ctx, width, height){
     // Dummy
-    ctx.fillStyle = "rgb(255,255,255)";
-    ctx.fillRect(0,0,width, height);
-    ctx.fillStyle = "rgb(0,0,0)";
-    ctx.fillText(channelName,10,10,300);
+    let img = getThumbnail(channelName);
+    img.addEventListener("load", function(){
+        ctx.save();
+        ctx.scale(2/3,2/3);
+        ctx.drawImage(img, 0,0,width,height);
+        ctx.restore();
+    },false);
 }
 
 function drawFractal(channelName, ctx, width, height){
@@ -86,7 +89,7 @@ function drawFractal(channelName, ctx, width, height){
 }
 
 function drawDiagram1(channelName, ctx, width, height){
-    let data = getData(channelName);
+    let data = getEmotions(channelName);
     
     // Building a new Canvas for the Diagramm
     let diagramCanvas = document.createElement("canvas");
@@ -117,7 +120,7 @@ function drawDiagram1(channelName, ctx, width, height){
 }
 
 function drawDiagram2(channelName, ctx, width, height){
-    let data = getData(channelName);
+    let data = getEmotions(channelName);
 
     // Building a new Canvas for the Diagramm
     let diagramCanvas = document.createElement("canvas");
@@ -158,7 +161,13 @@ function drawDiagram4(channelName, ctx, width, height){
 }
 
 
-function getData(channelName){
+function getThumbnail(channelName){
+    let img = new Image();
+    img.src = 'http://static-cdn.jtvnw.net/jtv_user_pictures/reninsane-profile_image-c515f7b046929d1b-300x300.png';
+    return img;
+}
+
+function getEmotions(channelName){
     return {
         labels: ["emotion1", "emotion2", "emotion3", "emotion4", "emotion5"],
         datasets: [{

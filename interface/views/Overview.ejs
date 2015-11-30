@@ -1,23 +1,16 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+﻿<!DOCTYPE HTML>
 <html><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>TWABOT - Twitch Analysing Bot</title>
-
-<script type="application/javascript" src="charts.js/Chart.js"></script>
-<script type="application/ecmascript" src="canvas_factory.js"></script>
-<style type="text/css">
-@import url("style.css") screen;
-</style>
+<script type="<%= scriptlanguage %>" src="charts.js/Chart.js"></script>
+<script type="<%= scriptlanguage %>" src="canvas_factory.js"></script>
 </head>
 <body onload="draw();">
-<h1>TWABOT</h1>
-Choose the Channel of your favour<br>
-<textarea cols="1" rows="1" name="channelName"></textarea><br>
+<% include Header %>
 <h2>Most Active Channels</h2>
 <br>
 <table cellpadding="2" cellspacing="2">
 <tbody>
 <tr>
-<td><canvas id="canvasActiveChannel1" width="330" height="180"></canvas></td>
+<td><a href="/user/test"><canvas id="canvasActiveChannel1" width="330" height="180"></canvas></a></td>
 <td><canvas id="canvasActiveChannel2" width="330" height="180"></canvas></td>
 <td><canvas id="canvasActiveChannel3" width="330" height="180"></canvas></td>
 </tr>
@@ -45,4 +38,6 @@ Choose the Channel of your favour<br>
 </table>
 <h2>Overall Emotions</h2>
 <canvas id="canvasOverall" width="330" height="180"></canvas>
-</body></html>
+<% include Footer %>
+</body>
+</html>
