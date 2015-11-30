@@ -29,12 +29,12 @@ class Channel{
         console.log("Chat Closed")
     }
 
-    connect(){
+    connect(streamName){
         /*This function will start the connection attempt*/
         console.log("Start Connecting to",this.name);
         return new Promise(function(resolve,reject){
             if(credentials.DBACTIVE) {
-                this.rethinkDB.connect();
+                this.rethinkDB.connect(streamName);
             }
             let err=this.fetchChat(this.name);
 
@@ -48,12 +48,6 @@ class Channel{
     }
 
     fetchChat(chan){
-
-        fs.open('logs/'+chan+'.json', 'a',function(err,fd){
-            if(err){
-                return err;
-            }
-        });
 
         return this.getChannelHost(chan,this.client);
     }
@@ -72,7 +66,7 @@ class Channel{
                 //Use the first chat server for the channel that Twitch's API gives us
                 this.host=body.chat_servers[0].split(":")[0];
                 this.port=parseInt(body.chat_servers[0].split(":")[1]);
-
+                console.log(body)
                 this.connectToChat({host: this.host, port: this.port},chan,client);
 
             } else {
@@ -123,30 +117,6 @@ class Channel{
             });
         });
     }
-/* The analyzer has now the function getMessage and getSender */
-//    static get_message(data){
-//        /*This function filters the message out of the received data.*/
-//        let returnValue='';
-//        if(data.length-1>1){
-//
-//            data=data.splice(1);
-//            returnValue=data.join(':');
-//
-//        }else{
-//            returnValue=data[1];
-//        }
-//        returnValue=returnValue.replace(/\r\n/g,'');
-//        return returnValue;
-//    }
-//
-//    static get_sender(data){
-//        /*This funciton filters the sender out of the received data.*/
-//        let user=data[0].split('!');
-//
-//        user[1]=user[1].split('@')[0];
-//        return user[0];
-//    }
-//
 
 
     getTimestamp() {
@@ -162,8 +132,8 @@ class Channel{
 
 exports.Channel=Channel;
 
-let chann=new Channel('kbncsgo');
-chann.connect();
+//let chann=new Channel('kbncsgo');
+//chann.connect();
 //let chan=new Channel('cohhcarnage');
 //chan.connect();
 //console.log(chan.getTimestamp())

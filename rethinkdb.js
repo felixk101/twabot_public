@@ -9,20 +9,17 @@ class RethinkDB{
     constructor(channelName,streamName){
         this.channelName=channelName;
         this.streamName=streamName;
+        this.streamID=-1;
         this.con=undefined;
-        this.currentTable=streamName;
+        this.currentStreamTable="";
         this.connected=false;
     }
 
-    connect(){
-        let promise=r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT});
-
-        promise.then((result)=>{
+    connect(streamName){
+        this.streamName=streamName;
+        r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT},(err,result)=>{
             this.con=result;
-
-            let promise=r.dbList().run(this.con);
-            promise.then( (result) =>{
-                console.log("CreateChannel")
+            r.dbList().run(this.con,(err,result)=>{
                 new Promise((resolve,reject)=>{
                     if(result.indexOf(this.channelName)===-1){
                         r.dbCreate(this.channelName).run(this.con,(err,result)=>{
@@ -36,160 +33,128 @@ class RethinkDB{
                         resolve(0);
                     }
                 }).then((result)=> {
-                        console.log("The module is using now " + this.channelName + " database");
-                        this.createStreamNameMapTable().then(
-                            this.createNewStreamTable(this.streamName)
-                            .then((result)=> {
-                                console.log("The module is using now " + this.streamName + " table in "+this.channelName+" database");
-                                    this.connected=true;
-                            }).catch((err)=>{
-                                if(err[0]===0){
-                                    console.log("Error by request of a list of tables:\n"+err[1]);
-                                }else{
-                                    console.log("Error by creation of a new Table:\n"+err[1]);
-                                }
-                            })).catch((err)=>{
-                                if(err[0]===0){
-                                    console.log("Error by request of a list of tables:\n"+err[1]);
-                                }else if(err[0]===1){
-                                    console.log("Error by creation of a the StreamNameMapTable:\n"+err[1]);
-                                }else if(err[0]===2){
-                                    console.log("Error by creation of index:\n "+err[1])
-                                }
-                        })
+                        this.createStreamNameMapTable(this.streamName,this.createNewStreamTable.bind(this))
+                    }
+                ).catch((err)=>{
+                        console.log("Error by the creation of a database:\n"+err);
+                    })
 
+            })
+        });
 
-                    }).catch((err)=>{
-                        console.log("Error by creation of a database:\n"+err);
-                    });
-
-            }).catch((err)=>{
-                console.log("Error by request of a list of databases : \n"+err);
-            });
-
-        }).catch( (err) =>{
-            console.log("Error by connection to database: \n"+err);
-        })
     }
 
     createNewStreamTable(streamName){
-        if(!this.connected){
-            return;
-        }
+
         streamName=streamName+"";
-        let tableNames = ['Fractal', 'msgPerTime', 'raw'];
+        new Promise((resolve,reject)=>{
+            r.table("StreamNameMap").getAll(streamName,{index:'streamTitle'}).run(this.con,(err,result)=>{
+                if(err){
+                    reject([0,err]);
+                }
+                result.toArray((err,result)=>{
 
-        const createNewStreamTables=tableNames.map((tableName)=>{
-            console.log("Create Table")
-            return new Promise((resolve,reject)=>{
-                new Promise((resolve,reject)=>{
-
-                    r.table("StreamNameMap").getAll(streamName,{index:'streamTitle'}).run(this.con,(err,result)=>{
-                        if(err){
-                            reject([0,err]);
-                        }
-                        if(result===null){
-                            r.table("StreamNameMap").insert({
-                                streamTitle:streamName
-                            }).run(this.con,(err,result)=>{
-                                if(err){
-                                   console.log(err)
-                                }
-                                console.log(result);
-                                resolve(0);
-                            })
-                        }else{
-                            resolve(0);
-                        }
-                    })
-
-                }).then((result)=>{
-
-                r.db(this.channelName).tableList().run(this.con,(err,result)=>{
-
-                    if(err){
-                        reject([0,err]);
-                    }
-
-                    if(result.indexOf(this.streamName+"_"+tableName)===-1){
-                        r.db(this.channelName).tableCreate(streamName+"_"+tableName).run(this.con,(err,result)=>{
-
+                    if(result.length===0){
+                        r.table("StreamNameMap").insert({
+                            streamTitle:streamName,
+                            date:Date.now()
+                        }).run(this.con,(err,result)=>{
                             if(err){
-                                reject([1,err]);
+                                console.log(err)
                             }
-
-                            this.streamName=streamName;
+                            this.streamID=result.generated_keys[0];
                             resolve(0);
                         })
                     }else{
-                        this.streamName=streamName;
+                        this.streamID=result[0].id;
                         resolve(0);
                     }
-                })}
-                ).catch((err)=>{
-                        console.log(err)
-                    })
+                });
+
             })
-        });
-        return Promise.all(createNewStreamTables);
-        //.then((result)=>{
-          //  Console.log("The module is using now "+this.streamName+" table in "+this.channelName+" database")
-          //  }).catch((err)=>{
-          //      if(err[0]===0){
-          //          console.log("Error by request of a list of tables:\n"+err[1]);
-          //      }else{
-          //          console.log("Error by creation of a new Table:\n"+err[1]);
-          //      }
-          //  });
+
+        }).then((result)=>{
+                this.streamID=this.streamID.replace(/-/g,'_')
+                let tableNames = ['fractal', 'msgPerTime','raw'];
+
+                const createNewStreamTables=tableNames.map((tableName)=>{
+                    console.log("Create Table")
+                    return new Promise((resolve,reject)=>{
+
+                        r.db(this.channelName).tableList().run(this.con,(err,result)=>{
+
+                            if(err){
+                                reject([0,err]);
+                            }
+
+                            if(result.indexOf(this.streamID+"_"+tableName)===-1){
+
+                                r.db(this.channelName).tableCreate(this.streamID+"_"+tableName).run(this.con,(err,result)=>{
+
+                                    if(err){
+                                        reject([1,err]);
+                                    }
+
+                                    this.streamName=streamName;
+                                    resolve(0);
+                                })
+                            }else{
+                                this.streamName=streamName;
+                                resolve(0);
+                            }
+                        })
+
+                }).catch((err)=>{
+                console.log("Error"+err)
+            })
+                })
+                Promise.all(createNewStreamTables).then((result)=>{
+                    this.connected=true;
+                }).catch();
+            }).catch((err)=>{
+                console.log(err)
+            });
+
     }
 
-    createStreamNameMapTable(){
-        if(!this.connected){
-            return;
-        }
-        return new Promise((resolve,reject)=>{
+    createStreamNameMapTable(streamName,callback){
+
             this.con.use(this.channelName);
 
             r.db(this.channelName).tableList().run(this.con,(err,result)=>{
                 if(err){
-                    reject([0,err]);
+                    console.log("Error by the request of a list of tables: "+err);
+                    return;
                 }
 
                 if(result.indexOf("StreamNameMap")===-1){
                     r.db(this.channelName).tableCreate("StreamNameMap").run(this.con,(err,result)=>{
-                        console.log("createStreamNameMapTable");
                         if(err){
-                            reject([1,err]);
+                            console.log("Error by the creation of the StreamNameMapTable of the channel "
+                                +this.channelName+": \n"+err);
+                            return;
                         }
                         r.table('StreamNameMap').indexCreate('streamTitle').run(this.con,(err,result)=>{
                             if(err){
-                                reject([2,err]);
+                                console.log('Error by creation of the index "streamTitle": \n'+err);
+                                return;
                             }
-                            resolve(0);
-                    })})
-                    //new Promise((resolve,reject)=>{
-                    //    r.db(this.channelName).tableCreate("StreamNameMap").run(this.con,(err,result)=>{
-                    //        console.log("createStreamNameMapTable");
-                    //        if(err){
-                    //            reject([1,err]);
-                    //        }
-                    //
-                    //        resolve(0);
-                    //})}).then((reslut)=>{
-                    //        r.table('StreamNameMap').indexCreate('streamTitle').run(this.con,(err,result)=>{
-                    //        if(err){
-                    //            reject([2,err]);
-                    //        }
-                    //        resolve(0);
-//
-                    //    })}).catch((err)=>{
-                    //            reject(err);
-                    //        })
+                            r.table('StreamNameMap').indexWait('streamTitle').run(this.con,(err,result)=>{
+                                if(err){
+                                    console.log(err);
+                                    return;
+                                }
+                                callback(streamName)
+                            })
+
+                            //callback(streamName);
+                    })});
+
                 }else{
-                    resolve(0);
+                    callback(streamName);
                 }
             })
-        })
+
     }
 
     writeData(message){
@@ -197,7 +162,7 @@ class RethinkDB{
             return;
         }
         console.log(typeof message);
-        r.table(this.streamName+"_"+message.type).insert({
+        r.table(this.streamID+"_"+message.type).insert({
             id:new Date(),
             timestamp:new Date(),
             data:message.data.rawData
@@ -211,7 +176,7 @@ class RethinkDB{
         if(!this.connected){
             return;
         }
-        r.table(this.streamName+"_raw").run(this.con,(err,cursor)=>{
+        r.table(this.streamID+"_raw").run(this.con,(err,cursor)=>{
             console.log(err);
             cursor.toArray((err,result)=>{
                 if(err){

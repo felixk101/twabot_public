@@ -21,7 +21,7 @@ class ChannelCrawler{
         this.viewerLimit=15000;
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels=[];
-        this.channelLimit=1
+        this.channelLimit=50
     }
     getChannels(offset) {
         /*This function creates a GET-Request to the address url with the arguments limit and offset.
@@ -43,7 +43,7 @@ class ChannelCrawler{
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
-
+                    console.log(body.streams[x].channel.status);
                     if(viewerCount===-1){
                         viewerCount=parseInt(body.streams[x].viewers);
                     }else if(parseInt(body.streams[x].viewers)<viewerCount){
