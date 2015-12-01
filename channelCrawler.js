@@ -43,7 +43,7 @@ class ChannelCrawler{
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
-                    console.log(body.streams[x].channel.status);
+                    //console.log(body.streams[x].channel.status);
                     if(viewerCount===-1){
                         viewerCount=parseInt(body.streams[x].viewers);
                     }else if(parseInt(body.streams[x].viewers)<viewerCount){

@@ -66,7 +66,6 @@ class Channel{
                 //Use the first chat server for the channel that Twitch's API gives us
                 this.host=body.chat_servers[0].split(":")[0];
                 this.port=parseInt(body.chat_servers[0].split(":")[1]);
-                console.log(body)
                 this.connectToChat({host: this.host, port: this.port},chan,client);
 
             } else {
@@ -82,11 +81,12 @@ class Channel{
         * chatt messages thru the data-Event.*/
         console.log('Connecting to server with arguments:',options);
         this.client = net.connect(options, () => {
-            console.log('Connected to Server');
+            console.log('Connected to Server, Channel: '+chan);
             this.client.write('PASS ' + credentials.PASS + '\r\n');
             this.client.write('NICK ' + credentials.NICK + '\r\n');
             this.client.write('JOIN #' + chan + '\r\n');
             this.online=true;
+
             this.client.on('data',  data =>{
 
                 data = data.toString();
@@ -99,8 +99,6 @@ class Channel{
                 } else if (input[0].split(' ')[0] === 'PART') {
 
                 } else if (input[0].split(' ')[1] == 'PRIVMSG') {
-                    //let message = Channel.get_message(input);
-                    //let sender = Channel.get_sender(input);
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
 					this.analyser.analyzeData(Date.now()+"|"+input);

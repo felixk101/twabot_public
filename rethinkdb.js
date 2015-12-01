@@ -74,7 +74,7 @@ class RethinkDB{
             })
 
         }).then((result)=>{
-                this.streamID=this.streamID.replace(/-/g,'_')
+                this.streamID=this.streamID.replace(/-/g,'_');
                 let tableNames = ['fractal', 'msgPerTime','raw'];
 
                 const createNewStreamTables=tableNames.map((tableName)=>{

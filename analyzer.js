@@ -34,11 +34,6 @@ class Analyzer{
         let text={type:'raw',data:{timeStamp:timeStamp,rawData:rawData}};
         let testData=JSON.parse(JSON.stringify(text));
 
-        console.log(testData.type);
-        this.rethinkDB.writeData(testData);
-        if(message==='read'){
-            this.rethinkDB.readData();
-        }
         //let timeStamp=this.getTimeStamp(rawData);
         //let timeStamp=this.getTimeStamp(rawData);
         //message=filterMessage();
