@@ -41,7 +41,6 @@ class Analyzer{
 		
     }
 	process(message, timeStamp) {
-		/*message per second or word per second?*/
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.counter += 1;
 		} else {
@@ -56,7 +55,7 @@ class Analyzer{
 	}
 	pushAnalysis() {
 		//replace this with a database push
-		console.log('msgperTime:',this.counter,'messages in last period for channel',this.channelName);
+		//console.log('msgperTime:',this.counter,'messages in last period for channel',this.channelName);
 	}
 	analysis() {
 		//find the average words per second

@@ -49,6 +49,12 @@ class Channel{
 
     fetchChat(chan){
 
+        fs.open('logs/'+chan+'.json', 'a',function(err,fd){
+            if(err){
+                return err;
+            }
+        });
+
         return this.getChannelHost(chan,this.client);
     }
 
@@ -62,10 +68,12 @@ class Channel{
             url: 'https://api.twitch.tv/api/channels/'+chan+'/chat_properties',
             json: true
         },  (error, response, body)=>{
+
             if (!error && response.statusCode === 200) {
                 //Use the first chat server for the channel that Twitch's API gives us
                 this.host=body.chat_servers[0].split(":")[0];
                 this.port=parseInt(body.chat_servers[0].split(":")[1]);
+
                 this.connectToChat({host: this.host, port: this.port},chan,client);
 
             } else {
