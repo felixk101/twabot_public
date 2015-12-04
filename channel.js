@@ -31,10 +31,10 @@ class Channel{
 
     connect(streamName){
         /*This function will start the connection attempt*/
-        console.log("Start Connecting to",this.name);
+        console.log("Start Connecting to",this.name,streamName);
         return new Promise(function(resolve,reject){
             if(credentials.DBACTIVE) {
-                this.rethinkDB.connect2(streamName);
+                this.rethinkDB.connect(streamName);
             }
             let err=this.fetchChat(this.name);
 
@@ -138,7 +138,7 @@ class Channel{
 
 exports.Channel=Channel;
 
-//let chann=new Channel('kbncsgo');
+//let chann=new Channel('fragbitelive');
 //chann.connect();
 //let chan=new Channel('cohhcarnage');
 //chan.connect();

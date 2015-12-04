@@ -40,8 +40,10 @@ class Analyzer{
         if (this.trainmode === false) {
             //setTimeout(this.fractalAnalyze(), 0);
             //setTimeout(this.wordspersecond(sender,message), 0);
-			setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
-			setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
+
+            this.rethinkDB.writeData('raw',rawData);
+			//setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
+			//setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
         }
     }
 

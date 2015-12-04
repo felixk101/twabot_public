@@ -51,15 +51,15 @@ class ChannelCrawler{
                     }
 
                     if(!(body.streams[x].channel.name in this.activeChannels)) {
-                        newChannels.push(body.streams[x].channel.name);
+                        newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status]);
                     }
 
                 }
 
-                let fetchChannels=newChannels.map(function(name){
-                    let channel=new Channel.Channel(name);
+                let fetchChannels=newChannels.map(function(data){
+                    let channel=new Channel.Channel(data[0]);
                     this.activeChannels[channel.getName()]=channel;
-                    return channel.connect();
+                    return channel.connect(data[1]);
                 }.bind(this));
 
                 Promise.all(fetchChannels).then(function(result){

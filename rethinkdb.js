@@ -15,7 +15,8 @@ class RethinkDB{
     *   The StreamNameMapTable will hold all id and the appertaining stream name.
     *   The id and the analyze type of a stream table will be separated through the last '_'.
     *   For instance:
-    *       <id>_<analyzeType> : gkejwh-3h3-3hweh-ehekhj_msgPerTime
+    *       <id>_<analyzeType>
+     *      gkejwh-3h3-3hweh-ehekhj_msgPerTime
     *
     * This class contains the methods:
     *   constructor(channelName,streamName): Creates the class RethinkDB and initialize the class variables.
@@ -30,6 +31,10 @@ class RethinkDB{
     *   writeData(type,data): This function sends the data to the database of the channel
     *
     *   readData(): This function reads data of the database from this channel
+    *
+    *   getStreamID(): This function will return the id of the current stream
+    *
+    *   close(): This function will close the connection to the rethinkDB
     * */
     constructor(channelName,streamName){
         this.channelName=channelName;
@@ -39,36 +44,6 @@ class RethinkDB{
         this.currentStreamTable="";
         this.connected=false;
     }
-
-    //connect(streamName){
-    //    this.streamName=streamName;
-    //    r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT},(err,result)=>{
-    //        this.con=result;
-    //        r.dbList().run(this.con,(err,result)=>{
-    //            new Promise((resolve,reject)=>{
-    //                if(result.indexOf(this.channelName)===-1){
-    //                    r.dbCreate(this.channelName).run(this.con,(err,result)=>{
-    //                        if(err){
-    //                            reject(err);
-    //                        }
-    //                        resolve(0);
-    //                    })
-    //                }else{
-    //                    this.con.use(this.channelName);
-    //                    resolve(0);
-    //                }
-    //            }).then((result)=> {
-    //                    //this.createStreamNameMapTable(this.streamName,this.createNewStreamTable2.bind(this))
-    //                    this.createStreamNameMapTable2(this.streamName);
-    //                }
-    //            ).catch((err)=>{
-    //                    console.log("Error by the creation of a database:\n"+err);
-    //                })
-//
-    //        })
-    //    });
-//
-    //}
 
     connect(streamName){
         /*
@@ -80,7 +55,7 @@ class RethinkDB{
         *   streamName: The name of the currentStream.
         * */
         this.streamName=streamName;
-
+        console.log("Connection to rethinkdb started")
         // Connect to the rethinkDB
         r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT})
         .then((result)=>{
@@ -106,80 +81,6 @@ class RethinkDB{
                 console.log(err);
             })
     }
-
-    //createNewStreamTable(streamName){
-    //    console.log("Print")
-    //    streamName=streamName+"";
-//
-    //    new Promise((resolve,reject)=>{
-    //        r.table("StreamNameMap").getAll(streamName,{index:'streamTitle'}).run(this.con,(err,result)=>{
-    //            if(err){
-    //                reject([0,err]);
-    //            }
-    //            result.toArray((err,result)=>{
-//
-    //                if(result.length===0){
-    //                    r.table("StreamNameMap").insert({
-    //                        streamTitle:streamName,
-    //                        date:Date.now()
-    //                    }).run(this.con,(err,result)=>{
-    //                        if(err){
-    //                            console.log(err)
-    //                        }
-    //                        this.streamID=result.generated_keys[0];
-    //                        resolve(0);
-    //                    })
-    //                }else{
-    //                    this.streamID=result[0].id;
-    //                    resolve(0);
-    //                }
-    //            });
-//
-    //        })
-//
-    //    }).then((result)=>{
-    //            this.streamID=this.streamID.replace(/-/g,'_');
-    //            let tableNames = ['fractal', 'msgPerTime','raw'];
-//
-    //            const createNewStreamTables=tableNames.map((tableName)=>{
-    //                console.log("Create Table")
-    //                return new Promise((resolve,reject)=>{
-//
-    //                    r.db(this.channelName).tableList().run(this.con,(err,result)=>{
-//
-    //                        if(err){
-    //                            reject([0,err]);
-    //                        }
-//
-    //                        if(result.indexOf(this.streamID+"_"+tableName)===-1){
-//
-    //                            r.db(this.channelName).tableCreate(this.streamID+"_"+tableName).run(this.con,(err,result)=>{
-//
-    //                                if(err){
-    //                                    reject([1,err]);
-    //                                }
-//
-    //                                this.streamName=streamName;
-    //                                resolve(0);
-    //                            })
-    //                        }else{
-    //                            this.streamName=streamName;
-    //                            resolve(0);
-    //                        }
-    //                    })
-//
-    //            }).catch((err)=>{
-    //            console.log("Error"+err)
-    //        })
-    //            })
-    //            Promise.all(createNewStreamTables).then((result)=>{
-    //                this.connected=true;
-    //            }).catch();
-    //        }).catch((err)=>{
-    //            console.log(err)
-    //        });
-//
-    //}
 
     createNewStreamTable(streamName){
         /*
@@ -234,7 +135,7 @@ class RethinkDB{
 
                 /*For each element of the list, a Promis is being created.*/
                 const createNewStreamTables=tableNames.map((tableName)=>{
-                    console.log("Create Table")
+
                     return new Promise((resolve,reject)=>{
 
                         /*Request of a list of all tables*/
@@ -242,32 +143,29 @@ class RethinkDB{
                             .then((result)=>{
                                 /*Check if table already exist*/
                                 if(result.indexOf(this.streamID+"_"+tableName)===-1){
-
                                     /*Creation of the table with the name <streamID>_<analyzeType>*/
                                     return r.db(this.channelName).tableCreate(this.streamID+"_"+tableName).run(this.con)
                                 }else{
                                     this.streamName=streamName;
-                                    Promise.resolve(null);
+                                    return Promise.resolve(null);
                                 }
                             })
                             .then((result)=>{
-                                return Promise.resolve(0);
+                                return resolve(0);
                             })
                             .catch((err)=>{
                                 console.log("Error"+err)
                             })
+                    })
                 })
-            })
 
                 /*All Promises in the list 'createNewStreamTables' are executed.*/
-                Promise.all(createNewStreamTables).then((result)=>{
+                return Promise.all(createNewStreamTables);
 
-                    /*Now it is possible to read and write from/to the database*/
-                    this.connected=true;
-                }).catch((err)=>{
-                    console.log(err);
-                });
+            }).then((result)=>{
 
+                /*Now it is possible to read and write from/to the database*/
+                this.connected=true;
             }).catch((err)=>{
                 console.log(err);
             });
@@ -275,46 +173,6 @@ class RethinkDB{
 
 
     }
-
-    //createStreamNameMapTable(streamName,callback){
-//
-    //        this.con.use(this.channelName);
-//
-    //        r.db(this.channelName).tableList().run(this.con,(err,result)=>{
-    //            if(err){
-    //                console.log("Error by the request of a list of tables: "+err);
-    //                return;
-    //            }
-//
-    //            if(result.indexOf("StreamNameMap")===-1){
-    //                r.db(this.channelName).tableCreate("StreamNameMap").run(this.con,(err,result)=>{
-    //                    if(err){
-    //                        console.log("Error by the creation of the StreamNameMapTable of the channel "
-    //                            +this.channelName+": \n"+err);
-    //                        return;
-    //                    }
-    //                    r.table('StreamNameMap').indexCreate('streamTitle').run(this.con,(err,result)=>{
-    //                        if(err){
-    //                            console.log('Error by creation of the index "streamTitle": \n'+err);
-    //                            return;
-    //                        }
-    //                        r.table('StreamNameMap').indexWait('streamTitle').run(this.con,(err,result)=>{
-    //                            if(err){
-    //                                console.log(err);
-    //                                return;
-    //                            }
-    //                            callback(streamName)
-    //                        })
-//
-    //                        //callback(streamName);
-    //                })});
-//
-    //            }else{
-    //                callback(streamName);
-    //            }
-    //        })
-//
-    //}
 
     createStreamNameMapTable(streamName){
         /*
@@ -355,7 +213,6 @@ class RethinkDB{
         })
             .then((result)=>{
                 if(result!==null) {
-
                     /*This promise will be resolved if the secondary index is ready to use.*/
                     return r.table('StreamNameMap').indexWait('streamTitle').run(this.con)
                 }else{
@@ -382,9 +239,8 @@ class RethinkDB{
             id:new Date(),
             timestamp:new Date(),
             data:data
-        }).run(this.con,(err,result)=>{
+        }).run(this.con).then().catch((err)=>{
             console.log(err);
-            console.log(result);
         })
     }
 
@@ -408,6 +264,10 @@ class RethinkDB{
         return this.connected;
     }
 
+    getStreamID(){
+        return this.streamID;
+    }
+
     close(){
         /*This function will close the connection to the rethinkDB 5 seconds after the call.*/
         if(!this.connected){
@@ -421,5 +281,24 @@ class RethinkDB{
     }
 
 }
+
+//function changeFeed(){
+//    let con;
+//    r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT}).then((result)=>{
+//
+//        con=result;
+//        con.use('fragbitelive');    //Channel
+//        return r.table('07477ea8_a987_453a_b493_b34c1b4dd6d6_raw').changes().run(con);  //TabelID
+//    }).then((cursor)=>{ //Der Cursoer ist ein Stream der durchgehen daten sendet
+//        cursor.on('data',(data)=>{  //Data enthält ein Json-Object mit new_Value und old_Value wenn daten geupdatet werden
+//            // dann sind im new_value die neuen und im old_value die alten. Bei uns wird aber
+//            // nur eingefügt also ist old_value null und new_value enthält die daten
+//            console.log(data)
+//        })
+//        //cursor.each(console.log);
+//    }).catch((err)=>{
+//        console.log("changeFeed: \n"+err)
+//    })
+//}
 
 exports.RethinkDB=RethinkDB;
