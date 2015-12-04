@@ -8,7 +8,7 @@ let mpt = require('./msgPerTime.js');
 let ept = require('./emotionPerTime.js');
 
 let emotions = [];
-fs.readFile('emotions.json','utf-8',function(err,data){
+fs.readFile('jsonemotions.json','utf-8',function(err,data){
     if (err) {
 		throw err; 
 	}

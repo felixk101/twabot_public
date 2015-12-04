@@ -4,9 +4,9 @@
 const NICK = 'hochschuleaugsburg';
 const PASS = 'oauth:lhq4ad0tqxgkxu9kxbo65jtpppqm47';
 
-const DBHOST='192.168.56.102';
+const DBHOST='141.82.57.19';
 const DBPORT='28015';
-const DBACTIVE=false;
+const DBACTIVE=true;
 
 exports.NICK=NICK;
 exports.PASS=PASS;

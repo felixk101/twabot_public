@@ -21,7 +21,7 @@ class ChannelCrawler{
         this.viewerLimit=15000;
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels=[];
-        this.channelLimit=50
+        this.channelLimit=50;
     }
     getChannels(offset) {
         /*This function creates a GET-Request to the address url with the arguments limit and offset.
@@ -63,7 +63,6 @@ class ChannelCrawler{
                 }.bind(this));
 
                 Promise.all(fetchChannels).then(function(result){
-
                     resolve(viewerCount);
 
                 }).catch(function (err) {
@@ -73,12 +72,6 @@ class ChannelCrawler{
 
             }.bind(this));
         }.bind(this))
-    }
-    getChannelCount(){
-        request({url: 'https://api.twitch.tv/kraken/streams/', json: true}, function (err, response, body) {
-                console.log(body.streams[0].viewers);
-                let channelCount = parseInt(body.channels);}
-        );
     }
 
     * registerChannels(offset) {
@@ -90,7 +83,6 @@ class ChannelCrawler{
     yield setTimeout(function(){
         this.getChannels(offset).then(function(result){
             if(result>this.viewerLimit) {
-
                 console.log("Channel kraken cooldown. Streams: "+this.activeChannels.length);
                 this.registerChannels(offset+this.channelLimit).next();
             }else{
@@ -109,7 +101,7 @@ class ChannelCrawler{
 
 }
 let crawler=new ChannelCrawler();
-crawler.registerChannels(2000).next()
+crawler.registerChannels(0).next()
 exports.ChannelCrawler=ChannelCrawler;
 
 
