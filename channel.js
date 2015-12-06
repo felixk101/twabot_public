@@ -15,7 +15,10 @@ class Channel{
         this.name=name;
         this.rethinkDB=new db.RethinkDB(name);
         this.analyser=new analyzer.Analyzer(this.name,this.rethinkDB);
+        this.logo;
+        this.viewer;
         this.client;
+        this.gotUpdated=false;
     }
 
     isOnline(){
@@ -130,7 +133,7 @@ class Channel{
         return (date.getUTCDate() + '.' + date.getUTCMonth() + '.' + date.getUTCFullYear() + ';' + date.getUTCHours() +
         ':' + date.getUTCMinutes() + ':' + date.getUTCSeconds() + ':' + date.getUTCMilliseconds());
     }
-    getName(){
+    getChannelName(){
         return this.name;
     }
 

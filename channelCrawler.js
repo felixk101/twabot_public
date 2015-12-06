@@ -20,8 +20,10 @@ class ChannelCrawler{
     constructor(){
         this.viewerLimit=15000;
         this.url='https://api.twitch.tv/kraken/streams';
-        this.activeChannels=[];
+        this.activeChannels={};
+        this.newChannelList=[];
         this.channelLimit=50;
+        this.crawlerActive=false;
     }
     getChannels(offset) {
         /*This function creates a GET-Request to the address url with the arguments limit and offset.
@@ -43,7 +45,7 @@ class ChannelCrawler{
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
-                    //console.log(body.streams[x].channel.status);
+                    console.log(body.streams[x]);
                     if(viewerCount===-1){
                         viewerCount=parseInt(body.streams[x].viewers);
                     }else if(parseInt(body.streams[x].viewers)<viewerCount){
@@ -53,12 +55,15 @@ class ChannelCrawler{
                     if(!(body.streams[x].channel.name in this.activeChannels)) {
                         newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status]);
                     }
+                    //if(this.newChannelList.indexOf(body.streams[x].channel.name)===-1){
+                    //    this.newChannelList.push(body.streams[x].channel.name);
+                    //}
 
                 }
 
                 let fetchChannels=newChannels.map(function(data){
                     let channel=new Channel.Channel(data[0]);
-                    this.activeChannels[channel.getName()]=channel;
+                    this.activeChannels[channel.getChannelName()]=channel;
                     return channel.connect(data[1]);
                 }.bind(this));
 
@@ -83,25 +88,44 @@ class ChannelCrawler{
     yield setTimeout(function(){
         this.getChannels(offset).then(function(result){
             if(result>this.viewerLimit) {
-                console.log("Channel kraken cooldown. Streams: "+this.activeChannels.length);
+                console.log("Channel crawler cooldown. Streams: "+this.activeChannels.length);
                 this.registerChannels(offset+this.channelLimit).next();
             }else{
-                console.log("Channel kraken ends.Streams: "+this.activeChannels.length);
-
+                console.log("Channel crawler ends.Streams: "+this.activeChannels.size);
+                this.crawlerActive=false;
 
             }
 
         }.bind(this)).catch(function(err){
             console.log("Promise error: "+err)
+
         });
 
     }.bind(this),31000)
 }
+    startCrawler(){
+        if(this.crawlerActive===false){
+            this.crawlerActive=true;
+            registerChannels(0).next()
 
+
+        }else{
+            console.log('Crawler already active');
+        }
+
+    }
+
+    getActiveChannelsDC(){
+        return JSON.parse(JSON.stringify(this.activeChannels));
+    }
+
+    deleteChannel(name){
+        delete this.activeChannels[name];
+    }
 
 }
-let crawler=new ChannelCrawler();
-crawler.registerChannels(0).next()
+//let crawler=new ChannelCrawler();
+//crawler.registerChannels(0).next()
 exports.ChannelCrawler=ChannelCrawler;
 
 

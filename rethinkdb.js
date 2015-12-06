@@ -243,7 +243,7 @@ class RethinkDB{
             console.log(err);
         })
     }
-    
+
     readData(type,id){
         /*This function will return a Promise with the content of the table <id>_<type>.
         * If the argument id is undefined it will use the streamID of the channel.
