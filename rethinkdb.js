@@ -243,21 +243,36 @@ class RethinkDB{
             console.log(err);
         })
     }
+    
+    readData(type,id){
+        /*This function will return a Promise with the content of the table <id>_<type>.
+        * If the argument id is undefined it will use the streamID of the channel.
+        * params:
+        *   type: The type of analyze.
+        *   id(optional): The id of the list*/
+        return new Promise((resolve,reject)=>{
+            //If the rethinkDB isn't connected, the function will return.
+            if(!this.connected){
+                reject('RethinkDB server is not connected');
+            }
+            //If the argument id isn't set, the id will be using the streamID
+            if(id===undefined){
+                id=this.streamID;
+            }
+            //Returns the conten of the table <id>_<type>;
+            r.table(id+'_'+type).run(this.con).then((result)=> {
+                return result.toArray();
+            }).then((result)=>{
 
-    readData(){
-        /*work in progress, dont use*/
-        if(!this.connected){
-            return;
-        }
-        r.table(this.streamID+"_raw").run(this.con,(err,cursor)=>{
-            console.log(err);
-            cursor.toArray((err,result)=>{
-                if(err){
-                    throw err;
-                }
-                console.log(JSON.stringify(result,null,5))
-            })
-        })
+               resolve(JSON.stringify(result,null,5));
+                //;return JSON.stringify(result,null,5);
+            }).catch((err)=>{
+                reject(err);
+                //console.log(err);
+            });
+        });
+
+
     }
 
     isConnected(){
