@@ -1,169 +1,197 @@
 "use strict";
 
-function draw() {
-    let canvases = [
-        "canvasActiveChannel1",
-        "canvasActiveChannel2",
-        "canvasActiveChannel3",
-        "canvasActiveChannel4",
-        "canvasActiveChannel5",
-        "canvasActiveChannel6",
-        "canvasEmotionChannel1",
-        "canvasEmotionChannel2",
-        "canvasEmotionChannel3",
-        "canvasEmotionChannel4",
-        "canvasEmotionChannel5",
-        "canvasEmotionChannel6",
-        "canvasOverall"
-    ];
+let Chart = require('chart.js');
 
-    canvases.forEach(canvas => createThumbnail(canvas, "channelName"));
-}
+exports.createThumbnail = function createThumbnail(canvas, channel){
+    let ctx = canvas.getContext("2d");
 
-function createThumbnail(canvas, channel){
-    let can = document.getElementById(canvas);
-    let ctx = can.getContext("2d");
-    let height = can.height;
-    let width = can.width;
+    let transformOptionsPrototyp = {
+        scaleX: 1,
+        scaleY: 1,
+        translateX: 0,
+        translateY: 0,
+        width: canvas.width,
+        height: canvas.height,
+        setScale: function(x,y){
+            this.scaleX = x;
+            this.scaleY = y;
+        },
+        /**
+         * Translation is relative to the width and heigth.
+         * Example: Width is 300, x is 2/3 => the drawing starts at 200
+         * @param x
+         * @param y
+         */
+        setTranslation: function(x,y){
+            this.translateX = x;
+            this.translateY = y;
+        },
+        apply: function(ctx){
+            ctx.scale(this.scaleX, this.scaleY);
+            ctx.translate(this.translateX * this.width / this.scaleX,
+                this.translateY * this.height / this.scaleY);
+        }
+    };
 
-    // Thumbnail
+    // Logo
     ctx.save();
-    ctx.scale(2/3,2/3);
-    drawChannelThumb(channel, ctx, width, height);
+    let options = Object.create(transformOptionsPrototyp);
+    options.setScale(2/3, 2/3);
+    drawChannelLogo(channel.logo, ctx, options);
     ctx.restore();
 
     // Fractal
     ctx.save();
-    ctx.scale(1/3,1/3); // The fractal is 1/3 of the complete canvas size
-    ctx.translate(2/3*width*3,0); // position *  width * scalefactor
-    drawFractal(channel, ctx, width, height);
+    options = Object.create(transformOptionsPrototyp);
+    options.setScale(1/3, 1/3); // The fractal is 1/3 of the complete canvas size
+    options.setTranslation(2/3, 0); // Tho position relative to the size
+    drawFractal(channel.name, ctx, options);
     ctx.restore();
 
     // Diagram1 // for calculation look at //Fractal
     ctx.save();
-    ctx.scale(1/3,1/3);
-    ctx.translate(2/3*width*3,1/3*height*3);
-    drawDiagram1(channel, ctx, width, height);
+    options = Object.create(transformOptionsPrototyp);
+    options.setScale(1/3, 1/3);
+    options.setTranslation(2/3, 1/3);
+    drawDiagram1(channel.name, ctx, options);
     ctx.restore();
 
     // Diagram2 // for calculation look at //Fractal
     ctx.save();
-    ctx.scale(1/3,1/3);
-    ctx.translate(0,2/3*height*3);
-    drawDiagram2(channel, ctx, width, height);
+    options = Object.create(transformOptionsPrototyp);
+    options.setScale(1/3, 1/3);
+    options.setTranslation(0, 2/3);
+    drawDiagram2(channel.name, ctx, options);
     ctx.restore();
 
     // Diagram3 // for calculation look at //Fractal
     ctx.save();
-    ctx.scale(1/3,1/3);
-    ctx.translate(1/3*width*3,2/3*height*3);
-    drawDiagram3(channel, ctx, width, height);
+    options = Object.create(transformOptionsPrototyp);
+    options.setScale(1/3, 1/3);
+    options.setTranslation(1/3, 2/3);
+    drawDiagram3(channel.name, ctx, options);
     ctx.restore();
 
     // Diagram4 // for calculation look at //Fractal
     ctx.save();
-    ctx.scale(1/3,1/3);
-    ctx.translate(2/3*width*3,2/3*height*3);
-    drawDiagram4(channel, ctx, width, height);
+    options = Object.create(transformOptionsPrototyp);
+    options.setScale(1/3,1/3);
+    options.setTranslation(2/3, 2/3);
+    drawDiagram4(channel.name, ctx, options);
     ctx.restore();
-}
+};
 
 
-function drawChannelThumb(channelName, ctx, width, height){
+function drawChannelLogo(channelLogo, ctx, options){
     // Dummy
-    let img = getThumbnail(channelName);
+    let img = getThumbnail(channelLogo);
     img.addEventListener("load", function(){
         ctx.save();
-        ctx.scale(2/3,2/3);
-        ctx.drawImage(img, 0,0,width,height);
+        options.apply(ctx);
+        ctx.drawImage(img, 0, 0, options.width, options.height);
         ctx.restore();
     },false);
 }
 
-function drawFractal(channelName, ctx, width, height){
+function drawFractal(channelName, ctx, options){
     // Dummy
+    ctx.save();
+    options.apply(ctx);
     ctx.fillStyle = "red";
-    ctx.fillRect(0,0,width, height);
+    ctx.fillRect(0,0,options.width, options.height);
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillText(channelName,10,10);
+    ctx.restore();
 }
 
-function drawDiagram1(channelName, ctx, width, height){
+function drawDiagram1(channelName, ctx, options){
+    ctx.save();
+    options.apply(ctx);
     let data = getEmotions(channelName);
     
     // Building a new Canvas for the Diagramm
     let diagramCanvas = document.createElement("canvas");
-    diagramCanvas.height = height;
-    diagramCanvas.width = width;
-    document.body.appendChild(diagramCanvas);
+    diagramCanvas.height = options.height;
+    diagramCanvas.width = options.width;
+    document.body.appendChild(diagramCanvas); // some DOM action for applying width and heigth
     let newCtx = diagramCanvas.getContext("2d");
 
     // Build the chart
-    let options = {
+    let chartOptions = {
         scaleShowGridLines: false,
         scaleShowLabels:false,
         scaleFontSize:0,
         animation: false,
         responsive: true
     };
-    let chart = new Chart(newCtx).Bar(data, options);
+    let chart = new Chart(newCtx).Bar(data, chartOptions);
     // Set the barcolors
-    let dataColors= ["blue","green","yellow","orange","red"]; // in getData unterbringen
+    let dataColors= ["blue","green","yellow","orange","red"];    // in getData unterbringen
     for (let i=0; i<chart.datasets[0].bars.length; i++){
         chart.datasets[0].bars[i].fillColor = dataColors[i];
     }
     chart.update();
 
     // Draw the diagram and hide the diagram canvas
-    ctx.drawImage(diagramCanvas, 0, 0, width,height);
+    ctx.drawImage(diagramCanvas, 0, 0, options.width, options.height);
     diagramCanvas.style.display = "none";
+    ctx.restore();
 }
 
-function drawDiagram2(channelName, ctx, width, height){
+function drawDiagram2(channelName, ctx, options){
+    ctx.save();
+    options.apply(ctx);
     let data = getEmotions(channelName);
 
     // Building a new Canvas for the Diagramm
     let diagramCanvas = document.createElement("canvas");
-    diagramCanvas.height = height;
-    diagramCanvas.width = width;
+    diagramCanvas.height = options.height;
+    diagramCanvas.width = options.width;
     document.body.appendChild(diagramCanvas);
     let newCtx = diagramCanvas.getContext("2d");
 
     // Build the chart
-    let options = {
+    let chartOptions = {
         scaleShowLine: false,
         scaleShowLabels:false,
         scaleFontSize:0,
         animation: false,
         responsive: true
     };
-    let chart = new Chart(newCtx).Radar(data, options);
+    let chart = new Chart(newCtx).Radar(data, chartOptions);
 
     // Draw the diagram and hide the diagram canvas
-    ctx.drawImage(diagramCanvas, 0, 0, width,height);
+    ctx.drawImage(diagramCanvas, 0, 0, options.width, options.height);
     diagramCanvas.style.display = "none";
+    ctx.restore();
 }
 
-function drawDiagram3(channelName, ctx, width, height){
+function drawDiagram3(channelName, ctx, options){
     // Dummy
+    ctx.save();
+    options.apply(ctx);
     ctx.fillStyle = "green";
-    ctx.fillRect(0,0,width, height);
+    ctx.fillRect(0, 0, options.width, options.height);
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillText(channelName,10,10);
+    ctx.restore();
 }
 
-function drawDiagram4(channelName, ctx, width, height){
+function drawDiagram4(channelName, ctx, options){
     // Dummy
+    ctx.save();
+    options.apply(ctx);
     ctx.fillStyle = "grey";
-    ctx.fillRect(0,0,width, height);
+    ctx.fillRect(0, 0, options.width, options.height);
     ctx.fillStyle = "rgb(0,0,0)";
     ctx.fillText(channelName,10,10);
+    ctx.restore();
 }
 
 
-function getThumbnail(channelName){
+function getThumbnail(channelLogo){
     let img = new Image();
-    img.src = 'http://static-cdn.jtvnw.net/jtv_user_pictures/reninsane-profile_image-c515f7b046929d1b-300x300.png';
+    img.src = channelLogo;
     return img;
 }
 

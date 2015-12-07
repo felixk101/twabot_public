@@ -1,0 +1,16 @@
+{
+  "name": "twabot",
+  "version": "1.0.0",
+  "description": "Application for analysing the chatrooms of the streaming plattform Twitch",
+  "main": "app.js",
+  "author": "Andreas Wundlechner",
+  "dependencies": {
+    "vue": "^1.0.10",
+    "bootstrap": "^3.3.6",
+    "express": "^4.13.3",
+    "chart.js": "^1.0.2"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13"
+  }
+}
