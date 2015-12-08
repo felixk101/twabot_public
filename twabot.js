@@ -35,10 +35,11 @@ class Twabot{
                 request({url: url + '?limit='+50+'&offset=' + x*50, json: true},(err,response,body)=>{
                     if(err){
                         reject(err);
+                        return;
                     }
                     for(let x=0;x<50;x++){
                         let chan=this.channelCrawler.activeChannels[body.streams[x].channel.name];
-                        if(chat!==undefined){
+                        if(typeof chat!== "undefined"){
                             chan.logo=body.streams[x].channel.logo;
                             chan.viewer=body.streams[x].viewers;
                             chan.gotUpdated=true;
@@ -59,8 +60,10 @@ class Twabot{
                 }
             }
             for(let x in deleteList){
+                this.channelCrawler.closeChannel(deleteList[x]);
                 this.channelCrawler.deleteChannel(deleteList[x]);
             }
+
         }).catch((err)=>{
             console.log(err);
         })

@@ -43,6 +43,7 @@ class Channel{
 
             if(err){
                 reject(err)
+                return;
             }else{
                 resolve(1)
             }

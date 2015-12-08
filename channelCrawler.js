@@ -73,6 +73,7 @@ class ChannelCrawler{
                 }).catch(function (err) {
                     //console.log("Test");
                     reject(err);
+                    return;
                 });
 
             }.bind(this));
@@ -121,6 +122,10 @@ class ChannelCrawler{
 
     deleteChannel(name){
         delete this.activeChannels[name];
+    }
+
+    closeChannel(name){
+        this.activeChannels[name].closeChat();
     }
 
 }

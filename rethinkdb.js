@@ -63,7 +63,8 @@ class RethinkDB{
                 this.con=result;
                 /*A list of all databases is requested to check if the database of the channel is existing*/
                 return r.dbList().run(this.con);
-            }).then((result)=>{
+            })
+        .then((result)=>{
 
                 /*If the database don't exist, result.indexOf(this.channelName) will be returning -1.*/
                 if(result.indexOf(this.channelName)===-1){
@@ -254,6 +255,7 @@ class RethinkDB{
             //If the rethinkDB isn't connected, the function will return.
             if(!this.connected){
                 reject('RethinkDB server is not connected');
+                return;
             }
             //If the argument id isn't set, the id will be using the streamID
             if(id===undefined){
@@ -268,6 +270,7 @@ class RethinkDB{
                 //;return JSON.stringify(result,null,5);
             }).catch((err)=>{
                 reject(err);
+                return;
                 //console.log(err);
             });
         });
