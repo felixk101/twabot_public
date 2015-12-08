@@ -1,0 +1,78 @@
+{
+  "activeChannels": [
+    {
+      "name": 'gronkhtv',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/gronkhtv-profile_image-9883ecc1f767f4ff-300x300.png',
+      "viewercount": 1000,
+      "streamid": '19083275'
+    },
+    {
+      "name": 'peterle',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/peterle-profile_image-61cad7802f03f0fc-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'ichzockehiernur',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/ichzockehiernur-profile_image-ac4297b139631941-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'cartmanzbs',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/cartmanzbs-profile_image-75eb906ef03865c6-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'nomadtv',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/nomadtv-profile_image-1d66198249ba36a6-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'starladder_hs-ru',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/starladder_hs_ru-profile_image-0d713d4a3d9189c5-300x300.png',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    }
+  ],
+  "emotionChannels": [
+    {
+      "name": 'gronkhtv',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/gronkhtv-profile_image-9883ecc1f767f4ff-300x300.png',
+      "viewercount": 1000,
+      "streamid": '19083275'
+    },
+    {
+      "name": 'peterle',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/peterle-profile_image-61cad7802f03f0fc-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'ichzockehiernur',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/ichzockehiernur-profile_image-ac4297b139631941-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'cartmanzbs',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/cartmanzbs-profile_image-75eb906ef03865c6-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'nomadtv',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/nomadtv-profile_image-1d66198249ba36a6-300x300.jpeg',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    },
+    {
+      "name": 'starladder_hs-ru',
+      "logo": 'http://static-cdn.jtvnw.net/jtv_user_pictures/starladder_hs_ru-profile_image-0d713d4a3d9189c5-300x300.png',
+      "viewercount": 1000,
+      "streamid": '1290384756'
+    }
+  ]
+}
