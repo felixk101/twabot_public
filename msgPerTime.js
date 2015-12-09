@@ -19,8 +19,6 @@ class Analyzer{
 		this.periodEnd=Date.now() + periodLength;
 		this.counter = 0
 	
-
-	
 		//schedule output
 		//		//setInterval(function(){
 		//	console.log(self.analysis(),'words per second');
@@ -44,7 +42,7 @@ class Analyzer{
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.counter += 1;
 		} else {
-			//should not be possible!!!
+			//should not be possible!!! @TODO figure out why this happens anyway
 			if (timeStamp > this.periodEnd) {
 				console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
 			} else {
@@ -54,9 +52,9 @@ class Analyzer{
 		
 	}
 	pushAnalysis() {
-		//replace this with a database push
-		//console.log('msgperTime:',this.counter,'messages in last period for channel',this.channelName);
+		this.rethinkDB.writeData('msgPerTime',this.counter);
 	}
+
 	analysis() {
 		//find the average words per second
 		return this.counter * 1000/periodLength;

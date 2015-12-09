@@ -104,7 +104,7 @@ function connectToChat(options,chan) {
 		});
 
 		client.on('end', function () {
-			console.log('Disconectd');
+			console.log('Disconnected');
 		});
 	});
 }
