@@ -10,9 +10,10 @@ let ept = require('./emotionPerTime.js');
 let emotions = [];
 fs.readFile('jsonemotions.json','utf-8',function(err,data){
     if (err) {
-		throw err; 
+		throw err;
 	}
 	emotions = JSON.parse(data);
+
 });
 
 class Analyzer{
@@ -43,8 +44,8 @@ class Analyzer{
 
             this.rethinkDB.writeData('raw',rawData);
             
-			//setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
-			//setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
         }
     }
 

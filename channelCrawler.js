@@ -106,7 +106,7 @@ class ChannelCrawler{
     startCrawler(){
         if(this.crawlerActive===false){
             this.crawlerActive=true;
-            registerChannels(0).next()
+            this.registerChannels(0).next()
 
 
         }else{

@@ -44,7 +44,7 @@ class Analyzer{
 			self.pushAnalysis();
 			self.periodStart = Date.now();
 			self.periodEnd = self.periodStart + periodLength;
-			self.emotion = self.startemotion;
+			self.emotion = JSON.parse(JSON.stringify(self.startemotion))
 			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
 		}, periodLength);
 		
@@ -65,13 +65,15 @@ class Analyzer{
 	pushAnalysis() {
 		//replace this with a database push
 		if (equal(this.emotion,this.startemotion)) {
-			console.log(this.emotion,'has zeroes everyhwere for channel',this.channelName);
-			
+			//no emotions detected
 		} else {
-			console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+			//at least one emotion detected
+			//console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 		}
+		//we should update the data either way
+		this.rethinkDB.writeData('fractal',this.emotion);
 	}
-	
+
 	analyzeEmotions(message) {
 		let substrings = Object.keys(jsonfile);
 		substrings.map((substring) => {
