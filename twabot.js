@@ -3,7 +3,7 @@
  * Created by Lukas on 17.11.2015.
  */
 const ChannelCrawler=require('./channelCrawler.js');
-const request=requie('request');
+const request=require('request');
 const credentials=require('./credentials.js');
 
 class Twabot{

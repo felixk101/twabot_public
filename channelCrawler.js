@@ -18,7 +18,7 @@ var url='https://api.twitch.tv/kraken/streams';
 
 class ChannelCrawler{
     constructor(){
-        this.viewerLimit=15000;
+        this.viewerLimit=250;
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels={};
         this.newChannelList=[];
@@ -45,7 +45,7 @@ class ChannelCrawler{
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
-                    console.log(body.streams[x]);
+                    //console.log(body.streams[x],'\n');
                     if(viewerCount===-1){
                         viewerCount=parseInt(body.streams[x].viewers);
                     }else if(parseInt(body.streams[x].viewers)<viewerCount){
@@ -107,7 +107,7 @@ class ChannelCrawler{
     startCrawler(){
         if(this.crawlerActive===false){
             this.crawlerActive=true;
-            registerChannels(0).next()
+            this.registerChannels(0).next()
 
 
         }else{
