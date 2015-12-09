@@ -131,7 +131,7 @@ class RethinkDB{
                 }
                 this.streamID=this.streamID.replace(/-/g,'_');
                 /*The list of available analyze types.*/
-                let tableNames = ['fractal', 'msgPerTime','raw'];
+                let tableNames = ['fractal', 'fallingEmotions', 'msgPerTime','raw'];
 
                 /*For each element of the list, a Promis is being created.*/
                 const createNewStreamTables=tableNames.map((tableName)=>{

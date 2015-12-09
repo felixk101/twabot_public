@@ -53,7 +53,7 @@ class Twabot{
             for(let x in this.channelCrawler.activeChannels){
                 if(x.gotUpdated===false){
                     x.closeChat();
-                    delteList.push(x.name);
+                    deleteList.push(x.name);
                 }else{
                     x.gotUpdated=false;
                 }

@@ -1,0 +1,113 @@
+{
+	"BibleThump": 
+	{
+		"sad": {"confidence":100, "strength":100},
+		"canBeChanged": false
+	},
+	":)":
+	{
+		"happy": {"confidence":100, "strength":60},
+		"canBeChanged": false
+	},
+	":(":
+	{
+		"sad": {"confidence":100, "strength":40},
+		"canBeChanged": false
+	},
+	":D":
+	{
+		"happy": {"confidence":100, "strength":95},
+		"canBeChanged": false
+	},
+	":O":
+	{
+		"surprised": {"confidence":100, "strength":80},
+		"canBeChanged": false
+	},
+	":P":
+	{
+		"happy": {"confidence":100, "strength":20},
+		"amused": {"confidence":100, "strength":50},
+		"canBeChanged": false
+	},
+	"^^":
+	{
+		"happy": {"confidence":100, "strength":50},
+		"amused": {"confidence":100, "strength":30},
+		"canBeChanged": false
+	},
+	":'(":
+	{
+		"sad": {"confidence":100, "strength":50},
+		"canBeChanged": false
+	},
+	"<3":
+	{
+		"loving":{"confidence":100, "strength":75},
+		"canBeChanged": false
+	},
+	"Kappa":
+	{
+		"provoking": {"confidence":100, "strength":100},
+		"amused": {"confidence":100},
+		"canBeChanged": false
+	},
+	"DansGame":
+	{
+		"surprised": {"confidence":60, "strength":40},
+		"embarassed": {"confidence":60, "strength":40},
+		"provoking": {"confidence":80, "strength":90},
+		"canBeChanged": false
+	},
+	"ResidentSleeper":
+	{
+		"bored": {"confidence":100, "strength":100},
+		"annoyed": {"confidence":100, "strength":90},
+		"canBeChanged": false
+	},
+	"TriHard":
+	{
+		"excited": {"confidence":80, "strength":60},
+		"happy": {"confidence":50, "strength":30},
+		"provoking": {"confidence":40, "strength":40},
+		"canBeChanged": false
+	},
+	"HeyGuys":
+	{
+		"happy": {"confidence":90, "strength": 90},
+		"loving": {"confidence":70, "strength": 30},
+		"canBeChanged": false
+	},
+	"SwiftRage":
+	{
+		"rage": {"confidence":100, "strength": 100},
+		"annoyed": {"confidence":95, "strength": 50},
+		"canBeChanged": false
+	},
+	"OpieOP":
+	{
+		"embarassed": {"confidence":100, "strength":60},
+		"amused": {"confidence":50, "strength":20},
+		"provoking": {"confidence":90, "strength":70},
+		"canBeChanged": false
+	},
+	"FailFish":
+	{
+		"embarassed": {"confidence":100, "strength":90},
+		"annoyed": {"confidence":95, "strength":40},
+		"amused": {"confidence":80, "strength":25},
+		"canBeChanged": false
+	},
+	"FrankerZ":
+	{
+		"loving": {"confidence":25, "strength":10},
+		"canBeChanged": true
+	},
+	"PogChamp":
+	{
+		"surprised": {"confidence":100, "strength":100},
+		"amused": {"confidence":95, "strength":40},
+		"provoking": {"confidence":20, "strength":25},
+		"canBeChanged": false
+	}
+}
