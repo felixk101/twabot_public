@@ -45,7 +45,7 @@ class ChannelCrawler{
                 let newChannels=[]
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
-                    //console.log(body.streams[x],'\n');
+                    //console.log(body.streams[x]);
                     if(viewerCount===-1){
                         viewerCount=parseInt(body.streams[x].viewers);
                     }else if(parseInt(body.streams[x].viewers)<viewerCount){
@@ -53,7 +53,7 @@ class ChannelCrawler{
                     }
 
                     if(!(body.streams[x].channel.name in this.activeChannels)) {
-                        newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status]);
+                        newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status,viewerCount]);
                     }
                     //if(this.newChannelList.indexOf(body.streams[x].channel.name)===-1){
                     //    this.newChannelList.push(body.streams[x].channel.name);
@@ -62,7 +62,8 @@ class ChannelCrawler{
                 }
 
                 let fetchChannels=newChannels.map(function(data){
-                    let channel=new Channel.Channel(data[0]);
+					//pass name and number of viewers
+                    let channel=new Channel.Channel(data[0],data[2]);
                     this.activeChannels[channel.getChannelName()]=channel;
                     return channel.connect(data[1]);
                 }.bind(this));
@@ -102,7 +103,7 @@ class ChannelCrawler{
 
         });
 
-    }.bind(this),31000)
+    }.bind(this),4000)
 }
     startCrawler(){
         if(this.crawlerActive===false){

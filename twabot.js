@@ -19,7 +19,7 @@ class Twabot{
         this.channelCrawler.startCrawler();
 
         //this.crawlerIntervalID=setInterval(this.channelCrawler,900000);
-        //this.updateChanIntervalID=setInterval(this.updateChannels,300000);
+        this.updateChanIntervalID=setInterval(this.updateChannels,20000);
     }
 
     updateChannels(){
@@ -29,8 +29,8 @@ class Twabot{
         //let updateIntervallID;
         var url='https://api.twitch.tv/kraken/streams';
         let updatePromises=[];
-
-        for(let x=0;x<Object.keys(this.channelCrawler.activeChannels)/50+1;x++){
+        let updateInvervallID;
+        for(let x=0;x<Object.keys(this.channelCrawler.activeChannels)/10+1;x++){
             updatePromises.push(new Promise((resolve,reject)=>{
                 request({url: url + '?limit='+50+'&offset=' + x*50, json: true},(err,response,body)=>{
                     if(err){
@@ -39,9 +39,10 @@ class Twabot{
                     }
                     for(let x=0;x<50;x++){
                         let chan=this.channelCrawler.activeChannels[body.streams[x].channel.name];
-                        if(typeof chat!== "undefined"){
+                        if(typeof chan!== "undefined"){
                             chan.logo=body.streams[x].channel.logo;
                             chan.viewer=body.streams[x].viewers;
+                            chan.online=true;
                             chan.gotUpdated=true;
                         }
                     }
@@ -49,39 +50,31 @@ class Twabot{
                 })
             }));
         }
-        Promise.all(updatePromises).then((result)=>{
-            let deleteList=[];
-            for(let x in this.channelCrawler.activeChannels){
-                if(x.gotUpdated===false){
-                    x.closeChat();
-                    delteList.push(x.name);
-                }else{
-                    x.gotUpdated=false;
+        updateInvervallID=setInterval(()=>{
+            let list=updatePromises.pop();
+            if(typeof list==='undefined'){
+                clearInterval(updateInvervallID);
+                for(let x in this.channelCrawler.activeChannels){
+                    if(x.gotUpdated===false){
+                        x.closeChat();
+                        deleteList.push(x.name);
+                    }else{
+                        x.gotUpdated=false;
+                    }
                 }
+                for(let x in deleteList){
+                    this.channelCrawler.closeChannel(deleteList[x]);
+                    this.channelCrawler.deleteChannel(deleteList[x]);
+                }
+                return;
             }
-            for(let x in deleteList){
-                this.channelCrawler.closeChannel(deleteList[x]);
-                this.channelCrawler.deleteChannel(deleteList[x]);
-            }
+            list().then((result)=>{
+                console.log("Update ChannelLists:");
+            }).catch((err)=>{
+                console.log(err);
+            });
+        },2000);
 
-        }).catch((err)=>{
-            console.log(err);
-        })
-        //for(let x in this.channelCrawler.getActiveChannelsDC()){
-        //    channelNames.push(x.getChannelName());
-        //}
-//
-        //chanNameItterator=channelNames[Symbol.iterator]();
-        //updateIntervallID=setInterval(()=>{
-        //    for(let x=0;x<channelPerTick;x++){
-        //        let channel=it.next().value;
-        //        if(channel===undefined){
-        //            clearInterval(updateIntervallID);
-        //            break;
-        //        }
-        //        this.channelCrawler.activeChannels[channel].isOnline();
-        //    }
-        //},2000);
     }
 
 }

@@ -6,24 +6,27 @@ let fs = require('fs');
 //analyzers
 let mpt = require('./msgPerTime.js');
 let ept = require('./emotionPerTime.js');
+let fal = require('./fallingEmotionPerTime.js')
 
 let emotions = [];
 fs.readFile('jsonemotions.json','utf-8',function(err,data){
     if (err) {
-		throw err; 
+		throw err;
 	}
 	emotions = JSON.parse(data);
+
 });
 
 class Analyzer{
 
-    constructor(channelName,rethinkDB){
+    constructor(channelName,rethinkDB,viewers){
 
         this.trainmode=false;
         this.rethinkDB=rethinkDB;
 		//this.analyzers=[new mpt.Analyzer()];
 		this.mptAnalyzer = new mpt.Analyzer(channelName,rethinkDB);
 		this.eptAnalyzer = new ept.Analyzer(channelName,rethinkDB);
+		this.falAnalyzer = new fal.Analyzer(channelName,rethinkDB,viewers);
 		
     }
 
@@ -45,6 +48,9 @@ class Analyzer{
 
 			//setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
 			//setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
+			setTimeout(this.falAnalyzer.process(message, Date.now()), 0);
         }
     }
 

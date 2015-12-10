@@ -10,11 +10,12 @@ var credentials=require('./credentials.js');
 var analyzer=require('./analyzer.js');
 var db=require('./rethinkdb.js');
 class Channel{
-    constructor(name){
+    constructor(name,viewers){
         this.online=false;
         this.name=name;
+		this.viewers=viewers;
         this.rethinkDB=new db.RethinkDB(name);
-        this.analyser=new analyzer.Analyzer(this.name,this.rethinkDB);
+        this.analyser=new analyzer.Analyzer(this.name,this.rethinkDB,this.viewers);
         this.logo;
         this.viewer;
         this.client;
@@ -28,7 +29,9 @@ class Channel{
 
     closeChat(){
         /*This function will close the connection to the Twitch IRC server*/
+
         this.client.end();
+        this.rethinkDB.close();
         console.log("Chat Closed")
     }
 
