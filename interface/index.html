@@ -3,7 +3,9 @@
     <head>
         <meta charset="utf-8">
         <title>Twabot - Twitch Analysing Bot</title>
-        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+        <script src="/node_modules/jquery/dist/jquery.js"></script>
+        <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
         <style>
 			.form-control {
 				margin-bottom: 10px;
@@ -25,16 +27,18 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<h1><a class="navbar-brand" href="/">TWABOT<small> - Twitch Analysing Bot</small></a></h1>
+					<a class="navbar-brand" href="/" style="font-size: 46px;">TWABOT<small> - Twitch Analysing Bot</small></a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse" id="navbar-collapse">
-					<form class="navbar-form navbar-right" role="search">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search">
+					<form class="navbar-form navbar-right" role="search" action="user.html">
+						<div class="form-group input-group">
+							<input type="text" class="form-control" placeholder="Search" name="channel">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default">Search</button>
+                            </span>
 						</div>
-						<button type="submit" class="btn btn-default">Search</button>
 					</form>
 				</div>
 			</div>
