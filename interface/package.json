@@ -4,6 +4,11 @@
   "description": "Application for analysing the chatrooms of the streaming plattform Twitch",
   "main": "app.js",
   "author": "Andreas Wundlechner",
+  "scripts": {
+    "postinstall": "node buildScript.js",
+    "update": "node buildUpdateScript.js",
+    "start": "node delivery.js"
+  },
   "dependencies": {
     "vue": "^1.0.10",
     "bootstrap": "^3.3.6",
