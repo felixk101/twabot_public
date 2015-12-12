@@ -19,7 +19,7 @@ class Twabot{
         this.channelCrawler.startCrawler();
 
         //this.crawlerIntervalID=setInterval(this.channelCrawler,900000);
-        this.updateChanIntervalID=setInterval(this.updateChannels,20000);
+        this.updateChanIntervalID=setInterval(this.updateChannels,40000);
     }
 
     updateChannels(){
@@ -30,6 +30,7 @@ class Twabot{
         var url='https://api.twitch.tv/kraken/streams';
         let updatePromises=[];
         let updateInvervallID;
+        
         for(let x=0;x<Object.keys(this.channelCrawler.activeChannels)/10+1;x++){
             updatePromises.push(new Promise((resolve,reject)=>{
                 request({url: url + '?limit='+50+'&offset=' + x*50, json: true},(err,response,body)=>{

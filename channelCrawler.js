@@ -103,7 +103,7 @@ class ChannelCrawler{
 
         });
 
-    }.bind(this),4000)
+    }.bind(this),31000)
 }
     startCrawler(){
         if(this.crawlerActive===false){
