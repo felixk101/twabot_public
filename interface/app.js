@@ -1,7 +1,7 @@
 "use strict";
 
 let Vue = require("vue");
-let canvasFactory = require("./canvas_factory");
+let canvasFactory = require("./canvasFactory");
 
 new Vue({
     el: '#activeChannels',

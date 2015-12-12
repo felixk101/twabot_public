@@ -1,6 +1,22 @@
 "use strict";
 
 let express = require('express');
-let app = express();
-app.use(express.static('public'));
-app.listen(80);
+
+class Webserver{
+    constructor(twabot){
+        //this.twabot = twabot.channelCrawler.activeChannels[name];
+        this.app = express();
+
+        //app.use('/user/:user/:diagramm?', function (req, res){
+
+        //});
+
+        this.app.use(express.static('public'));
+    }
+
+    startServer() {
+        this.app.listen(80);
+    }
+};
+let web = new Webserver(1);
+web.startServer();
