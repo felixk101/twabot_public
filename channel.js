@@ -29,7 +29,9 @@ class Channel{
 
     closeChat(){
         /*This function will close the connection to the Twitch IRC server*/
+
         this.client.end();
+        this.rethinkDB.close();
         console.log("Chat Closed")
     }
 
@@ -44,6 +46,7 @@ class Channel{
 
             if(err){
                 reject(err)
+                return;
             }else{
                 resolve(1)
             }

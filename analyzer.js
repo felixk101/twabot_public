@@ -45,7 +45,9 @@ class Analyzer{
             //setTimeout(this.wordspersecond(sender,message), 0);
 
             this.rethinkDB.writeData('raw',rawData);
-            
+
+			//setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
+			//setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
 			setTimeout(this.mptAnalyzer.process(message, Date.now()), 0);
 			setTimeout(this.eptAnalyzer.process(message, Date.now()), 0);
 			setTimeout(this.falAnalyzer.process(message, Date.now()), 0);
