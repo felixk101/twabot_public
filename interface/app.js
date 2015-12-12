@@ -3,8 +3,8 @@
 let Vue = require("vue");
 let canvasFactory = require("./canvasFactory");
 
-new Vue({
-    el: '#activeChannels',
+let meinVue = new Vue({
+    el: '#channelOverview',
 
     data: {
         activeChannels: [],

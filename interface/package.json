@@ -4,6 +4,7 @@
   "description": "Application for analysing the chatrooms of the streaming plattform Twitch",
   "main": "app.js",
   "author": "Andreas Wundlechner",
+  "repository": "https://github.com/hsa-nodejs-ws1516/twabot",
   "scripts": {
     "postinstall": "node buildScript.js",
     "update": "node buildUpdateScript.js",

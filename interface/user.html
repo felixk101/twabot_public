@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <title>Twabot - Twitch Analysing Bot</title>
         <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <script src="/node_modules/jquery/dist/jquery.js"></script>
+        <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
         <style>
 			.form-control {
 				margin-bottom: 10px;
@@ -48,15 +50,31 @@
                             <h3>Username</h3>
                         </div>
                         <div class="panel-body">
-                            <nav>
-                                <ul class="nav nav-tabs">
-                                    <li role="presentation" class="active"><a href="#overview">Overview</a></li>
-                                    <li role="presentation"><a href="#fractal">Fractal</a></li>
-                                    <li role="presentation"><a href="#emotions">Emotions</a></li>
-                                    <li role="presentation"><a href="#msgPT">Messages per Time</a></li>
-                                </ul>
-                            </nav>
 
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#overview">Overview</a></li>
+                                <li><a data-toggle="tab" href="#fractal">Fractal</a></li>
+                                <li><a data-toggle="tab" href="#emotions">Emotions</a></li>
+                                <li><a data-toggle="tab" href="#msgPT">Messages per Time</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="overview" class="tab-pane fade in active">
+                                    Overview
+                                    <canvas id="thumbnail_emotion_{{channel.name}}"></canvas>
+                                </div>
+                                <div id="fractal" class="tab-pane fade">
+                                    Fractal
+                                </div>
+                                <div id="emotions" class="tab-pane fade">
+                                    Emotions
+                                </div>
+                                <div id="msgPT" class="tab-pane fade">
+                                    Messages per Time
+                                </div>
+                            </div>
+
+                            <!--
                             <div class="row">
                                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" v-for="channel in activeChannels">
                                     <a href="/user/{{channel.name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
@@ -64,16 +82,16 @@
                                         <canvas v-el="thumbnail_active_{{channel.name}}" id="thumbnail_active_{{channel.name}}"></canvas>
                                     </a>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
 				</div>
 			</div>
 		</div>
 
-        <ul class="nav navbar navbar-default">
+        <ul class="nav navbar navbar-default nav-justified">
             <li><a href="/about.html" class="center-block">About</a></li>
         </ul>
     </body>
-    <!--<script src="build.js"></script>-->
+    <script src="build.js"></script>
 </html>

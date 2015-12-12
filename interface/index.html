@@ -46,7 +46,7 @@
 
 		<div class="container"> <!-- For a nice look -->
 			<div class="jumbotron">
-				<div class="container" id="activeChannels">
+				<div class="container" id="channelOverview">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3>Most active Channels</h3>
@@ -56,7 +56,7 @@
                                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" v-for="channel in activeChannels">
                                     <a href="/user/{{channel.name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
                                         <h3>{{channel.name}}</h3>
-                                        <canvas v-el="thumbnail_active_{{channel.name}}" id="thumbnail_active_{{channel.name}}"></canvas>
+                                        <canvas id="thumbnail_active_{{channel.name}}"></canvas>
                                     </a>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
                                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" v-for="channel in emotionChannels">
                                     <a href="/user/{{channel.name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
                                         <h3>{{channel.name}}</h3>
-                                        <canvas v-el="thumbnail_emotion_{{channel.name}}" id="thumbnail_emotion_{{channel.name}}"></canvas>
+                                        <canvas id="thumbnail_emotion_{{channel.name}}"></canvas>
                                     </a>
                                 </div>
                             </div>
@@ -81,7 +81,7 @@
 			</div>
 		</div>
 
-        <ul class="nav navbar navbar-default">
+        <ul class="nav navbar navbar-default nav-justified">
             <li><a href="/about.html" class="center-block">About</a></li>
         </ul>
     </body>
