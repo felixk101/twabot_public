@@ -23,7 +23,7 @@ class Twabot{
         console.log("Starts the services of Twabot")
         this.channelCrawler.startCrawler();
         this.crawlerIntervalID=setInterval(this.channelCrawler.startCrawler,900000);
-        this.updateChanIntervalID=setInterval(this.startChannelUpdate.bind(this),40000);
+        this.updateChanIntervalID=setInterval(this.startChannelUpdate.bind(this),300000);
         console.log("Services are started")
     }
 
