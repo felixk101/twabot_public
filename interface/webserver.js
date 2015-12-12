@@ -9,9 +9,21 @@ class Webserver{
         //twabot.channelCrawler.activeChannels[name];
 
         this.app.use('/overview/activeChannels/', function (req, res){
-            console.log(twabot.channelCrawler.activeChannels);
-            let overviewList = twabot.channelCrawler.activeChannels;
-            res.json(overviewList);
+            let overviewList = twabot.channelCrawler.getMostViewedChannels(6);
+            let overview = [];
+            for (let channel of overviewList){
+                let newChannel = {
+                    name: channel.name,
+                    viewers: channel.viewers,
+                    logo: channel.logo,
+                    rethinkDB:{
+                        streamID: channel.rethinkDB.streamID,
+                        streamName: channel.rethinkDB.streamName
+                    }
+                };
+                overview.push(newChannel);
+            }
+            res.json(overview);
         });
 
         this.app.use('/user.html', function (req, res){
