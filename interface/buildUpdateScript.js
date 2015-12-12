@@ -9,6 +9,7 @@ let folder = "public";
 function update_build() {
     if (platform == "win32") {
         exec("copy index.html " + folder + "\\index.html");
+        exec("copy user.html " + folder + "\\user.html");
 
         exec("browserify -o " + folder + "/bundle.js app.js");
         exec("babel -o " + folder + "/build.js " + folder + "/bundle.js --presets es2015");
@@ -16,6 +17,7 @@ function update_build() {
     }
     else {
         exec("cp index.html " + folder + "/index.html");
+        exec("cp user.html " + folder + "/user.html");
 
         exec("browserify -o " + folder + "/bundle.js app.js");
         exec("babel -o " + folder + "/build.js " + folder + "/bundle.js --presets es2015");

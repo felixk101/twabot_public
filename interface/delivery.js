@@ -18,5 +18,8 @@ class Webserver{
         this.app.listen(80);
     }
 };
-let web = new Webserver(1);
-web.startServer();
+
+if (require.main === module) {
+    let web = new Webserver(1);
+    web.startServer();
+}
