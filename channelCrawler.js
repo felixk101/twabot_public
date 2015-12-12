@@ -13,12 +13,9 @@ var request=require('request');
 var Channel=require('./channel');
 var url='https://api.twitch.tv/kraken/streams';
 
-
-
-
 class ChannelCrawler{
     constructor(){
-        this.viewerLimit=250;
+        this.viewerLimit=30000;
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels={};
         this.newChannelList=[];
@@ -95,6 +92,7 @@ class ChannelCrawler{
             }else{
                 console.log("Channel crawler ends.Streams: "+this.activeChannels.size);
                 this.crawlerActive=false;
+                return;
 
             }
 
@@ -106,6 +104,9 @@ class ChannelCrawler{
     }.bind(this),31000)
 }
     startCrawler(){
+        /*
+        * This function will start the channelcrawler.
+        * */
         if(this.crawlerActive===false){
             this.crawlerActive=true;
             this.registerChannels(0).next()
@@ -117,16 +118,52 @@ class ChannelCrawler{
 
     }
 
-    getActiveChannelsDC(){
-        return JSON.parse(JSON.stringify(this.activeChannels));
+    getMostViewedChannels(count){
+        /*
+        * This function will give a sorted list of the most viewed channels.
+        * The most viewed channel will have the index 0.
+        * With the argument count is it possible to specify the size of the list that will be returned.
+        *
+        * arguments:
+        *   count:  The size of the list that will be returned.
+        *
+        * */
+        let channelList=[];
+        for(let x in this.activeChannels){
+            channelList.push(this.activeChannels[x]);
+        }
+        channelList=channelList.sort((a,b)=>{
+            if(a.viewers>b.viewers){
+                return 1;
+            }
+            if(a.viewers<b.viewers){
+                return -1;
+            }
+            return 0;
+        });
+        let mostViewChannels=[];
+        for (let x =0;x<count;x++){
+            mostViewChannels.push(channelList.pop());
+        }
+        return mostViewChannels;
+
     }
 
     deleteChannel(name){
+        /**
+         * This function will delete the channel with the name 'name' from the activeChannel dictionary.
+         */
+
         delete this.activeChannels[name];
     }
 
     closeChannel(name){
-        this.activeChannels[name].closeChat();
+        /*
+        * This function will close the chat of a channel and ends the TCP connection.
+        * */
+        if(typeof this.activeChannels[name]!=='undefined') {
+            this.activeChannels[name].closeChat();
+        }
     }
 
 }
