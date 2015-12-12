@@ -1,6 +1,7 @@
 "use strict";
 
 let Vue = require("vue");
+Vue.use(require('vue-resource'));
 let canvasFactory = require("./canvasFactory");
 
 let meinVue = new Vue({
@@ -18,7 +19,15 @@ let meinVue = new Vue({
 
     methods: {
         fetchChannels: function () {
-            this.$set("activeChannels", require("./userMock.json").activeChannels);
+
+            this.$http.get('/overview/activeChannels/')
+                .success(function(channels){
+                    this.$set("activeChannels", channels);
+                })
+                .error(function(error){
+                    this.$set("activeChannels", require("./userMock.json").activeChannels);
+                });
+
             this.$set("emotionChannels", require("./userMock.json").emotionChannels);
         },
 

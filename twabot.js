@@ -5,17 +5,19 @@
 const ChannelCrawler=require('./channelCrawler.js');
 const request=require('request');
 const credentials=require('./credentials.js');
+const Webserver=require('./interface/webserver.js');
 
 class Twabot{
 
     constructor(){
-        this.webserver=undefined;
+        this.webserver=new Webserver(this);
         this.channelCrawler=new ChannelCrawler.ChannelCrawler();
         this.crawlerIntervalID;
         this.updateChanIntervalID;
     }
 
     start(){
+        this.webserver.startServer();
         this.channelCrawler.startCrawler();
 
         //this.crawlerIntervalID=setInterval(this.channelCrawler,900000);
