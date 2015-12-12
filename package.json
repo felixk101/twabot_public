@@ -1,0 +1,16 @@
+{
+  "name": "twabot",
+  "version": "0.0.1",
+  "description": "Application for analysing the chatrooms of the streaming plattform Twitch",
+  "main": "twabot.js",
+  "author": "Lukas Edelb�ck, Felix Kampfer, Andreas Wundlechner",
+  "repository": "https://github.com/hsa-nodejs-ws1516/twabot",
+  "scripts": {
+    "start": "node twabot.js"
+  },
+  "dependencies": {
+    "deep-equal": "^1.0.1",
+    "request": "^2.67.0",
+    "rethinkdb": "^2.2.0"
+  }
+}
