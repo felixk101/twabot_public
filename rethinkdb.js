@@ -320,3 +320,5 @@ class RethinkDB{
 //}
 
 exports.RethinkDB=RethinkDB;
+
+if (require.main === module){}

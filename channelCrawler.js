@@ -50,7 +50,8 @@ class ChannelCrawler{
                     }
 
                     if(!(body.streams[x].channel.name in this.activeChannels)) {
-                        newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status,viewerCount]);
+                        newChannels.push([body.streams[x].channel.name,body.streams[x].channel.status,viewerCount,
+                            body.streams[x].channel.logo]);
                     }
                     //if(this.newChannelList.indexOf(body.streams[x].channel.name)===-1){
                     //    this.newChannelList.push(body.streams[x].channel.name);
@@ -61,6 +62,7 @@ class ChannelCrawler{
                 let fetchChannels=newChannels.map(function(data){
 					//pass name and number of viewers
                     let channel=new Channel.Channel(data[0],data[2]);
+                    channel.logo=data[3];
                     this.activeChannels[channel.getChannelName()]=channel;
                     return channel.connect(data[1]);
                 }.bind(this));
@@ -167,8 +169,11 @@ class ChannelCrawler{
     }
 
 }
-//let crawler=new ChannelCrawler();
-//crawler.registerChannels(0).next()
+
 exports.ChannelCrawler=ChannelCrawler;
 
+if (require.main === module){
 
+    let crawler=new ChannelCrawler();
+    crawler.registerChannels(0).next()
+}

@@ -56,11 +56,11 @@ class Channel{
 
     fetchChat(chan){
 
-        fs.open('logs/'+chan+'.json', 'a',function(err,fd){
-            if(err){
-                return err;
-            }
-        });
+        //fs.open('logs/'+chan+'.json', 'a',function(err,fd){
+        //    if(err){
+        //        return err;
+        //    }
+        //});
 
         return this.getChannelHost(chan,this.client);
     }
@@ -118,11 +118,11 @@ class Channel{
                     let timestamp = dateobject.toJSON();
 					this.analyser.analyzeData(Date.now()+"|"+input);
                     //console.log(timestamp+'|'+sender + ":" + message);
-                    fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
-                        if(err) {
-                            console.log('error writing log:',err);
-                        }
-                    });
+                    //fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
+                    //    if(err) {
+                    //        console.log('error writing log:',err);
+                    //    }
+                    //});
                 }
             });
             this.client.on('end', function () {
@@ -144,9 +144,7 @@ class Channel{
 }
 
 exports.Channel=Channel;
-
+if (require.main === module) {
 //let chann=new Channel('fragbitelive');
 //chann.connect();
-//let chan=new Channel('cohhcarnage');
-//chan.connect();
-//console.log(chan.getTimestamp())
+}
