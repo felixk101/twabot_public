@@ -14,28 +14,39 @@ let meinVue = new Vue({
 
     ready: function() {
         this.fetchChannels();
-        this.$nextTick(this.drawThumbnails);
     },
 
     methods: {
         fetchChannels: function () {
-
             this.$http.get('/overview/activeChannels/')
                 .success(function(channels){
                     this.$set("activeChannels", channels);
+                    this.$nextTick(this.drawThumbnailsActive);
                 })
                 .error(function(error){
                     this.$set("activeChannels", require("./userMock.json").activeChannels);
+                    this.$nextTick(this.drawThumbnailsActive);
                 });
 
-            this.$set("emotionChannels", require("./userMock.json").emotionChannels);
+            this.$http.get('/overview/emotionChannels/')
+                .success(function(channels){
+                    this.$set("emotionChannels", channels);
+                    this.$nextTick(this.drawThumbnailsEmotion);
+                })
+                .error(function(error){
+                    this.$set("emotionChannels", require("./userMock.json").emotionChannels);
+                    this.$nextTick(this.drawThumbnailsEmotion);
+                });
         },
 
-        drawThumbnails: function(){
+        drawThumbnailsActive: function(){
             for (let channel of this.activeChannels) {
                 let canvas = document.getElementById("thumbnail_active_"+channel.name);
                 canvasFactory.createThumbnail(canvas, channel);
             }
+        },
+
+        drawThumbnailsEmotion: function(){
             for (let channel of this.emotionChannels) {
                 let canvas = document.getElementById("thumbnail_emotion_"+channel.name);
                 canvasFactory.createThumbnail(canvas, channel);

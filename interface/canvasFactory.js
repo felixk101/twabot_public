@@ -83,14 +83,15 @@ exports.createThumbnail = function createThumbnail(canvas, channel){
 
 
 function drawChannelLogo(channelLogo, ctx, options){
-    // Dummy
-    let img = getThumbnail(channelLogo);
+    let img = new Image();
     img.addEventListener("load", function(){
         ctx.save();
-        options.apply(ctx);
+        options.apply(ctx);// text
+        console.log("hi");// text
         ctx.drawImage(img, 0, 0, options.width, options.height);
         ctx.restore();
     },false);
+    img.src = channelLogo;
 }
 
 function drawFractal(channelName, ctx, options){
@@ -189,11 +190,6 @@ function drawDiagram4(channelName, ctx, options){
 }
 
 
-function getThumbnail(channelLogo){
-    let img = new Image();
-    img.src = channelLogo;
-    return img;
-}
 
 function getEmotions(channelName){
     return {
