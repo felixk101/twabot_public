@@ -2,9 +2,9 @@
 /**
  * Created by Lukas on 17.11.2015.
  */
-const ChannelCrawler=require('./channelCrawler.js');
+const ChannelCrawler=require('./twitch/channelCrawler.js');
 const request=require('request');
-const credentials=require('./credentials.js');
+const credentials=require('./credentials/credentials.js');
 const Webserver=require('./interface/webserver.js');
 
 class Twabot{

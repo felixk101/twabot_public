@@ -3,7 +3,7 @@
  * Created by Lukas on 22.11.2015.
  */
 const r=require('rethinkdb');
-const credentilas=require('./credentials.js')
+const credentilas=require('./../credentials/credentials.js')
 
 class RethinkDB{
     /*
@@ -308,9 +308,9 @@ class RethinkDB{
 //        con.use('fragbitelive');    //Channel
 //        return r.table('07477ea8_a987_453a_b493_b34c1b4dd6d6_raw').changes().run(con);  //TabelID
 //    }).then((cursor)=>{ //Der Cursoer ist ein Stream der durchgehen daten sendet
-//        cursor.on('data',(data)=>{  //Data enthält ein Json-Object mit new_Value und old_Value wenn daten geupdatet werden
+//        cursor.on('data',(data)=>{  //Data enthï¿½lt ein Json-Object mit new_Value und old_Value wenn daten geupdatet werden
 //            // dann sind im new_value die neuen und im old_value die alten. Bei uns wird aber
-//            // nur eingefügt also ist old_value null und new_value enthält die daten
+//            // nur eingefï¿½gt also ist old_value null und new_value enthï¿½lt die daten
 //            console.log(data)
 //        })
 //        //cursor.each(console.log);
