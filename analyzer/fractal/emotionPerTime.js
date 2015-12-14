@@ -54,10 +54,11 @@ class Analyzer{
 			this.analyzeEmotions(message);
 		} else {
 			//should not be possible!!!
+			//but we're going to ignore them
 			if (timeStamp > this.periodEnd) {
-				console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
+				//console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
 			} else {
-				console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
+				//console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
 			}
 		}
 		
