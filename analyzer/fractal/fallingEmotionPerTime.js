@@ -1,24 +1,24 @@
 "use strict";
-let jsonfile = require('./jsonemotions.json')
+let jsonfile = require('./../../jsonemotions.json')
 let equal = require('deep-equal');
 //console.log(jsonfile);
 //jsonfile=JSON.parse(x);
 /*
- * The EmotionPerTime Analyzer determines what emotions are sent per period
+ * The FallingEmotionPerTime Analyzer determines what emotions are sent per period and makes a nice decaying display
  */
 
 //over what time period to measure, in ms
-let periodLength = 10000;
+let periodLength = 1000;
 
 class Analyzer{
 
 
-    constructor(channelName,rethinkDB) {
+    constructor(channelName,rethinkDB,viewers) {
 		this.rethinkDB=rethinkDB;
 		this.channelName=channelName;
+		this.viewers=viewers;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
-		this.counter = 0
 		this.startemotion = {
 				"amused":0.0,
 				"annoyed":0.0,
@@ -34,6 +34,9 @@ class Analyzer{
                 "sad":0.0,
                 "surprised":0.0,
 		}
+		this.decayRate = viewers/3000*2;
+		//this.decayRate = rethinkDB.viewerCount; //round up!
+	
 		//deep copy, but fast
 		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
 		let self = this;
@@ -44,8 +47,11 @@ class Analyzer{
 			self.pushAnalysis();
 			self.periodStart = Date.now();
 			self.periodEnd = self.periodStart + periodLength;
-			self.emotion = JSON.parse(JSON.stringify(self.startemotion))
-			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
+			let ems = Object.keys(self.emotion)
+			ems.map((e) => {
+				self.emotion[e] = Math.max(Math.round(self.emotion[e]-self.decayRate), 0)
+			});
+			//self.emotion = JSON.parse(JSON.stringify(self.startemotion))
 		}, periodLength);
 		
     }
@@ -68,10 +74,10 @@ class Analyzer{
 			//no emotions detected
 		} else {
 			//at least one emotion detected
-			//console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 		}
 		//we should update the data either way
-		this.rethinkDB.writeData('fractal',this.emotion);
+		this.rethinkDB.writeData('fallingEmotions',this.emotion);
+		//console.log(this.emotion);
 	}
 
 	analyzeEmotions(message) {
@@ -82,51 +88,15 @@ class Analyzer{
 				properties.map((property) => {
 					if (jsonfile[substring][property].strength) {
 						//console.log('incrementing emotion.'+this.emotion[property]);
-						this.emotion[property] += jsonfile[substring][property].strength;				
+						this.emotion[property] = Math.min(this.emotion[property]+jsonfile[substring][property].strength, 1000);				
 						//console.log('this.emotion is now:',this.emotion);
 						
 					}
 				});
-				//console.log(jsonfile[substring]);
 			}
-			//console.log(key);
-			//console.log(jsonfile[key]);
 		});
-
-		
-
-		
-		//for (let substring in substrings) {
-		//	console.log(substring);
-			//console.log('1',substrings[substring]);
-			//substring = substrings[substring];
-			//console.log(substring);
-			//console.log(jsonfile[substrings[substring]]);
-			//console.log('jsonfile.'+substrings[substring]+':'+jsonfile[substrings[substring]].toString());
-			
-			//if the substring exists at least once in the message
-			/*
-			if (message.indexOf(substring) > -1) {
-				//console.log('keys for jsonfile:',substrings);
-				//console.log('keys for jsonfile.'+substring+':',jsonfile.substring);
-				console.log('jsonfile.'+substrings[substring]+':');
-				console.log(jsonfile[substrings[substring]]);
-				console.log('Object.keys(jsonfile.'+substrings[substring]+'):');
-				console.log(Object.keys(jsonfile[substrings[substring]]));
-				let propertiesForSubstring = Object.keys(jsonfile[substrings[substring]]);
-				for (let property in propertiesForSubstring) {
-					//if the property is an emotion
-					let strength = jsonfile[substrings[substring]][propertiesForSubstring[property]].strength;
-					if () {
-						this.emotion[property] += jsonfile[substring][property].strength;
-					}
-				}
-			}*/
-	//	}
 	}
 }
 
 exports.Analyzer=Analyzer;
-//let a = new Analyzer('TestChannel');
-//a.analyzeEmotions('<3 ^^ BibleThump I\'m sad');
 
