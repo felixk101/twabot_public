@@ -1,17 +1,14 @@
 "use strict";
 let jsonfile = require('./../../jsonemotions.json')
-let equal = require('deep-equal');
-//console.log(jsonfile);
-//jsonfile=JSON.parse(x);
+const equal = require('deep-equal');
 /*
- * The FallingEmotionPerTime Analyzer determines what emotions are sent per period and makes a nice decaying display
+ * The FallingEmotionPerTime Analyzer determines what emotions are sent in a time period and creates a nice decaying display
  */
 
 //over what time period to measure, in ms
 let periodLength = 1000;
 
 class Analyzer{
-
 
     constructor(channelName,rethinkDB,viewers) {
 		this.rethinkDB=rethinkDB;
@@ -34,8 +31,8 @@ class Analyzer{
                 "sad":0.0,
                 "surprised":0.0,
 		}
+		//the decayRate of emotions depends on the number of viewers
 		this.decayRate = viewers/3000*2;
-		//this.decayRate = rethinkDB.viewerCount; //round up!
 	
 		//deep copy, but fast
 		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
@@ -48,29 +45,22 @@ class Analyzer{
 			self.periodStart = Date.now();
 			self.periodEnd = self.periodStart + periodLength;
 			let ems = Object.keys(self.emotion)
+			//subtract the decayrate, but don't let values go below zero
 			ems.map((e) => {
 				self.emotion[e] = Math.max(Math.round(self.emotion[e]-self.decayRate), 0)
 			});
-			//self.emotion = JSON.parse(JSON.stringify(self.startemotion))
 		}, periodLength);
-		
     }
+
 	process(message, timeStamp) {
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.analyzeEmotions(message);
 		} else {
-			//should not be possible!!!
-			//but we're going to ignore them
-			if (timeStamp > this.periodEnd) {
-				//console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
-			} else {
-				//console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
-			}
+			//ignore messages outside of this time period
 		}
-		
 	}
+
 	pushAnalysis() {
-		//replace this with a database push
 		if (equal(this.emotion,this.startemotion)) {
 			//no emotions detected
 		} else {
@@ -78,20 +68,18 @@ class Analyzer{
 		}
 		//we should update the data either way
 		this.rethinkDB.writeData('fallingEmotions',this.emotion);
-		//console.log(this.emotion);
 	}
 
 	analyzeEmotions(message) {
+		//almost the same as emotionsPerTime
 		let substrings = Object.keys(jsonfile);
 		substrings.map((substring) => {
 			if (message.indexOf(substring) > -1) {
 				let properties = Object.keys(jsonfile[substring]);
 				properties.map((property) => {
 					if (jsonfile[substring][property].strength) {
-						//console.log('incrementing emotion.'+this.emotion[property]);
-						this.emotion[property] = Math.min(this.emotion[property]+jsonfile[substring][property].strength, 1000);				
-						//console.log('this.emotion is now:',this.emotion);
-						
+						//Don't let any emotion go over 1000 in strength
+						this.emotion[property] = Math.min(this.emotion[property]+jsonfile[substring][property].strength, 1000);
 					}
 				});
 			}
