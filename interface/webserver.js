@@ -26,6 +26,10 @@ class Webserver{
 
         this.app.use('/overview/emotionChannels/', function (req, res){
             let emotionChannels = this.twabot.channelCrawler.getMostEmotionalChannels();
+            for (let emotion in emotionChannels){
+                if (emotionChannels[emotion])
+                    emotionChannels[emotion]=convertToLightweightChannel(emotionChannels[emotion]);
+            }
             //let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
             //let overview = sliceToOverviewData(overviewList);
             res.json(emotionChannels);
@@ -82,18 +86,22 @@ class Webserver{
 function sliceToOverviewData(overviewList){
     let overview = [];
     for (let channel of overviewList){
-        let newChannel = {
-            name: channel.name,
-            viewers: channel.viewers,
-            logo: channel.logo,
-            rethinkDB:{
-                streamID: channel.rethinkDB.streamID,
-                streamName: channel.rethinkDB.streamName
-            }
-        };
-        overview.push(newChannel);
+        overview.push(convertToLightweightChannel(channel));
     }
     return overview;
+}
+
+function convertToLightweightChannel(channel){
+    let newChannel = {
+        name: channel.name,
+        viewers: channel.viewers,
+        logo: channel.logo,
+        rethinkDB:{
+            streamID: channel.rethinkDB.streamID,
+            streamName: channel.rethinkDB.streamName
+        }
+    };
+    return newChannel;
 }
 
 module.exports = Webserver;

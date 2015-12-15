@@ -68,16 +68,12 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div v-for="emotion in emotions">
-                                    <div v-show="emotionChannels[emotion]">
-                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                                            <a href="/user/{{emotionChannels[emotion].name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
-                                                <h3>{{emotion}}</h3>
-                                                <h4>{{emotionChannels[emotion].name}}</h4>
-                                                <canvas id="thumbnail_emotion_{{channel.name}}"></canvas>
-                                            </a>
-                                        </div>
-                                    </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" v-for="channel in emotionChannels">
+                                    <a href="/user/{{channel.name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
+                                        <h3>{{$key}}</h3>
+                                        <h4>{{channel.name}}</h4>
+                                        <canvas id="thumbnail_emotion_{{channel.name}}"></canvas>
+                                    </a>
                                 </div>
                             </div>
                         </div>
