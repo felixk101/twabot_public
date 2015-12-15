@@ -1,11 +1,8 @@
 "use strict";
 /*
- * The MessagesPerSecond Analyzer determines how many words are sent per second
- * TODO: implement a rolling time period, so that every message counts
+ * The MessagesPerSecond Analyzer determines how many words are sent in a certain time period
  */
 
-//how often we print the analysis to terminal/push to the Database, in ms
-//let timeBetweenOutputs = 1000;
 //over what time period to measure, in ms
 let periodLength = 10000;
 
@@ -19,36 +16,25 @@ class Analyzer{
 		this.periodEnd=Date.now() + periodLength;
 		this.counter = 0
 	
-		//schedule output
-		//		//setInterval(function(){
-		//	console.log(self.analysis(),'words per second');
-		//}, timeBetweenOutputs);
-		
 		let self = this;
-
 
 		//advance the period of measurement and reset counter
 		setInterval(function(){
 			//only push the analysis when this period is done
-			//we're adding a small buffer
 			self.pushAnalysis();
-			self.periodStart = Date.now()-10;
-			self.periodEnd = self.periodStart + periodLength + 10;
+			self.periodStart = Date.now();
+			self.periodEnd = self.periodStart + periodLength;
 			self.counter = 0;
-			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
 		}, periodLength);
 		
     }
+
+	//here we are told to handle a chat message
 	process(message, timeStamp) {
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.counter += 1;
 		} else {
-			//should not be possible!!! @TODO figure out why this happens anyway
-			if (timeStamp > this.periodEnd) {
-				console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
-			} else {
-				console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
-			}
+			//ignore the message if outside of this timeStamp
 		}
 		
 	}
