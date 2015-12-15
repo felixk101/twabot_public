@@ -30,9 +30,10 @@ class Analyzer{
 		//advance the period of measurement and reset counter
 		setInterval(function(){
 			//only push the analysis when this period is done
+			//we're adding a small buffer
 			self.pushAnalysis();
-			self.periodStart = Date.now();
-			self.periodEnd = self.periodStart + periodLength;
+			self.periodStart = Date.now()-10;
+			self.periodEnd = self.periodStart + periodLength + 10;
 			self.counter = 0;
 			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
 		}, periodLength);
