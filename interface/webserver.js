@@ -1,7 +1,7 @@
 "use strict";
 
 let express = require('express');
-//let socketio = require('socket.io');
+let socketio = require('socket.io');
 
 class Webserver{
     constructor(twabot){
@@ -11,11 +11,17 @@ class Webserver{
         //twabot.channelCrawler.activeChannels[name];
 
         this.__registerSites();
-        //this.__handleConnections();
+        this.__handleConnections();
     }
 
     __registerSites(){
         this.app.use('/overview/activeChannels/', function (req, res){
+            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
+            let overview = sliceToOverviewData(overviewList);
+            res.json(overview);
+        }.bind(this));
+
+        this.app.use('/overview/emotionChannels/', function (req, res){
             let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
             let overview = sliceToOverviewData(overviewList);
             res.json(overview);
@@ -39,14 +45,18 @@ class Webserver{
         this.app.use(express.static('interface/public'));
     }
 
-    /*__handleConnections(){
-        this.io.on('connection', function(socket){
+    __handleConnections(){
+        /*this.io.on('connection', function(socket){
             socket.on('registerChannel', function(channelName){
                 let channel = channelthis.twabot.channelCrawler.activeChannels[channelName];
                 socket.emit('legacyData', channel.rethinkDB.readData('fractal'));
-            })
-        });
-    }*/
+                while (socket.conn.readyState=="closing" || socket.conn.readyState=="closed"){
+                    let data = rethinkdbPipe.read()
+                    socket.emit('update', data);
+                }
+            });
+        });*/
+    }
 
     startServer() {
         this.app.listen(80);
