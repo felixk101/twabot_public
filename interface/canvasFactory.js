@@ -1,7 +1,7 @@
 "use strict";
 
-let Chart = require('chart.js');
-let TransformOptions = require('./TransformOptions');
+const Chart = require('chart.js');
+const TransformOptions = require('./TransformOptions');
 
 exports.createThumbnail = function createThumbnail(canvas, channel){
     let ctx = canvas.getContext("2d");

@@ -3,10 +3,10 @@
 //This script only works on windows
 
 // first npm install then run this script
-let exec = require('child_process').execSync;
-let platform = require('os').platform();
-let update = require('./buildUpdateScript');
-let folder = "public";
+const exec = require('child_process').execSync;
+const platform = require('os').platform();
+const update = require('./buildUpdateScript');
+const folder = "public";
 
 function build() {
     if (platform == "win32") {

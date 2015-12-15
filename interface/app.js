@@ -1,15 +1,17 @@
 "use strict";
 
-let Vue = require("vue");
+const Vue = require('vue');
 Vue.use(require('vue-resource'));
-let canvasFactory = require("./canvasFactory");
+const canvasFactory = require('./canvasFactory');
+const emotions = require('../listemotions.json');
 
 let meinVue = new Vue({
     el: '#channelOverview',
 
     data: {
         activeChannels: [],
-        emotionChannels: []
+        emotions: emotions,
+        emotionChannels: {}
     },
 
     ready: function() {

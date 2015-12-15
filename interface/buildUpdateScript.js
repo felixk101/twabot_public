@@ -2,9 +2,9 @@
 
 //This script only works on windows
 
-let exec = require('child_process').execSync;
-let platform = require('os').platform();
-let folder = "public";
+const exec = require('child_process').execSync;
+const platform = require('os').platform();
+const folder = "public";
 
 function update_build() {
     if (platform == "win32") {
