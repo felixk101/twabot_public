@@ -1,17 +1,14 @@
 "use strict";
 let jsonfile = require('./../../jsonemotions.json')
-let equal = require('deep-equal');
-//console.log(jsonfile);
-//jsonfile=JSON.parse(x);
+const equal = require('deep-equal');
 /*
- * The EmotionPerTime Analyzer determines what emotions are sent per period
+ * The EmotionPerTime Analyzer determines what emotions are sent in a certain time period
  */
 
 //over what time period to measure, in ms
 let periodLength = 10000;
 
 class Analyzer{
-
 
     constructor(channelName,rethinkDB) {
 		this.rethinkDB=rethinkDB;
@@ -34,7 +31,7 @@ class Analyzer{
                 "sad":0.0,
                 "surprised":0.0,
 		}
-		//deep copy, but fast
+		//deep copy, but fast - 
 		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
 		let self = this;
 
@@ -45,89 +42,47 @@ class Analyzer{
 			self.periodStart = Date.now();
 			self.periodEnd = self.periodStart + periodLength;
 			self.emotion = JSON.parse(JSON.stringify(self.startemotion))
-			//console.log('periodStart is now',Date.now()-self.periodStart,'ms behind');
 		}, periodLength);
-		
+
     }
 	process(message, timeStamp) {
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.analyzeEmotions(message);
 		} else {
-			//should not be possible!!!
-			//but we're going to ignore them
-			if (timeStamp > this.periodEnd) {
-				//console.log('message is',timeStamp-this.periodEnd,'ms AFTER period end!');
-			} else {
-				//console.log('message is',this.periodStart-timeStamp,'ms BEFORE period start!');
-			}
+			//ignore messages outside of our time period
 		}
-		
 	}
+
 	pushAnalysis() {
-		//replace this with a database push
 		if (equal(this.emotion,this.startemotion)) {
-			//no emotions detected
+			//no emotions were detected
 		} else {
-			//at least one emotion detected
-			//console.log('emotionAna:',this.emotion,'in last period for channel',this.channelName,'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+			//at least one emotion was detected
 		}
-		//we should update the data either way
+		//we should update the database either way
 		this.rethinkDB.writeData('fractal',this.emotion);
 	}
 
 	analyzeEmotions(message) {
+		/* 
+		 * for every emote/smily in our jsonfile
+		 * 	if our message contains it at least once:
+		 * 		add all the properties with a strength attribute to us
+		 * 		(a strength attribute means the property is an emotion)
+		*/
 		let substrings = Object.keys(jsonfile);
 		substrings.map((substring) => {
 			if (message.indexOf(substring) > -1) {
 				let properties = Object.keys(jsonfile[substring]);
 				properties.map((property) => {
 					if (jsonfile[substring][property].strength) {
-						//console.log('incrementing emotion.'+this.emotion[property]);
-						this.emotion[property] += jsonfile[substring][property].strength;				
-						//console.log('this.emotion is now:',this.emotion);
-						
-					}
-				});
-				//console.log(jsonfile[substring]);
-			}
-			//console.log(key);
-			//console.log(jsonfile[key]);
-		});
-
-		
-
-		
-		//for (let substring in substrings) {
-		//	console.log(substring);
-			//console.log('1',substrings[substring]);
-			//substring = substrings[substring];
-			//console.log(substring);
-			//console.log(jsonfile[substrings[substring]]);
-			//console.log('jsonfile.'+substrings[substring]+':'+jsonfile[substrings[substring]].toString());
-			
-			//if the substring exists at least once in the message
-			/*
-			if (message.indexOf(substring) > -1) {
-				//console.log('keys for jsonfile:',substrings);
-				//console.log('keys for jsonfile.'+substring+':',jsonfile.substring);
-				console.log('jsonfile.'+substrings[substring]+':');
-				console.log(jsonfile[substrings[substring]]);
-				console.log('Object.keys(jsonfile.'+substrings[substring]+'):');
-				console.log(Object.keys(jsonfile[substrings[substring]]));
-				let propertiesForSubstring = Object.keys(jsonfile[substrings[substring]]);
-				for (let property in propertiesForSubstring) {
-					//if the property is an emotion
-					let strength = jsonfile[substrings[substring]][propertiesForSubstring[property]].strength;
-					if () {
 						this.emotion[property] += jsonfile[substring][property].strength;
 					}
-				}
-			}*/
-	//	}
+				});
+			}
+		});
 	}
 }
 
 exports.Analyzer=Analyzer;
-//let a = new Analyzer('TestChannel');
-//a.analyzeEmotions('<3 ^^ BibleThump I\'m sad');
 
