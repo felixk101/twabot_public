@@ -97,6 +97,10 @@ class Analyzer{
 			}
 		});
 	}
+
+	getCurrentEmotions() {
+		return this.emotion;
+	}
 }
 
 exports.Analyzer=Analyzer;

@@ -76,6 +76,10 @@ class Analyzer{
 
         return user;
     }
+
+	getCurrentEmotions(){
+		return this.falAnalyzer.getCurrentEmotions();
+	}
 }
 
 exports.Analyzer=Analyzer;

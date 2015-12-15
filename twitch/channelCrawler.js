@@ -173,25 +173,33 @@ class ChannelCrawler{
 	getMostEmotionalChannels() {
 		let self=this;
 		
-		setInterval(function() {
+		//setInterval(function() {
+			let returnString = {};
 			let channels = [];
 			//List of channels as strings:
 			for (let chanObj in self.activeChannels) {
 				channels.push(''+chanObj);
 			}
+			console.log('----most emotion: ----');			
 
 			//for every emotion
 			for (let emotion of emotions) {
 				//get the last fallingEmotions value among all channels
+				//and find the maximum
+				let max = undefined;
+				let maxvalue = 0;
 				for (let channel of channels) {
-					//console.log('channel',channel,':');
-					//read from the database..?!
+					let nextvalue = self.activeChannels[channel].getCurrentEmotions()[emotion];
+					if (nextvalue > maxvalue) {
+						maxvalue = nextvalue;
+						max = channel;
+					}
 				}
-			//find the maximum
-				
+				returnString[emotion]= max;
 			}
+			return returnString;
 			
-		}, 15000);
+		//}, 15000);
 	}
 
 }

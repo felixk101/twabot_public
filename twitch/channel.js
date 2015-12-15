@@ -140,6 +140,10 @@ class Channel{
     getChannelName(){
         return this.name;
     }
+		
+	getCurrentEmotions() {
+		return this.analyser.getCurrentEmotions();
+	}
 
 }
 
