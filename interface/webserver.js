@@ -1,13 +1,16 @@
 "use strict";
 
-let express = require('express');
-let socketio = require('socket.io');
+const express = require('express');
+const http = require('http');
+const socketio = require('socket.io');
+
 
 class Webserver{
     constructor(twabot){
         this.twabot = twabot;
         this.app = express();
-        //this.io = socketio(this.app);
+        this.server = http.Server(this.app);
+        this.io = socketio(this.server);
         //twabot.channelCrawler.activeChannels[name];
 
         this.__registerSites();
@@ -22,9 +25,10 @@ class Webserver{
         }.bind(this));
 
         this.app.use('/overview/emotionChannels/', function (req, res){
-            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
-            let overview = sliceToOverviewData(overviewList);
-            res.json(overview);
+            let emotionChannels = this.twabot.channelCrawler.getMostEmotionalChannels();
+            //let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
+            //let overview = sliceToOverviewData(overviewList);
+            res.json(emotionChannels);
         }.bind(this));
 
         this.app.use('/user.html', function (req, res){
@@ -46,16 +50,22 @@ class Webserver{
     }
 
     __handleConnections(){
-        /*this.io.on('connection', function(socket){
+        this.io.on('connection', function(socket){
             socket.on('registerChannel', function(channelName){
                 let channel = channelthis.twabot.channelCrawler.activeChannels[channelName];
                 socket.emit('legacyData', channel.rethinkDB.readData('fractal'));
-                while (socket.conn.readyState=="closing" || socket.conn.readyState=="closed"){
-                    let data = rethinkdbPipe.read()
-                    socket.emit('update', data);
-                }
+                let dataPromis = channel.rethinkDB.getChangeFeed('fractal');
+                dataPromis
+                    .then((data) => { // data is a stream of new analysed data
+                        data.on("data", (data) => {
+                            socket.emit('update', data);
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             });
-        });*/
+        });
     }
 
     startServer() {
