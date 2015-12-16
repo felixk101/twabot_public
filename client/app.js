@@ -37,8 +37,6 @@ let meinVue = new Vue({
                     this.$nextTick(this.drawThumbnailsEmotion);
                 })
                 .error(function(error){
-                    this.$set("emotionChannels", require("./userMock.json").emotionChannels);
-                    this.$nextTick(this.drawThumbnailsEmotion);
                 });
         },
 

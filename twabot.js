@@ -5,7 +5,7 @@
 const ChannelCrawler=require('./twitch/channelCrawler.js');
 const request=require('request');
 const credentials=require('./credentials/credentials.js');
-const Webserver=require('./interface/webserver.js');
+const Webserver=require('./webserver/webserver.js');
 
 class Twabot{
 

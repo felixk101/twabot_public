@@ -50,7 +50,7 @@ class Webserver{
             })
         });
 
-        this.app.use(express.static('interface/public'));
+        this.app.use(express.static('public'));
     }
 
     __handleConnections(){
@@ -86,7 +86,8 @@ class Webserver{
 function sliceToOverviewData(overviewList){
     let overview = [];
     for (let channel of overviewList){
-        overview.push(convertToLightweightChannel(channel));
+        if (channel)
+            overview.push(convertToLightweightChannel(channel));
     }
     return overview;
 }
