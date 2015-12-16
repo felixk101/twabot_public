@@ -50,8 +50,10 @@ let meinVue = new Vue({
         drawThumbnailsEmotion: function(){
             for (let emotion of this.emotions) {
                 let channel = this.emotionChannels[emotion];
-                let canvas = document.getElementById("thumbnail_emotion_" + emotion);
-                canvasFactory.createThumbnail(canvas, channel);
+                if (channel) {
+                    let canvas = document.getElementById("thumbnail_emotion_" + emotion);
+                    canvasFactory.createThumbnail(canvas, channel);
+                }
             }
         }
     }
