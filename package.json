@@ -4,7 +4,10 @@
   "description": "Application for analysing the chatrooms of the streaming plattform Twitch",
   "main": "twabot.js",
   "author": "Lukas Edelb�ck, Felix Kampfer, Andreas Wundlechner",
-  "repository": "https://github.com/hsa-nodejs-ws1516/twabot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hsa-nodejs-ws1516/twabot"
+  },
   "scripts": {
     "start": "node twabot.js"
   },
@@ -22,5 +25,6 @@
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.3.13"
-  }
+  },
+  "license": "private"
 }

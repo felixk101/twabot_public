@@ -43,7 +43,7 @@ class Webserver{
         });
 
         this.app.use('/user/:user/', function (req, res){
-            let options = {root: __dirname + '/public/'};
+            let options = {root: __dirname + '/../public/'};
             res.sendFile('user.html', options, function(err){
                 if (err)
                     res.status(404).end();
