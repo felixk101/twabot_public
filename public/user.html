@@ -57,34 +57,44 @@
                                 <li class="active"><a data-toggle="tab" href="#overview">Overview</a></li>
                                 <li><a data-toggle="tab" href="#fractal">Fractal</a></li>
                                 <li><a data-toggle="tab" href="#emotions">Emotions</a></li>
-                                <li><a data-toggle="tab" href="#msgPT">Messages per Time</a></li>
+                                <li><a data-toggle="tab" href="#msgPerTime">Messages per Time</a></li>
                             </ul>
 
                             <div class="tab-content">
                                 <div id="overview" class="tab-pane fade in active">
-                                    Overview
-                                    <canvas id="thumbnail_emotion_{{channel.name}}"></canvas>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                                                <a data-toggle="tab" href="#fractal" class="thumbnail" style="color:#000000; text-decoration:none;">
+                                                    <h4>Fractal</h4>
+                                                    <canvas id="overview_fractal"></canvas>
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                                                <a data-toggle="tab" href="#emotions" class="thumbnail" style="color:#000000; text-decoration:none;">
+                                                    <h4>Emotions</h4>
+                                                    <canvas id="overview_fallingEmotions"></canvas>
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                                                <a data-toggle="tab" href="#msgPerTime" class="thumbnail" style="color:#000000; text-decoration:none;">
+                                                    <h4>Messages per Time</h4>
+                                                    <canvas id="overview_msgPerTime"></canvas>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="fractal" class="tab-pane fade">
-                                    Fractal
+                                    <canvas id="detail_fractal"></canvas>
                                 </div>
                                 <div id="emotions" class="tab-pane fade">
-                                    Emotions
+                                    <canvas id="detail_fallingEmotions"></canvas>
                                 </div>
-                                <div id="msgPT" class="tab-pane fade">
-                                    Messages per Time
+                                <div id="msgPerTime" class="tab-pane fade">
+                                    <canvas id="detail_msgPerTime"></canvas>
                                 </div>
                             </div>
-
-                            <!--
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4" v-for="channel in activeChannels">
-                                    <a href="/user/{{channel.name}}" class="thumbnail" style="color:#000000; text-decoration:none;">
-                                        <h3>{{channel.name}}</h3>
-                                        <canvas v-el="thumbnail_active_{{channel.name}}" id="thumbnail_active_{{channel.name}}"></canvas>
-                                    </a>
-                                </div>
-                            </div>-->
                         </div>
                     </div>
 				</div>
