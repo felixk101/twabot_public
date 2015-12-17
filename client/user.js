@@ -26,6 +26,10 @@ let meinVue = new Vue({
                 socket.emit('registerChannel', pathname[index+1])
             });
 
+            socket.on('legacyData', (data) => {
+                console.log(data);
+            });
+
 
 
             /*this.$http.get('/overview/activeChannels/')

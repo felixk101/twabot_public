@@ -3,6 +3,7 @@
 const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
+const analysisTypes = require('./analysisTypes.json');
 
 
 class Webserver{
@@ -63,7 +64,17 @@ class Webserver{
             socket.on('registerChannel', (channelName) => {
                 let channel = this.twabot.channelCrawler.activeChannels[channelName];
                 if (channel) {
-                    socket.emit('legacyData', channel.rethinkDB.readData('fractal'));/*
+                    for (let type of analysisTypes){
+                        channel.rethinkDB.readData(type)
+                            .then((analysisList) => {
+                                let packageContent = {};
+                                packageContent[type] = analysisList;
+                                socket.emit('legacyData', packageContent);
+                            })
+                            .catch((err) => console.log(err));
+                    }
+
+                    /*
                     let fractalPromis = channel.rethinkDB.getChangeFeed('fractal');
                     fractalPromis
                         .then((data) => { // data is a stream of new analysed data
