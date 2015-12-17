@@ -9,7 +9,7 @@ let ept = require('./fractal/emotionPerTime.js');
 let fal = require('./fractal/fallingEmotionPerTime.js')
 
 let emotions = [];
-fs.readFile('jsonemotions.json','utf-8',function(err,data){
+fs.readFile('../jsonemotions.json','utf-8',function(err,data){
     if (err) {
 		throw err;
 	}

@@ -3,7 +3,7 @@
  * Created by Lukas on 22.11.2015.
  */
 const r=require('rethinkdb');
-const credentilas=require('./../credentials/credentials.js')
+const credentials=require('./../credentials/credentials.js')
 
 class RethinkDB{
     /*
@@ -57,7 +57,7 @@ class RethinkDB{
         this.streamName=streamName;
         console.log("Connection to rethinkdb started")
         // Connect to the rethinkDB
-        r.connect({host:credentilas.DBHOST,port:credentilas.DBPORT})
+        r.connect({host:credentials.DBHOST,port:credentials.DBPORT})
         .then((result)=>{
                 /*The connection is being saved for later use*/
                 this.con=result;
@@ -262,7 +262,7 @@ class RethinkDB{
                 id=this.streamID;
             }
             //Returns the conten of the table <id>_<type>;
-            r.table(id+'_'+type).run(this.con).then((result)=> {
+            return r.table(id+'_'+type).run(this.con).then((result)=> {
                 return result.toArray();
             }).then((result)=>{
 
@@ -298,7 +298,27 @@ class RethinkDB{
 
     }
 
+    getChangeFeed(analyzeType){
+        /*This function will return a promise. This promise will contain a stream, which will fire a data-event
+        * if the table <streamID>_<analyzeType> get updated*/
+        return t.table(this.streamID+'_'+analyzeType).changes().run(this.con);
+    }
+
+    getDataSince(time){
+        /*
+        * This function will return a promise with a list of elements that have a timestamp that got created during now and now-time.
+        * */
+        let now=new Date();
+        let past=new Date(now-time);
+        console.log(new Date(now),new Date(past))
+        return r.table("TimeTable").filter(r.row('timestamp').during(new Date(past),new Date(now))).run(con)
+            .then((result)=>{
+                return result.toArray();
+            })
+    }
 }
+
+
 
 //function changeFeed(){
 //    let con;
