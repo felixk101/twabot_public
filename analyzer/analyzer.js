@@ -7,15 +7,7 @@ let fs = require('fs');
 let mpt = require('./msgpertime/msgPerTime.js');
 let ept = require('./fractal/emotionPerTime.js');
 let fal = require('./fractal/fallingEmotionPerTime.js')
-
-let emotions = [];
-fs.readFile('../jsonemotions.json','utf-8',function(err,data){
-    if (err) {
-		throw err;
-	}
-	emotions = JSON.parse(data);
-
-});
+let emotions = require('../jsonemotions.json');
 
 class Analyzer{
 
