@@ -4,14 +4,12 @@ const Vue = require('vue');
 Vue.use(require('vue-resource'));
 //Vue.config.debug = true;
 const canvasFactory = require('./canvasFactory');
-const emotions = require('../listemotions.json');
 
 let meinVue = new Vue({
     el: '#channelOverview',
 
     data: {
         activeChannels: [],
-        emotions: emotions,
         emotionChannels: {}
     },
 
@@ -48,7 +46,7 @@ let meinVue = new Vue({
         },
 
         drawThumbnailsEmotion: function(){
-            for (let emotion of this.emotions) {
+            for (let emotion in this.emotionChannels) {
                 let channel = this.emotionChannels[emotion];
                 if (channel) {
                     let canvas = document.getElementById("thumbnail_emotion_" + emotion);
