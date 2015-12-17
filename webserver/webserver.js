@@ -39,41 +39,48 @@ class Webserver{
             if (req.query.channel)
                 res.redirect('/user/'+req.query.channel);
             else
-                res.status(404).end();
+                res.redirect('/');
         });
 
         this.app.use('/user/:user/', function (req, res){
             let options = {root: __dirname + '/../public/'};
-            res.sendFile('user.html', options, function(err){
-                if (err)
-                    res.status(404).end();
-            })
-        });
+            if (this.twabot.channelCrawler.activeChannels[req.params.user]) {
+                res.sendFile('user.html', options, function (err) {
+                    if (err)
+                        res.status(404).end();
+                });
+            }
+            else {
+                res.redirect('/');
+            }
+        }.bind(this));
 
         this.app.use(express.static('public'));
     }
 
     __handleConnections(){
-        this.io.on('connection', function(socket){
-            socket.on('registerChannel', function(channelName){
-                let channel = channelthis.twabot.channelCrawler.activeChannels[channelName];
-                socket.emit('legacyData', channel.rethinkDB.readData('fractal'));
-                let dataPromis = channel.rethinkDB.getChangeFeed('fractal');
-                dataPromis
-                    .then((data) => { // data is a stream of new analysed data
-                        data.on("data", (data) => {
-                            socket.emit('update', data);
-                        });
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+        this.io.on('connection', (socket) => {
+            socket.on('registerChannel', (channelName) => {
+                let channel = this.twabot.channelCrawler.activeChannels[channelName];
+                if (channel) {
+                    socket.emit('legacyData', channel.rethinkDB.readData('fractal'));/*
+                    let fractalPromis = channel.rethinkDB.getChangeFeed('fractal');
+                    fractalPromis
+                        .then((data) => { // data is a stream of new analysed data
+                            data.on("data", (data) => {
+                                socket.emit('update', data);
+                            });
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });*/
+                }
             });
         });
     }
 
     startServer() {
-        this.app.listen(80);
+        this.server.listen(80);
         console.log("Webserver started on port 80");
     }
 };
