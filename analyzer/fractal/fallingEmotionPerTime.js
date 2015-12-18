@@ -67,6 +67,7 @@ class Analyzer{
 			//at least one emotion detected
 		}
 		//we should update the data either way
+
 		this.rethinkDB.writeData('fallingEmotions',this.emotion);
 	}
 

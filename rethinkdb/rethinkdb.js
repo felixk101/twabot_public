@@ -233,6 +233,7 @@ class RethinkDB{
         *   type: This argument will tell what type of analyze data this is.
         *   data: The data to write into the database.
         */
+
         if(!this.connected){
             return;
         }
