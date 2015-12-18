@@ -116,7 +116,7 @@ class Channel{
                 } else if (input[0].split(' ')[1] == 'PRIVMSG') {
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
-					this.analyser.analyzeData(Date.now()+"|"+input);
+					this.analyser.analyzeData(new Date()+"|"+input);
                     //console.log(timestamp+'|'+sender + ":" + message);
                     //fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
                     //    if(err) {
@@ -153,6 +153,6 @@ class Channel{
 
 exports.Channel=Channel;
 if (require.main === module) {
-let chann=new Channel('shroomztv',500);
+let chann=new Channel('ShroomzTV',500);
 chann.connect('TestSTream');
 }
