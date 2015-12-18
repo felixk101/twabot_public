@@ -33,14 +33,14 @@ class RethinkDB{
                 /* Saves the connection and set the database that will be used*/
 
                 this.con=result;
-                this.con.use('rtest');
-                return r.db('rtest').tableList().run(this.con);
+                this.con.use('twabot');
+                return r.db('twabot').tableList().run(this.con);
             })
             .then((result)=> {
 
                 /* Check if a table with the name 'this.channelName' exist and creates it if the table dosen't exist. */
                 if (result.indexOf(this.channelName) === -1) {
-                    return r.db('rtest').tableCreate(this.channelName).run(this.con)
+                    return r.db('twabot').tableCreate(this.channelName).run(this.con)
 
                 } else {
                     return Promsise.resolve(null);
@@ -110,12 +110,12 @@ class RethinkDB{
                     this.streamID=result.generated_keys[0];
                 }
                 this.streamID=this.streamID.replace(/-/g,'_');
-                return r.db('rtest').tableList().filter((table)=>{return table.eq(this.channelName+'_'+this.streamID)}).run(this.con);
+                return r.db('twabot').tableList().filter((table)=>{return table.eq(this.channelName+'_'+this.streamID)}).run(this.con);
             })
             .then((result)=>{
                 /* If the table dosen't exist a new one will be created. */
                 if(result.length===0){
-                    return r.db('rtest').tableCreate(this.channelName+'_'+this.streamID).run(this.con);
+                    return r.db('twabot').tableCreate(this.channelName+'_'+this.streamID).run(this.con);
                 }
                 return Promise.resolve(null);
             })
