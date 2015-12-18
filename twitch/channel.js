@@ -8,7 +8,7 @@ var net=require('net');
 var request=require('request');
 var credentials=require('./../credentials/credentials.js');
 var analyzer=require('./../analyzer/analyzer.js');
-var db=require('./../rethinkdb/rethinkdb2.js');
+var db=require('./../rethinkdb/rethinkdb.js');
 class Channel{
     constructor(name,viewers){
         this.online=false;
