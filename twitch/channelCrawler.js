@@ -102,7 +102,7 @@ class ChannelCrawler{
             }
 
         }.bind(this)).catch(function(err){
-            console.log("Promise error: "+err)
+            console.error("Promise error: "+err)
 
         });
 

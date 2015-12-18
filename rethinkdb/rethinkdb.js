@@ -79,7 +79,7 @@ class RethinkDB{
             }).then((result)=>{
                 this.createStreamNameMapTable(this.streamName);
             }).catch((err)=>{
-                console.log(err);
+                console.error(err);
             })
     }
 
@@ -155,7 +155,7 @@ class RethinkDB{
                                 return resolve(0);
                             })
                             .catch((err)=>{
-                                console.log("Error"+err)
+                                console.error("Error"+err)
                             })
                     })
                 })
@@ -168,7 +168,7 @@ class RethinkDB{
                 /*Now it is possible to read and write from/to the database*/
                 this.connected=true;
             }).catch((err)=>{
-                console.log(err);
+                console.error(err);
             });
 
 
@@ -223,7 +223,7 @@ class RethinkDB{
         .then((result)=>{
                 this.createNewStreamTable(streamName);
             }).catch((err)=>{
-                console.log(err);
+                console.error(err);
             })
     }
 
@@ -241,7 +241,7 @@ class RethinkDB{
             timestamp:new Date(),
             data:data
         }).run(this.con).then().catch((err)=>{
-            console.log(err);
+            console.error(err);
         })
     }
 

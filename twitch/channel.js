@@ -84,7 +84,7 @@ class Channel{
                 this.connectToChat({host: this.host, port: this.port},chan,client);
 
             } else {
-                console.log('ERROR: Could not find any info about channel \''+chan+'\'. (error:'+error+')');
+                console.error('ERROR: Could not find any info about channel \''+chan+'\'. (error:'+error+')');
                 return {error};
             }
         })
@@ -126,8 +126,12 @@ class Channel{
                 }
             });
             this.client.on('end', function () {
-                console.log('Disconectd');
+                console.log('Chat of '+this.getChannelName()+' has disconectd');
             });
+
+            this.client.on('uncaughtException',(err)=>{
+                console.error(err);
+            })
         });
     }
 
