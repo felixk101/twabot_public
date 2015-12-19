@@ -81,6 +81,9 @@ class RethinkDB{
         * Then it check if the table has all specified secondaryIndexs and the function
         * will add all missing secondaryIndexs. If this is done the table will be ready to use.
         * */
+        if(!this.connected){
+           return 'RethinkDB is not connected';
+        }
         streamName+="";
         // Request a list from the table 'this.channelname' with entrys that contain the streamTitle 'streamName'
         r.table(this.channelName).getAll(streamName,{index:'streamTitle'}).run(this.con)
@@ -192,6 +195,10 @@ class RethinkDB{
         * param:
         *   analyzeType: This specify the data you will receive.
         * */
+        if(!this.connected){
+            Promise.reject('RethinkDB is not connected');
+        }
+        analyzeType+="";
         return r.table(this.streamID+'_'+analyzeType).filter(r.row('type').eq(analyzeType)).changes().run(this.con);
     }
 
@@ -199,6 +206,9 @@ class RethinkDB{
         /*
         * This function will return a promise with all values with the analyse type 'type'.
         * */
+        if(!this.connected){
+            Promise.reject('RethinkDB is not connected');
+        }
         return r.table(this.channelName+'_'+this.streamID).getAll(type,{index:type}).run(this.con);
 
     }
@@ -207,6 +217,9 @@ class RethinkDB{
         /*
         * This function will return a promise with the whole stream table.
         * */
+        if(!this.connected){
+            Promise.reject('RethinkDB is not connected');
+        }
         return r.table(this.channelName+'_'+this.streamID).run(this.con)
             .then((result)=>{
                 result.close();
@@ -219,6 +232,10 @@ class RethinkDB{
          * This function will return a promise with a list of elements that have a timestamp that
          * got created during now and now-time.
          * */
+        if(!this.connected){
+            Promise.reject('RethinkDB is not connected');
+        }
+        type+="";
         let now=new Date();
         let past=new Date(now-time);
         console.log(new Date(now),new Date(past))
