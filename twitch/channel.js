@@ -125,7 +125,7 @@ class Channel{
                     //});
                 }
             });
-            this.client.on('end', function () {
+            this.client.on('end', () => {
                 console.log('Chat of '+this.getChannelName()+' has disconectd');
             });
 
