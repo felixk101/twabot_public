@@ -3,7 +3,7 @@
 const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
-const analysisTypes = require('./analysisTypes.json');
+const analyzerTypes = require('./analyzerTypes.json');
 
 
 class Webserver{
@@ -62,14 +62,36 @@ class Webserver{
     __handleConnections(){
         this.io.on('connection', (socket) => {
             socket.on('registerChannel', (channelName) => {
+                console.log(channelName);
                 let channel = this.twabot.channelCrawler.activeChannels[channelName];
                 if (channel) {
-                    for (let type of analysisTypes){
-                        channel.rethinkDB.readData(type)
+                    for (let type of analyzerTypes){
+                        // Send all the legacy data to the client for its history
+                        console.log(type);
+                        console.log(channel);
+                        channel.rethinkDB.getTableWithType(type)
                             .then((analysisList) => {
                                 let packageContent = {};
-                                packageContent[type] = analysisList;
+                                if (type == 'fallingEmotions')
+                                    packageContent[type] = analysisList[0];
+                                else
+                                    packageContent[type] = analysisList;
+
                                 socket.emit('legacyData', packageContent);
+                            })
+                            .catch((err) => console.log(err));
+
+                        channel.rethinkDB.getChangeFeed()
+                            .then((data) =>{
+                                data.on('data', (data) => {
+                                    socket.emit('updateData', data);
+                                });
+                                socket.conn.on('close', (msg) => {
+                                    data.close();
+                                });
+                                socket.on('error', (msg) => {
+                                    data.close();
+                                });
                             })
                             .catch((err) => console.log(err));
                     }
@@ -87,6 +109,11 @@ class Webserver{
                         });*/
                 }
             });
+            socket.on('error', (err) => {
+                console.log('socket.io threw an error: ');
+                console.log(err);
+            });
+
         });
     }
 

@@ -1,0 +1,11 @@
+{
+  "labels": [],
+  "datasets": [{
+    "fillColor": "rgba(220,220,220,1)",
+    "strokeColor": "rgba(220,220,220,1)",
+    "highlightFill": "rgba(220,220,220,1)",
+    "highlightStroke": "rgba(220,220,220,1)",
+    "data": [],
+    "dataColors": []
+  }]
+}

@@ -1,0 +1,13 @@
+{
+  "amused": "rgb(255,255,153)",
+  "annoyed": "rgb(255,153,153)",
+  "bored": "rgb(160,160,160)",
+  "embarassed": "rgb(,,)",
+  "excited": "rgb(0,255,0)",
+  "happy": "rgb(255,255,0)",
+  "loving": "rgb(255,0,255)",
+  "provoking": "rgb(140,0,0)",
+  "rage": "rgb(255,0,0)",
+  "sad": "rgb(0,0,255)",
+  "surprised": "rgb(153,355,153)"
+}

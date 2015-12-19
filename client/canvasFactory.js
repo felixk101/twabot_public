@@ -6,17 +6,7 @@ const TransformOptions = require('./TransformOptions');
 exports.createThumbnail = function createThumbnail(canvas, channel){
     let ctx = canvas.getContext("2d");
 
-    // Old positions
     let positions = [
-        new TransformOptions(canvas.width, canvas.height, 2/3, 2/3),
-        new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 2/3, 0),
-        new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 2/3, 1/3),
-        new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 0, 2/3),
-        new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 1/3, 2/3),
-        new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 2/3, 2/3)
-    ];
-
-    positions = [
         new TransformOptions(canvas.width, canvas.height, 2/3, 1),
         new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 2/3, 0),
         new TransformOptions(canvas.width, canvas.height, 1/3, 1/3, 2/3, 1/3),
@@ -157,8 +147,7 @@ function getEmotions(channelName){
             highlightStroke: "rgba(220,220,220,1)",
             data: [65, 10, 80, 31, 56],
             dataColors: ["blue","green","yellow","orange","red"]
-        }
-    ]
+        }]
     };
 }
 
