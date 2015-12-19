@@ -94,18 +94,18 @@ class RethinkDB{
                 return result.toArray();
             })
             .then((result)=>{
-                console.log("Before check if index exist",this.streamID)
+
                 // Check if a entry with the streamTitle 'streamName' exist and create a new one if it dosen't exist.
                 if(result.length===0){
-                    console.log("Index creation starts",this.streamID)
+
                     return r.table(this.channelName).insert({
                         streamTitle:streamName,
                         date:Date.now()
                     }).run(this.con)
                 }else{
-                    console.log("Index exist before assignment",this.streamID)
+
                     this.streamID=result[0].id;
-                    console.log("Index exist after assignment",this.streamID)
+
                     return Promise.resolve(null);
                 }
             })
@@ -114,12 +114,12 @@ class RethinkDB{
                 * the id as name exist
                 * */
                 if(result!==null){
-                    console.log("Index created before assignment",this.streamID)
+
                     this.streamID=result.generated_keys[0];
-                    console.log("Index created before assignment",this.streamID)
+
                 }
                 this.streamID=this.streamID.replace(/-/g,'_');
-                console.log("Index done",this.streamID)
+
                 return r.db('twabot').tableList().filter((table)=>{return table.eq(this.channelName+'_'+this.streamID)}).run(this.con);
             })
             .then((result)=>{
@@ -131,26 +131,38 @@ class RethinkDB{
             })
             .then((result)=>{
                 /* request a list of secondaryIndex from the table 'this.channelName+'_'+this.streamID'. */
-                return r.table(this.channelName+'_'+this.streamID).indexList().run(this.con);
+                return r.table(this.channelName+'_'+this.streamID).indexList()
+                    .filter((index)=>{return index.eq('type')}).run(this.con);
             })
             .then((result)=>{
                 /* If a secondaryIndex dosen't exist in the table, it will be created.
                  * The variable 'analyseType' contains all possible secondaryIndexs. */
-                let analyseType  = ['fractal', 'fallingEmotions', 'msgPerTime','raw'];
-                analyseType=analyseType.filter((type)=>{
-                    if(result.indexOf(type)<0){
-                        return type;
-                    }
-                });
+                if(result.length===0) {
+                    return r.table(this.channelName+'_'+this.streamID).indexCreate('type').run(this.con)
+                    //let analyseType = ['fractal', 'fallingEmotions', 'msgPerTime', 'raw'];
+                    //analyseType = analyseType.filter((type)=> {
+                    //    if (result.indexOf(type) < 0) {
+                    //        return type;
+                    //    }
+                    //});
+//
+                    //let promiseList = analyseType.map((type)=> {
+                    //    return r.table(this.channelName + '_' + this.streamID).indexCreate(type).run(this.con)
+                    //        .then((result)=> {
+                    //            return r.table(this.channelName + '_' + this.streamID).indexWait(type).run(this.con);
+                    //        })
+                    //});
 
-                let promiseList=analyseType.map((type)=>{
-                    return r.table(this.channelName+'_'+this.streamID).indexCreate(type).run(this.con)
-                        .then((result)=>{
-                            return r.table(this.channelName+'_'+this.streamID).indexWait(type).run(this.con);
-                        })
-                });
-                return Promise.all(promiseList);
-
+                }else {
+                    return Promise.resolve(null);
+                }
+            })
+            .then((result)=>{
+                if(result!==null){
+                    return r.table(this.channelName+'_'+this.streamID).indexWait('type').run(this.con)
+                }else{
+                    return Promise.resolve(null)
+                }
             })
             .then((result)=>{
                 /* The table is ready to use. */
@@ -217,7 +229,11 @@ class RethinkDB{
         if(!this.connected){
             Promise.reject('RethinkDB is not connected');
         }
-        return r.table(this.channelName+'_'+this.streamID).getAll(type,{index:type}).run(this.con);
+        return r.table(this.channelName+'_'+this.streamID).getAll(type,{index:'type'}).run(this.con)
+            .then((result)=>{
+                result.close();
+                return result.toArray();
+            })
 
     }
 
