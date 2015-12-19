@@ -207,7 +207,7 @@ class RethinkDB{
             Promise.reject('RethinkDB is not connected');
         }
         analyzeType+="";
-        return r.table(this.streamID+'_'+analyzeType).filter(r.row('type').eq(analyzeType)).changes().run(this.con);
+        return r.table(this.channelName+'_'+this.streamID).filter(r.row('type').eq(analyzeType)).changes().run(this.con);
     }
 
     getTableWithType(type){
