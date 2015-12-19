@@ -153,6 +153,9 @@ class Channel{
 
 exports.Channel=Channel;
 if (require.main === module) {
-let chann=new Channel('sissorstream',500);
-chann.connect('TestSTream');
+    let chann=new Channel('sissorstream',500);
+    chann.connect('TestSTream');
+    setTimeout(()=>{
+        console.log(chann.rethinkDB.streamID);
+    },4000)
 }

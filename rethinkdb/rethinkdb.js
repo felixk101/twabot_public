@@ -13,6 +13,7 @@ class RethinkDB{
         this.con=undefined;
         this.currentStreamTable="";
         this.connected=false;
+        this.isConnecting=false;
     }
 
     connect(streamName){
@@ -26,6 +27,7 @@ class RethinkDB{
         *   streamName: The name of the stream.
         * */
         this.streamName=streamName;
+        this.isConnecting=true;
         console.log("Connection to rethinkdb started Version 2")
         /* Connect to the rethinkDB */
         r.connect({host:credentials.DBHOST,port:credentials.DBPORT})
@@ -43,7 +45,7 @@ class RethinkDB{
                     return r.db('twabot').tableCreate(this.channelName).run(this.con)
 
                 } else {
-                    return Promsise.resolve(null);
+                    return Promise.resolve(null);
                 }
 
             }).then((result)=>{
@@ -81,7 +83,7 @@ class RethinkDB{
         * Then it check if the table has all specified secondaryIndexs and the function
         * will add all missing secondaryIndexs. If this is done the table will be ready to use.
         * */
-        if(!this.connected){
+        if(!this.connected && !this.isConnecting){
            return 'RethinkDB is not connected';
         }
         streamName+="";
@@ -92,16 +94,18 @@ class RethinkDB{
                 return result.toArray();
             })
             .then((result)=>{
+                console.log("Before check if index exist",this.streamID)
                 // Check if a entry with the streamTitle 'streamName' exist and create a new one if it dosen't exist.
                 if(result.length===0){
+                    console.log("Index creation starts",this.streamID)
                     return r.table(this.channelName).insert({
                         streamTitle:streamName,
                         date:Date.now()
                     }).run(this.con)
                 }else{
-
+                    console.log("Index exist before assignment",this.streamID)
                     this.streamID=result[0].id;
-
+                    console.log("Index exist after assignment",this.streamID)
                     return Promise.resolve(null);
                 }
             })
@@ -110,9 +114,12 @@ class RethinkDB{
                 * the id as name exist
                 * */
                 if(result!==null){
+                    console.log("Index created before assignment",this.streamID)
                     this.streamID=result.generated_keys[0];
+                    console.log("Index created before assignment",this.streamID)
                 }
                 this.streamID=this.streamID.replace(/-/g,'_');
+                console.log("Index done",this.streamID)
                 return r.db('twabot').tableList().filter((table)=>{return table.eq(this.channelName+'_'+this.streamID)}).run(this.con);
             })
             .then((result)=>{
@@ -147,6 +154,7 @@ class RethinkDB{
             })
             .then((result)=>{
                 /* The table is ready to use. */
+                this.isConnecting=false;
                 this.connected=true;
                 console.log("StreamTable created");
             }).catch((err)=>{
