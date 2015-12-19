@@ -81,10 +81,10 @@ class Webserver{
                             })
                             .catch((err) => console.log(err));
 
-                        channel.rethinkDB.getChangeFeed()
+                        channel.rethinkDB.getChangeFeed(type)
                             .then((data) =>{
-                                data.on('data', (data) => {
-                                    socket.emit('updateData', data);
+                                data.on('data', (analysis) => {
+                                    socket.emit('updateData', analysis);
                                 });
                                 socket.conn.on('close', (msg) => {
                                     data.close();
