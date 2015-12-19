@@ -153,6 +153,6 @@ class Channel{
 
 exports.Channel=Channel;
 if (require.main === module) {
-let chann=new Channel('ShroomzTV',500);
+let chann=new Channel('sissorstream',500);
 chann.connect('TestSTream');
 }

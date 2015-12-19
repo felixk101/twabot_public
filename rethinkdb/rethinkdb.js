@@ -199,7 +199,7 @@ class RethinkDB{
         /*
         * This function will return a promise with all values with the analyse type 'type'.
         * */
-        return r.table(this.streamID).getAll(type,{index:type}).run(this.con);
+        return r.table(this.channelName+'_'+this.streamID).getAll(type,{index:type}).run(this.con);
 
     }
 
@@ -207,7 +207,7 @@ class RethinkDB{
         /*
         * This function will return a promise with the whole stream table.
         * */
-        return r.table(this.streamID).run(this.con)
+        return r.table(this.channelName+'_'+this.streamID).run(this.con)
             .then((result)=>{
                 result.close();
                 return result.toArray();
