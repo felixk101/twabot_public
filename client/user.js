@@ -19,6 +19,7 @@ let meinVue = new Vue({
     el: '#user',
 
     data: {
+        channelName: "",
         fractal: [],
         fallingEmotions: fallingEmotionsFrame,
         msgPerTimeChart: null,
@@ -26,25 +27,23 @@ let meinVue = new Vue({
     },
 
     ready: function() {
-        let name = this.calculateChannelName();
-        this.fetchDiagrammData();
+        let channelName = this.getChannelName();
+        this.$set('channelName', channelName);
+        this.fetchDiagrammData(channelName);
     },
 
     methods: {
-        calculateChannelName: function(){
+        getChannelName: function(){
             let path = url.parse(document.URL);
             let pathname = path.pathname.split('/');
             let index = pathname.indexOf('user');
             return pathname[index+1];
         },
 
-        fetchDiagrammData: function () {
+        fetchDiagrammData: function (channelName) {
             let socket = io();
             socket.on('connect', function(){
-                let path = url.parse(document.URL);
-                let pathname = path.pathname.split('/');
-                let index = pathname.indexOf('user');
-                socket.emit('registerChannel', pathname[index+1])
+                socket.emit('registerChannel', channelName)
             });
 
             socket.on('legacyData', (data) => {
