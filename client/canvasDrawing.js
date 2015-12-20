@@ -1,7 +1,10 @@
 "use strict";
 
 const Chart = require('chart.js');
+Chart.defaults.global.animationSteps = 25;
 const TransformOptions = require('./TransformOptions');
+const msgPerTimeCount = 20;
+exports.msgPerTimeCount = msgPerTimeCount;
 
 exports.updateFractal = function (data) {
     let canvases = getCanvases('fractal');
@@ -12,7 +15,24 @@ exports.updateFractal = function (data) {
     }
 };
 
-exports.initMsgPerTime = function (data) {
+exports.initMsgPerTime = function () {
+    let msgPerTimeChartData = {
+        labels: [],
+        datasets: [{
+            label: "Messages Per Time",
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+            data: []
+        }]
+    };
+    for (let i=0; i<msgPerTimeCount; i++) {
+        msgPerTimeChartData.datasets[0].data.push(0);
+        msgPerTimeChartData.labels.push("");
+    }
     let canvases = getCanvases('msgPerTime');
     let charts = [];
     for (let canvas of canvases) {
@@ -22,7 +42,7 @@ exports.initMsgPerTime = function (data) {
         let chartOptions = {
             responsive: true
         };
-        let chart = new Chart(ctx).Line(data, chartOptions);
+        let chart = new Chart(ctx).Line(msgPerTimeChartData, chartOptions);
         charts.push(chart);
     }
     return charts;
@@ -30,7 +50,11 @@ exports.initMsgPerTime = function (data) {
 
 exports.updateMsgPerTime = function (charts, data) {
     for (let chart of charts) {
-        chart.datasets[0].data = data.datasets[0].data;
+        let chartLength = chart.datasets[0].points.length;
+        for (let i=0; i<chartLength-1; i++){
+            chart.datasets[0].points[i].value = chart.datasets[0].points[i+1].value;
+        }
+        chart.datasets[0].points[chartLength-1].value = data;
         chart.update();
     }
 };
@@ -43,13 +67,17 @@ exports.initFallingEmotions = function (data) {
 
         // Build the chart
         let chartOptions = {
-            responsive: true
+            responsive: true,
+            scaleOverride : true,
+            scaleSteps : 4,
+            scaleStepWidth : 250,
+            scaleStartValue : 0
         };
         let chart = new Chart(ctx).Bar(data, chartOptions);
 
         // Set the barcolors
         for (let i=0; i<chart.datasets[0].bars.length; i++){
-            chart.datasets[0].bars[i].fillColor = dataColors[i];
+            chart.datasets[0].bars[i].fillColor = data.datasets[0].dataColors[i];
         }
         chart.update();
         charts.push(chart);
@@ -59,7 +87,10 @@ exports.initFallingEmotions = function (data) {
 
 exports.updateFallingEmotions = function (charts, data) {
     for (let chart of charts) {
-        chart.datasets[0].data = data.datasets[0].data;
+        for (let i=0; i<chart.datasets[0].bars.length; i++) {
+            chart.datasets[0].bars[i].value = data.datasets[0].data[i];
+        }
+        chart.resize();
         chart.update();
     }
 };
@@ -75,60 +106,16 @@ function getCanvases(type){
 function drawFractal(ctx, transformOptions, data){
     ctx.save();
     transformOptions.apply(ctx);
-    ctx.fillRect(0, 0, transformOptions.width, transformOptions.height);
+    ctx.clearRect(0,0,transformOptions.width,transformOptions.height);
+
+    // for emotions:
+    drawPath(ctx, transformOptions);
     ctx.restore();
 }
 
-/*
-function initFallingEmotions(ctx, transformOptions, data){
-    ctx.save();
-
-    // Build the chart
-    let chartOptions = {
-        responsive: true
-    };
-    let chart = new Chart(ctx).Bar(data[data.length-1], chartOptions);
-    // Set the barcolors
-    let dataColors= ["blue","green","yellow","orange","red"];    // in getData unterbringen
-    for (let i=0; i<chart.datasets[0].bars.length; i++){
-        chart.datasets[0].bars[i].fillColor = dataColors[i];
-    }
-    chart.update();
-
-    ctx.restore();
+function drawPath(ctx, transformOptions){
+    ctx.moveTo(0,transformOptions.height/2);
+    ctx.beginPath();
+    ctx.lineTo(transformOptions.width, transformOptions.height/2);
+    ctx.closePath();
 }
-
-
-function drawDiagram1(channel, ctx, options){
-    ctx.save();
-    options.apply(ctx);
-    let data = getEmotions(channel.name);
-
-    // Building a new Canvas for the Diagramm
-    let diagramCanvas = document.createElement("canvas");
-    diagramCanvas.height = options.height;
-    diagramCanvas.width = options.width;
-    document.body.appendChild(diagramCanvas); // some DOM action for applying width and heigth
-    let newCtx = diagramCanvas.getContext("2d");
-
-    // Build the chart
-    let chartOptions = {
-        scaleShowGridLines: false,
-        scaleShowLabels:false,
-        scaleFontSize:0,
-        animation: false,
-        responsive: true
-    };
-    let chart = new Chart(newCtx).Bar(data, chartOptions);
-    // Set the barcolors
-    let dataColors= ["blue","green","yellow","orange","red"];    // in getData unterbringen
-    for (let i=0; i<chart.datasets[0].bars.length; i++){
-        chart.datasets[0].bars[i].fillColor = dataColors[i];
-    }
-    chart.update();
-
-    // Draw the diagram and hide the diagram canvas
-    ctx.drawImage(diagramCanvas, 0, 0, options.width, options.height);
-    diagramCanvas.style.display = "none";
-    ctx.restore();
-}*/

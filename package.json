@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node twabot.js",
-    "postinstall": "node buildScript.js"
+    "update": "node buildScript.js"
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
