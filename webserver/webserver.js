@@ -4,6 +4,7 @@ const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
 const analyzerTypes = require('./analyzerTypes.json');
+const msgPerTimeCount = 20;
 
 
 class Webserver{
@@ -63,14 +64,19 @@ class Webserver{
                 if (channel) {
                     for (let type of analyzerTypes){
                         // Send all the legacy data to the client for its history
-                        channel.rethinkDB.getTableWithType(type)
+                        console.log(type);
+                        channel.rethinkDB.getElementsSince(type, 10000)
                             .then((analysisList) => {
                                 let packageContent = {};
-                                if (type == 'fallingEmotions')
+                                if (type == 'fallingEmotions') {
                                     packageContent[type] = analysisList[0];
-                                else
+                                } else if (type == 'msgPerTime') {
+                                    packageContent[type] = analysisList.slice(
+                                        analysisList.length - msgPerTimeCount, analysisList.length);
+                                } else {
                                     packageContent[type] = analysisList;
-
+                                }
+                                console.log(packageContent);
                                 socket.emit('legacyData', packageContent);
                             })
                             .catch((err) => console.log(err));
