@@ -23,7 +23,7 @@ let meinVue = new Vue({
         msgPerTime: msgPerTimeFrame,
         fallingEmotions: fallingEmotionsFrame,
         msgPerTimeChart: null,
-        fallingEmotionsChart: null
+        fallingEmotionsCharts: null
     },
 
     ready: function() {
@@ -42,41 +42,43 @@ let meinVue = new Vue({
 
             socket.on('legacyData', (data) => {
                 for (let type in data) {
-                    console.log('lagacyData: '+type);
+                    console.log('legacyData: '+type);
                     console.log(data);
                 }
             });
 
             socket.on('updateData', (data) => {
                 for (let type in data) {
-                    console.log('updateData: '+type);
                     console.log(data);
+                    if (type == 'fallingEmotions'){
+                        for (let emotion in data[type].data){
+                            let position = this.fallingEmotions.labels.indexOf(emotion);
+                            this.fallingEmotions.datasets[0].data[position] = data[type].data[emotion];
+                        }
+                        this.fallingEmotionsUpdate();
+                    }
                 }
             });
         },
-        setDiagrammData: function(type, data){
-            console.log(data);
-        },
-        updateDiagrammData: function(type, data){
-            //this.$set(type, data[type].concat(this[type])); // Anpassung an neue struktur
-        }
-    },
 
-    watch: {
-        'fractal' : function(data, oldData) {
+
+
+        fractalUpdate : function(data, oldData) {
             CanvasDrawing.updateFractal(data);
         },
-        'msgPerTime' : function (data, oldData) {
+
+        msgPerTimeUpdate : function (data, oldData) {
             if (this.msgPerTimeChart == null)
                 this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime(data));
             else
                 CanvasDrawing.updateMsgPerTime(this.msgPerTimeChart, data);
         },
-        'fallingEmotions' : function (data, oldData) {
-            if (this.fallingEmotionsChart == null)
-                this.$set('fallingEmotionsChart', CanvasDrawing.initFallingEmotions(data));
+
+        fallingEmotionsUpdate : function () {
+            if (this.fallingEmotionsCharts == null)
+                this.$set('fallingEmotionsCharts', CanvasDrawing.initFallingEmotions(this.fallingEmotions));
             else
-                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, data);
+                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsCharts, this.fallingEmotions);
         }
     }
 });

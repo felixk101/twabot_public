@@ -62,13 +62,10 @@ class Webserver{
     __handleConnections(){
         this.io.on('connection', (socket) => {
             socket.on('registerChannel', (channelName) => {
-                console.log(channelName);
                 let channel = this.twabot.channelCrawler.activeChannels[channelName];
                 if (channel) {
                     for (let type of analyzerTypes){
                         // Send all the legacy data to the client for its history
-                        console.log(type);
-                        console.log(channel);
                         channel.rethinkDB.getTableWithType(type)
                             .then((analysisList) => {
                                 let packageContent = {};
@@ -84,7 +81,9 @@ class Webserver{
                         channel.rethinkDB.getChangeFeed(type)
                             .then((data) =>{
                                 data.on('data', (analysis) => {
-                                    socket.emit('updateData', analysis);
+                                    let packagedContent = {};
+                                    packagedContent[type] = analysis.new_val;
+                                    socket.emit('updateData', packagedContent);
                                 });
                                 socket.conn.on('close', (msg) => {
                                     data.close();
@@ -95,18 +94,6 @@ class Webserver{
                             })
                             .catch((err) => console.log(err));
                     }
-
-                    /*
-                    let fractalPromis = channel.rethinkDB.getChangeFeed('fractal');
-                    fractalPromis
-                        .then((data) => { // data is a stream of new analysed data
-                            data.on("data", (data) => {
-                                socket.emit('update', data);
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });*/
                 }
             });
             socket.on('error', (err) => {

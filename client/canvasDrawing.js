@@ -49,7 +49,7 @@ exports.initFallingEmotions = function (data) {
 
         // Set the barcolors
         for (let i=0; i<chart.datasets[0].bars.length; i++){
-            chart.datasets[0].bars[i].fillColor = dataColors[i];
+            chart.datasets[0].bars[i].fillColor = data.datasets[0].dataColors[i];
         }
         chart.update();
         charts.push(chart);
@@ -58,8 +58,12 @@ exports.initFallingEmotions = function (data) {
 };
 
 exports.updateFallingEmotions = function (charts, data) {
+
     for (let chart of charts) {
-        chart.datasets[0].data = data.datasets[0].data;
+        console.log(chart.datasets[0]);
+        for (let i=0; i<chart.datasets[0].bars.length; i++) {
+            chart.datasets[0].bars[i].value = data.datasets[0].data[i];
+        }
         chart.update();
     }
 };
