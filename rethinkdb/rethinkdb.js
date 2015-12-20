@@ -139,19 +139,6 @@ class RethinkDB{
                  * The variable 'analyseType' contains all possible secondaryIndexs. */
                 if(result.length===0) {
                     return r.table(this.channelName+'_'+this.streamID).indexCreate('type').run(this.con)
-                    //let analyseType = ['fractal', 'fallingEmotions', 'msgPerTime', 'raw'];
-                    //analyseType = analyseType.filter((type)=> {
-                    //    if (result.indexOf(type) < 0) {
-                    //        return type;
-                    //    }
-                    //});
-//
-                    //let promiseList = analyseType.map((type)=> {
-                    //    return r.table(this.channelName + '_' + this.streamID).indexCreate(type).run(this.con)
-                    //        .then((result)=> {
-                    //            return r.table(this.channelName + '_' + this.streamID).indexWait(type).run(this.con);
-                    //        })
-                    //});
 
                 }else {
                     return Promise.resolve(null);
@@ -251,7 +238,7 @@ class RethinkDB{
             })
     }
 
-    getElmentsSince(type,time){
+    getElementsSince(type,time){
         /*
          * This function will return a promise with a list of elements that have a timestamp that
          * got created during now and now-time.
