@@ -1,8 +1,11 @@
 "use strict";
 
 const Chart = require('chart.js');
-Chart.defaults.global.animationSteps = 25;
+const emotionColorMap = require('./emotionColorMap.json');
 const TransformOptions = require('./TransformOptions');
+
+//Chart.defaults.global.animationSteps = 30;
+Chart.defaults.global.animation = false;
 const msgPerTimeCount = 20;
 exports.msgPerTimeCount = msgPerTimeCount;
 
@@ -30,8 +33,8 @@ exports.initMsgPerTime = function () {
         }]
     };
     for (let i=0; i<msgPerTimeCount; i++) {
-        msgPerTimeChartData.datasets[0].data.push(0);
         msgPerTimeChartData.labels.push("");
+        msgPerTimeChartData.datasets[0].data.push(0);
     }
     let canvases = getCanvases('msgPerTime');
     let charts = [];
@@ -59,7 +62,23 @@ exports.updateMsgPerTime = function (charts, data) {
     }
 };
 
-exports.initFallingEmotions = function (data) {
+exports.initFallingEmotions = function () {
+    let fallingEmotionsChartData = {
+        labels: [],
+        datasets: [{
+            fillColor: "rgba(220,220,220,1)",
+            strokeColor: "rgba(220,220,220,1)",
+            highlightFill: "rgba(220,220,220,1)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: [],
+            dataColors: []
+        }]
+    };
+    for (let emotion in emotionColorMap){
+        fallingEmotionsChartData.labels.push(emotion);
+        fallingEmotionsChartData.datasets[0].data.push(0);
+    }
+
     let canvases = getCanvases('fallingEmotions');
     let charts = [];
     for (let canvas of canvases) {
@@ -73,12 +92,14 @@ exports.initFallingEmotions = function (data) {
             scaleStepWidth : 250,
             scaleStartValue : 0
         };
-        let chart = new Chart(ctx).Bar(data, chartOptions);
+        let chart = new Chart(ctx).Bar(fallingEmotionsChartData, chartOptions);
 
+        console.log(chart);
         // Set the barcolors
         for (let i=0; i<chart.datasets[0].bars.length; i++){
-            chart.datasets[0].bars[i].fillColor = data.datasets[0].dataColors[i];
+            chart.datasets[0].bars[i].fillColor = emotionColorMap[chart.datasets[0].bars[i].label];
         }
+
         chart.update();
         charts.push(chart);
     }
@@ -88,9 +109,8 @@ exports.initFallingEmotions = function (data) {
 exports.updateFallingEmotions = function (charts, data) {
     for (let chart of charts) {
         for (let i=0; i<chart.datasets[0].bars.length; i++) {
-            chart.datasets[0].bars[i].value = data.datasets[0].data[i];
+            chart.datasets[0].bars[i].value = data[chart.datasets[0].bars[i].label];
         }
-        chart.resize();
         chart.update();
     }
 };
@@ -98,7 +118,7 @@ exports.updateFallingEmotions = function (charts, data) {
 function getCanvases(type){
     let canvases = [];
     canvases.push(document.getElementById('overview_' + type));
-    canvases.push(document.getElementById('detail_' + type));
+    //canvases.push(document.getElementById('detail_' + type));
     return canvases;
 }
 
