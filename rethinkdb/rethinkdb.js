@@ -252,9 +252,26 @@ class RethinkDB{
         console.log(new Date(now),new Date(past))
         return r.table(this.channelName+'_'+this.streamID).filter(r.row('type').eq(type).and(r.row('timestamp')
             .during(new Date(past),new Date(now)))).run(this.con)
-            .then((result)=>{
-                result.close();
-                return result.toArray();
+            .then((cursor)=>{
+                let resultList=[];
+                return new Promise((resolve,reject)=>{
+                    cursor.each((err,row)=>{
+                        if(err){
+                            reject(err);
+                        }
+                        resultList.push(row);
+                    },()=>{
+                        cursor.close();
+                        resolve(null);
+                    })
+                })
+                .then((result)=>{
+                    return Promise.resolve(resultList);
+                })
+                .catch((err)=>{
+                    return Promise.reject(err);
+                })
+
             })
 
     }
