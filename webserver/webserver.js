@@ -12,38 +12,35 @@ class Webserver{
         this.app = express();
         this.server = http.Server(this.app);
         this.io = socketio(this.server);
-        //twabot.channelCrawler.activeChannels[name];
 
         this.__registerSites();
         this.__handleConnections();
     }
 
     __registerSites(){
-        this.app.use('/overview/activeChannels/', function (req, res){
+        this.app.use('/overview/activeChannels/', (req, res) => {
             let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
             let overview = sliceToOverviewData(overviewList);
             res.json(overview);
-        }.bind(this));
+        });
 
-        this.app.use('/overview/emotionChannels/', function (req, res){
+        this.app.use('/overview/emotionChannels/', (req, res) => {
             let emotionChannels = this.twabot.channelCrawler.getMostEmotionalChannels();
             for (let emotion in emotionChannels){
                 if (emotionChannels[emotion])
                     emotionChannels[emotion]=convertToLightweightChannel(emotionChannels[emotion]);
             }
-            //let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
-            //let overview = sliceToOverviewData(overviewList);
             res.json(emotionChannels);
-        }.bind(this));
+        });
 
-        this.app.use('/user.html', function (req, res){
+        this.app.use('/user.html', (req, res) => {
             if (req.query.channel)
                 res.redirect('/user/'+req.query.channel);
             else
                 res.redirect('/');
         });
 
-        this.app.use('/user/:user/', function (req, res){
+        this.app.use('/user/:user/', (req, res) => {
             let options = {root: __dirname + '/../public/'};
             if (this.twabot.channelCrawler.activeChannels[req.params.user]) {
                 res.sendFile('user.html', options, function (err) {
@@ -54,7 +51,7 @@ class Webserver{
             else {
                 res.redirect('/');
             }
-        }.bind(this));
+        });
 
         this.app.use(express.static('public'));
     }
@@ -138,8 +135,3 @@ function convertToLightweightChannel(channel){
 }
 
 module.exports = Webserver;
-
-if (require.main === module) {
-    let web = new Webserver(1);
-    web.startServer();
-}
