@@ -61,7 +61,3 @@ node_modules/
 
 # webstorm configuration
 .idea/
-
-# Javascript transpiled code
-public/buildOverview.js
-public/buildUser.js
