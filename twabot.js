@@ -21,12 +21,12 @@ class Twabot{
         * This function starts all services of Twabot.
         *
         * */
-        console.log("Starts the services of Twabot");
+        console.log('Starts the services of Twabot');
         this.webserver.startServer();
         this.channelCrawler.startCrawler();
         this.crawlerIntervalID=setInterval(this.channelCrawler.startCrawler,900000);
         this.updateChanIntervalID=setInterval(this.startChannelUpdate.bind(this),300000);
-        console.log("Services are started")
+        console.log('Services are started')
     }
 
     startChannelUpdate(){
@@ -63,7 +63,7 @@ class Twabot{
 
         yield setTimeout(()=>{
             let url='https://api.twitch.tv/kraken/streams';
-            console.log("Start updateStep: "+updateSteps);
+            console.log('Start updateStep: '+updateSteps);
             let step=updateSteps.pop();
 
             if(typeof step !=='undefined'){
@@ -75,7 +75,7 @@ class Twabot{
                 for(let x=0;x<50;x++){
 
                     let chan=this.channelCrawler.activeChannels[body.streams[x].channel.name];
-                    if(typeof chan!== "undefined"){
+                    if(typeof chan!== 'undefined'){
                         chan.logo=body.streams[x].channel.logo;
                         chan.viewer=body.streams[x].viewers;
                         chan.online=true;
@@ -87,17 +87,17 @@ class Twabot{
             })
             }else{
                 let activeChannels=this.channelCrawler.activeChannels;
-                    console.log("Update ChannelLists:");
+                    console.log('Update ChannelLists:');
                     let deleteList=[]
 
 
                     for(let x in activeChannels){
                         if(activeChannels[x].gotUpdated===false){
-                            console.log("Chat of "+x+" closed");
+                            console.log('Chat of "+x+" closed');
                             activeChannels[x].closeChat();
                             deleteList.push(activeChannels[x]);
                         }else{
-                            console.log("Chat of "+x+" alive");
+                            console.log('Chat of "+x+" alive');
                             activeChannels[x].gotUpdated=false;
                         }
                     }

@@ -28,7 +28,7 @@ class RethinkDB{
         * */
         this.streamName=streamName;
         this.isConnecting=true;
-        console.log("Connection to rethinkdb started Version 2")
+        console.log('Connection to rethinkdb started Version 2')
         /* Connect to the rethinkDB */
         r.connect({host:credentials.DBHOST,port:credentials.DBPORT})
             .then((result)=>{
@@ -155,7 +155,7 @@ class RethinkDB{
                 /* The table is ready to use. */
                 this.isConnecting=false;
                 this.connected=true;
-                console.log("StreamTable created");
+                console.log('StreamTable created');
             }).catch((err)=>{
                 console.error('rethinkdb.createNewStream: '+err);
         })

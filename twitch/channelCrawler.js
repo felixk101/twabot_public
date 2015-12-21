@@ -92,17 +92,17 @@ class ChannelCrawler{
     yield setTimeout(function(){
         this.getChannels(offset).then(function(result){
             if(result>this.viewerLimit) {
-                console.log("Channel crawler cooldown. Streams: "+this.activeChannels.length);
+                console.log('Channel crawler cooldown. Streams: '+this.activeChannels.length);
                 this.registerChannels(offset+this.channelLimit).next();
             }else{
-                console.log("Channel crawler ends.Streams: "+this.activeChannels.size);
+                console.log('Channel crawler ends.Streams: '+this.activeChannels.size);
                 this.crawlerActive=false;
                 return;
 
             }
 
         }.bind(this)).catch(function(err){
-            console.error("Promise error: "+err)
+            console.error('Promise error: '+err)
 
         });
 

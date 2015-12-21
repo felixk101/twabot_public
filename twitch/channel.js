@@ -32,12 +32,12 @@ class Channel{
 
         this.client.end();
         this.rethinkDB.close();
-        console.log("Chat Closed")
+        console.log('Chat of '+this.name+' closed')
     }
 
     connect(streamName){
         /*This function will start the connection attempt*/
-        console.log("Start Connecting to",this.name,streamName);
+        console.log('Start Connecting to',this.name,streamName);
         return new Promise(function(resolve,reject){
             if(credentials.DBACTIVE) {
                 this.rethinkDB.connect(streamName);
@@ -129,7 +129,7 @@ class Channel{
                 console.log('Chat of '+this.getChannelName()+' has disconectd');
             });
 
-            this.client.on('uncaughtException',(err)=>{
+            this.client.on('error',(err)=>{
                 console.error(err);
             })
         });
