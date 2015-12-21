@@ -6,7 +6,7 @@ const equal = require('deep-equal');
  */
 
 //over what time period to measure, in ms
-let periodLength = 1000;
+let periodLength = 100;
 
 class Analyzer{
 
@@ -32,7 +32,8 @@ class Analyzer{
                 "surprised":0.0,
 		}
 		//the decayRate of emotions depends on the number of viewers
-		this.decayRate = viewers/3000*2;
+		//and on the period length
+		this.decayRate = viewers/3000*5 * periodLength/1000;
 	
 		//deep copy, but fast
 		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
@@ -56,7 +57,11 @@ class Analyzer{
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.analyzeEmotions(message);
 		} else {
-			//ignore messages outside of this time period
+			if (timeStamp < this.periodStart) {
+				//console.log(this.periodStart-timeStamp,' ms before');
+			} else {
+				//console.log(timeStamp - this.periodEnd,' ms behind');
+			}
 		}
 	}
 
