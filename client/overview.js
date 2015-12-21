@@ -31,6 +31,7 @@ let meinVue = new Vue({
 
             this.$http.get('/overview/emotionChannels/')
                 .success(function(channels){
+                    console.log(channels);
                     this.$set("emotionChannels", channels);
                     this.$nextTick(this.drawThumbnailsEmotion);
                 })

@@ -5,6 +5,7 @@ const http = require('http');
 const socketio = require('socket.io');
 const analyzerTypes = require('./analyzerTypes.json');
 const msgPerTimeCount = 20;
+const fractalCount = 20;
 
 
 class Webserver{
@@ -19,49 +20,50 @@ class Webserver{
     }
 
     __registerSites(){
-        this.app.use('/channelData/:channelName/', (req, res) => {
-            let channelName = req.params.channelName;
-            let channel = this.twabot.channelCrawler.activeChannels[channelName];
-            if (channel) {
-                for (let type of analyzerTypes){
-                    // Send all the legacy data to the client for its history
-                    channel.rethinkDB.getElementsSince(type, 100000)
-                        .then((analysisList) => {
-                            let packagedContent = {};
-                            if (type == 'fallingEmotions') {
-                                packagedContent[type] = analysisList[0];
-                            } else if (type == 'msgPerTime') {
-                                if (analysisList.length > msgPerTimeCount)
-                                    packagedContent[type] = analysisList.slice(
-                                        analysisList.length - msgPerTimeCount, analysisList.length);
-                                else
-                                    packagedContent[type] = analysisList;
-                            } else {
-                                packagedContent[type] = analysisList;
-                            }
-                            res.json(packagedContent);
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            res.status(404).end();
-                        });
-                }
-            }
-        });
-
         this.app.use('/overview/activeChannels/', (req, res) => {
-            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
-            let overview = sliceToOverviewData(overviewList);
-            res.json(overview);
+            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(6);
+            let overviewPromises = [];
+            for (let channel of overviewList){
+                if (channel)
+                    overviewPromises.push(convertToLightweightChannel(channel));
+            }
+            Promise.all(overviewPromises)
+                .then((overviewList) => {
+                    res.json(overviewList);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(404).end()
+                });
         });
 
         this.app.use('/overview/emotionChannels/', (req, res) => {
             let emotionChannels = this.twabot.channelCrawler.getMostEmotionalChannels();
+            let emotionPromises = [];
             for (let emotion in emotionChannels){
                 if (emotionChannels[emotion])
-                    emotionChannels[emotion]=convertToLightweightChannel(emotionChannels[emotion]);
+                    emotionPromises.push(convertToLightweightChannel(emotionChannels[emotion]));
             }
-            res.json(emotionChannels);
+            Promise.all(emotionPromises)
+                .then((emotionList) => {
+                    let emotionChannelsOutput = {};
+                    for (let emotion in emotionChannels){
+                        if (emotionChannels[emotion]) {
+                            let channelName = emotionChannels[emotion].name;
+                            let index = 0;
+                            for (index = 0; index < emotionList.length; index++) {
+                                if (emotionList[index].name == channelName)
+                                    break;
+                            }
+                            emotionChannelsOutput[emotion] = emotionList[index];
+                        }
+                    }
+                    res.json(emotionChannelsOutput);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(404).end()
+                });
         });
 
         this.app.use('/user.html', (req, res) => {
@@ -92,26 +94,17 @@ class Webserver{
             socket.on('registerChannel', (channelName) => {
                 let channel = this.twabot.channelCrawler.activeChannels[channelName];
                 if (channel) {
-                    for (let type of analyzerTypes){
+                    for (let type of analyzerTypes) {
                         // Send all the legacy data to the client for its history
-                        channel.rethinkDB.getElementsSince(type, 100000)
+                        channel.rethinkDB.getElementsSince(type, 20000)
                             .then((analysisList) => {
                                 let packagedContent = {};
-                                if (type == 'fallingEmotions') {
-                                    packagedContent[type] = analysisList[analysisList.length-1];
-                                } else if (type == 'msgPerTime') {
-                                    if (analysisList.length > msgPerTimeCount)
-                                        packagedContent[type] = analysisList.slice(
-                                            analysisList.length - msgPerTimeCount, analysisList.length);
-                                    else
-                                        packagedContent[type] = analysisList;
-                                } else {
-                                    packagedContent[type] = analysisList;
-                                }
+                                packagedContent[type] = sliceAnalysis(analysisList, type);
                                 socket.emit('legacyData', packagedContent);
                             })
                             .catch((err) => console.log(err));
-
+                    }
+                    for (let type of analyzerTypes){
                         channel.rethinkDB.getChangeFeed(type)
                             .then((data) =>{
                                 data.on('data', (analysis) => {
@@ -144,31 +137,43 @@ class Webserver{
     }
 };
 
-/**
- * Slice the list of channels down to a minimum which the client needs to display.
- * @param overviewList The list of channels to be displayed.
- * @returns A list of "minimum" Channels.
- */
-function sliceToOverviewData(overviewList){
-    let overview = [];
-    for (let channel of overviewList){
-        if (channel)
-            overview.push(convertToLightweightChannel(channel));
-    }
-    return overview;
+function convertToLightweightChannel(channel){
+    return new Promise((resolve, reject) => {
+        let legacyDataPromises = [];
+        for (let type of analyzerTypes){
+            legacyDataPromises.push(channel.rethinkDB.getElementsSince(type, 20000));
+        }
+        Promise.all(legacyDataPromises)
+            .then((analysisLists) => {
+                let newChannel = {
+                    name: channel.name,
+                    viewers: channel.viewers,
+                    logo: channel.logo
+                };
+                for (let analysisList of analysisLists){
+                    let type = analysisList[0].type;
+                    newChannel[type] = sliceAnalysis(analysisList, type);
+                }
+                resolve(newChannel);
+            })
+            .catch((err) => reject(err));
+    });
 }
 
-function convertToLightweightChannel(channel){
-    let newChannel = {
-        name: channel.name,
-        viewers: channel.viewers,
-        logo: channel.logo,
-        rethinkDB:{
-            streamID: channel.rethinkDB.streamID,
-            streamName: channel.rethinkDB.streamName
-        }
-    };
-    return newChannel;
+function sliceAnalysis(analysisList, type){
+    if (type == 'fallingEmotions') {
+        return analysisList[analysisList.length-1];
+    } else if (type == 'msgPerTime') {
+        if (analysisList.length > msgPerTimeCount)
+            return analysisList.slice(analysisList.length - msgPerTimeCount, analysisList.length);
+        else
+            return analysisList;
+    } else { // fractal
+        if (analysisList.length > fractalCount)
+            return analysisList.slice(analysisList.length - fractalCount, analysisList.length);
+        else
+            return analysisList;
+    }
 }
 
 module.exports = Webserver;

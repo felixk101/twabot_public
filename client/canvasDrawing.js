@@ -25,12 +25,12 @@ exports.initMsgPerTime = function (canvas, chartOptions=msgPerTimeChartOptions) 
         labels: [],
         datasets: [{
             label: "Messages Per Time",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
+            fillColor: "rgba(100,100,100,0.3)",
+            strokeColor: "rgba(180,180,180,1)",
+            pointColor: "rgba(180,180,180,1)",
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            pointHighlightStroke: "rgba(190,190,190,1)",
             data: []
         }]
     };
@@ -88,7 +88,6 @@ exports.initFallingEmotions = function (canvas, chartOptions=fallingEmtionsChart
     // Build the chart
     let chart = new Chart(ctx).Bar(fallingEmotionsChartData, chartOptions);
 
-    console.log(chart);
     // Set the barcolors
     for (let i=0; i<chart.datasets[0].bars.length; i++){
         chart.datasets[0].bars[i].fillColor = emotionColorMap[chart.datasets[0].bars[i].label];

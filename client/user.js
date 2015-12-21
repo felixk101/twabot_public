@@ -40,11 +40,6 @@ let meinVue = new Vue({
             socket.on('legacyData', (data) => {
                 for (let type in data) {
                     if (type == 'fallingEmotions'){
-                        //this.fallingEmotions =
-                        //for (let emotion in data[type].data){
-                            //let position = this.fallingEmotions.labels.indexOf(emotion);
-                            //this.fallingEmotions.datasets[0].data[position] = data[type].data[emotion];
-                        //}
                         this.fallingEmotionsUpdate(data[type].data);
                     } else if (type == 'msgPerTime'){
                         let updateData = [];
@@ -62,11 +57,6 @@ let meinVue = new Vue({
             socket.on('updateData', (data) => {
                 for (let type in data) {
                     if (type == 'fallingEmotions'){
-                        //this.fallingEmotions = data[type].data;
-                        //for (let emotion in data[type].data){
-                            //let position = this.fallingEmotions.labels.indexOf(emotion);
-                            //this.fallingEmotions.datasets[0].data[position] = data[type].data[emotion];
-                        //}
                         this.fallingEmotionsUpdate(data[type].data);
                     }
                     if (type == 'msgPerTime'){
