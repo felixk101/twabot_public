@@ -4,7 +4,7 @@
  */
 
 //over what time period to measure, in ms
-let periodLength = 10000;
+let periodLength = 2500;
 
 class Analyzer{
 
