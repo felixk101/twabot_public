@@ -249,7 +249,6 @@ class RethinkDB{
         type+="";
         let now=new Date();
         let past=new Date(now-time);
-        console.log(new Date(now),new Date(past))
         return r.table(this.channelName+'_'+this.streamID).filter(r.row('type').eq(type).and(r.row('timestamp')
             .during(new Date(past),new Date(now)))).run(this.con)
             .then((cursor)=>{
