@@ -19,6 +19,36 @@ class Webserver{
     }
 
     __registerSites(){
+        this.app.use('/channelData/:channelName/', (req, res) => {
+            let channelName = req.params.channelName;
+            let channel = this.twabot.channelCrawler.activeChannels[channelName];
+            if (channel) {
+                for (let type of analyzerTypes){
+                    // Send all the legacy data to the client for its history
+                    channel.rethinkDB.getElementsSince(type, 100000)
+                        .then((analysisList) => {
+                            let packagedContent = {};
+                            if (type == 'fallingEmotions') {
+                                packagedContent[type] = analysisList[0];
+                            } else if (type == 'msgPerTime') {
+                                if (analysisList.length > msgPerTimeCount)
+                                    packagedContent[type] = analysisList.slice(
+                                        analysisList.length - msgPerTimeCount, analysisList.length);
+                                else
+                                    packagedContent[type] = analysisList;
+                            } else {
+                                packagedContent[type] = analysisList;
+                            }
+                            res.json(packagedContent);
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(404).end();
+                        });
+                }
+            }
+        });
+
         this.app.use('/overview/activeChannels/', (req, res) => {
             let overviewList = this.twabot.channelCrawler.getMostViewedChannels(9);
             let overview = sliceToOverviewData(overviewList);
@@ -64,24 +94,22 @@ class Webserver{
                 if (channel) {
                     for (let type of analyzerTypes){
                         // Send all the legacy data to the client for its history
-                        console.log(type);
-                        channel.rethinkDB.getElementsSince(type, 1000000)
+                        channel.rethinkDB.getElementsSince(type, 100000)
                             .then((analysisList) => {
-                                console.log(analysisList);
-                                let packageContent = {};
+                                let packagedContent = {};
                                 if (type == 'fallingEmotions') {
-                                    packageContent[type] = analysisList[0];
+                                    packagedContent[type] = analysisList[0];
                                 } else if (type == 'msgPerTime') {
                                     if (analysisList.length > msgPerTimeCount)
-                                        packageContent[type] = analysisList.slice(
+                                        packagedContent[type] = analysisList.slice(
                                             analysisList.length - msgPerTimeCount, analysisList.length);
                                     else
-                                        packageContent[type] = analysisList;
+                                        packagedContent[type] = analysisList;
+                                    console.log(packagedContent);
                                 } else {
-                                    packageContent[type] = analysisList;
+                                    packagedContent[type] = analysisList;
                                 }
-                                //console.log(packageContent);
-                                socket.emit('legacyData', packageContent);
+                                socket.emit('legacyData', packagedContent);
                             })
                             .catch((err) => console.log(err));
 

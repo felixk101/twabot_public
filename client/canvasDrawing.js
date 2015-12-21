@@ -9,8 +9,7 @@ const TransformOptions = require('./TransformOptions');
 const msgPerTimeCount = 20;
 exports.msgPerTimeCount = msgPerTimeCount;
 
-exports.updateFractal = function (data) {
-    let canvases = getCanvases('fractal');
+exports.updateFractal = function (data, canvases) {
     for (let canvas of canvases){
         let ctx = canvas.getContext('2d');
         let transformOptions = new TransformOptions(canvas.width, canvas.height);
@@ -18,7 +17,7 @@ exports.updateFractal = function (data) {
     }
 };
 
-exports.initMsgPerTime = function () {
+exports.initMsgPerTime = function (canvases, chartOptions={responsive: true}) {
     let msgPerTimeChartData = {
         labels: [],
         datasets: [{
@@ -36,33 +35,39 @@ exports.initMsgPerTime = function () {
         msgPerTimeChartData.labels.push("");
         msgPerTimeChartData.datasets[0].data.push(0);
     }
-    let canvases = getCanvases('msgPerTime');
     let charts = [];
     for (let canvas of canvases) {
         let ctx = canvas.getContext('2d');
 
         // Build the chart
-        let chartOptions = {
-            responsive: true
-        };
         let chart = new Chart(ctx).Line(msgPerTimeChartData, chartOptions);
         charts.push(chart);
     }
     return charts;
 };
 
-exports.updateMsgPerTime = function (charts, data) {
+exports.updateMsgPerTime = function (charts, dataset) {
     for (let chart of charts) {
-        let chartLength = chart.datasets[0].points.length;
-        for (let i=0; i<chartLength-1; i++){
-            chart.datasets[0].points[i].value = chart.datasets[0].points[i+1].value;
+        for (let data of dataset) {
+            let chartLength = chart.datasets[0].points.length;
+            for (let i = 0; i < chartLength - 1; i++) {
+                chart.datasets[0].points[i].value = chart.datasets[0].points[i + 1].value;
+            }
+            chart.datasets[0].points[chartLength - 1].value = data;
         }
-        chart.datasets[0].points[chartLength-1].value = data;
         chart.update();
     }
 };
 
-exports.initFallingEmotions = function () {
+const chartOptionsGlobal = {
+    responsive: true,
+    scaleOverride : true,
+    scaleSteps : 4,
+    scaleStepWidth : 250,
+    scaleStartValue : 0
+};
+
+exports.initFallingEmotions = function (canvases, chartOptions=chartOptionsGlobal) {
     let fallingEmotionsChartData = {
         labels: [],
         datasets: [{
@@ -79,19 +84,11 @@ exports.initFallingEmotions = function () {
         fallingEmotionsChartData.datasets[0].data.push(0);
     }
 
-    let canvases = getCanvases('fallingEmotions');
     let charts = [];
     for (let canvas of canvases) {
         let ctx = canvas.getContext('2d');
 
         // Build the chart
-        let chartOptions = {
-            responsive: true,
-            scaleOverride : true,
-            scaleSteps : 4,
-            scaleStepWidth : 250,
-            scaleStartValue : 0
-        };
         let chart = new Chart(ctx).Bar(fallingEmotionsChartData, chartOptions);
 
         console.log(chart);
@@ -114,13 +111,6 @@ exports.updateFallingEmotions = function (charts, data) {
         chart.update();
     }
 };
-
-function getCanvases(type){
-    let canvases = [];
-    canvases.push(document.getElementById('overview_' + type));
-    //canvases.push(document.getElementById('detail_' + type));
-    return canvases;
-}
 
 
 function drawFractal(ctx, transformOptions, data){
