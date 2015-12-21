@@ -109,5 +109,17 @@
 		"amused": {"confidence":95, "strength":40},
 		"provoking": {"confidence":20, "strength":25},
 		"canBeChanged": false
+	},
+	"4Head":
+	{
+		"amused": {"confidence":100, "strength":100},
+		"provoking": {"confidence":30, "strength":20},
+		"canBeChanged":false
+	},
+	"EleGiggle":
+	{
+		"amused": {"confidence":100, "strength":100},
+		"provoking": {"confidence":20, "strength":15},
+		"canBeChanged":false
 	}
 }
