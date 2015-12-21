@@ -63,7 +63,7 @@ class Analyzer{
     get_sender(data){
         /*This funciton filters the sender out of the received data.*/
         let user=data.split('|')[1].split('!');
-
+		user = user+'';
         user=user[1].split('@')[0];
 
         return user;
