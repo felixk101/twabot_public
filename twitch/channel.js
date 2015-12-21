@@ -10,12 +10,13 @@ var credentials=require('./../credentials/credentials.js');
 var analyzer=require('./../analyzer/analyzer.js');
 var db=require('./../rethinkdb/rethinkdb.js');
 class Channel{
-    constructor(name,viewers){
+    constructor(name,viewers,trainer){
         this.online=false;
         this.name=name;
 		this.viewers=viewers;
         this.rethinkDB=new db.RethinkDB(name);
         this.analyser=new analyzer.Analyzer(this.name,this.rethinkDB,this.viewers);
+		this.trainer=trainer;
         this.logo;
         this.viewer;
         this.client;
@@ -32,12 +33,12 @@ class Channel{
 
         this.client.end();
         this.rethinkDB.close();
-        console.log('Chat of '+this.name+' closed')
+        console.log('Chat of '+this.name+' closed');
     }
 
     connect(streamName){
         /*This function will start the connection attempt*/
-        console.log('Start Connecting to',this.name,streamName);
+        console.log("Start Connecting to",this.name,streamName);
         return new Promise(function(resolve,reject){
             if(credentials.DBACTIVE) {
                 this.rethinkDB.connect(streamName);
@@ -117,6 +118,7 @@ class Channel{
                     let dateobject = new Date();
                     let timestamp = dateobject.toJSON();
 					this.analyser.analyzeData(new Date()+"|"+input);
+					this.trainer.process(input);
                     //console.log(timestamp+'|'+sender + ":" + message);
                     //fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
                     //    if(err) {
@@ -129,7 +131,7 @@ class Channel{
                 console.log('Chat of '+this.getChannelName()+' has disconectd');
             });
 
-            this.client.on('error',(err)=>{
+            this.client.on('uncaughtException',(err)=>{
                 console.error(err);
             })
         });
