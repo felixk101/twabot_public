@@ -13,9 +13,8 @@ let meinVue = new Vue({
     data: {
         channelName: "",
         fractal: [],
-        //fallingEmotions: fallingEmotionsFrame,
         msgPerTimeChart: null,
-        fallingEmotionsCharts: null
+        fallingEmotionsChart: null
     },
 
     ready: function() {
@@ -48,10 +47,11 @@ let meinVue = new Vue({
                         //}
                         this.fallingEmotionsUpdate(data[type].data);
                     } else if (type == 'msgPerTime'){
-                        let msgPerTimeList = data[type];
-                        for (let msgData of msgPerTimeList) {
-                            this.msgPerTimeUpdate(msgData.data);
+                        let updateData = [];
+                        for (let msgData of data[type]) {
+                            updateData.push(msgData.data);
                         }
+                        this.msgPerTimeUpdate(updateData);
                     } else if (type == 'fractal'){
                         //this.fractal.push(data[type].data);
                         //this.fractalUpdate();
@@ -70,7 +70,7 @@ let meinVue = new Vue({
                         this.fallingEmotionsUpdate(data[type].data);
                     }
                     if (type == 'msgPerTime'){
-                        this.msgPerTimeUpdate(data[type].data);
+                        this.msgPerTimeUpdate([data[type].data]);
                     }
                     if (type == 'fractal'){
                         //this.fractal.push(data[type].data);
@@ -84,12 +84,12 @@ let meinVue = new Vue({
 
         fractalUpdate : function() {
                                                                     // slice the array to a maximum size
-            CanvasDrawing.updateFractal(this.fractal);
+            CanvasDrawing.updateFractal(this.fractal,getCanvas('fractal'));
         },
 
         msgPerTimeUpdate : function (updateData) {
             if (this.msgPerTimeChart == null) {
-                this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime());
+                this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime(getCanvas('msgPerTime')));
                 this.$nextTick(() => {
                     CanvasDrawing.updateMsgPerTime(this.msgPerTimeChart, updateData);
                 });
@@ -99,14 +99,18 @@ let meinVue = new Vue({
         },
 
         fallingEmotionsUpdate : function (updateData) {
-            if (this.fallingEmotionsCharts == null) {
-                this.$set('fallingEmotionsCharts', CanvasDrawing.initFallingEmotions());
+            if (this.fallingEmotionsChart == null) {
+                this.$set('fallingEmotionsChart', CanvasDrawing.initFallingEmotions(getCanvas('fallingEmotions')));
                 this.$nextTick(() => {
-                    CanvasDrawing.updateFallingEmotions(this.fallingEmotionsCharts, updateData);
+                    CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
                 });
             }
             else
-                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsCharts, updateData);
+                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
         }
     }
 });
+
+function getCanvas(type){
+    return document.getElementById('canvas_' + type);
+}
