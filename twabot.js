@@ -93,11 +93,11 @@ class Twabot{
 
                     for(let x in activeChannels){
                         if(activeChannels[x].gotUpdated===false){
-                            console.log('Chat of "+x+" closed');
+                            console.log('Chat of '+x+' closed');
                             activeChannels[x].closeChat();
                             deleteList.push(activeChannels[x]);
                         }else{
-                            console.log('Chat of "+x+" alive');
+                            console.log('Chat of '+x+' alive');
                             activeChannels[x].gotUpdated=false;
                         }
                     }
