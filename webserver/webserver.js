@@ -65,18 +65,22 @@ class Webserver{
                     for (let type of analyzerTypes){
                         // Send all the legacy data to the client for its history
                         console.log(type);
-                        channel.rethinkDB.getElementsSince(type, 10000)
+                        channel.rethinkDB.getElementsSince(type, 1000000)
                             .then((analysisList) => {
+                                console.log(analysisList);
                                 let packageContent = {};
                                 if (type == 'fallingEmotions') {
                                     packageContent[type] = analysisList[0];
                                 } else if (type == 'msgPerTime') {
-                                    packageContent[type] = analysisList.slice(
-                                        analysisList.length - msgPerTimeCount, analysisList.length);
+                                    if (analysisList.length > msgPerTimeCount)
+                                        packageContent[type] = analysisList.slice(
+                                            analysisList.length - msgPerTimeCount, analysisList.length);
+                                    else
+                                        packageContent[type] = analysisList;
                                 } else {
                                     packageContent[type] = analysisList;
                                 }
-                                console.log(packageContent);
+                                //console.log(packageContent);
                                 socket.emit('legacyData', packageContent);
                             })
                             .catch((err) => console.log(err));

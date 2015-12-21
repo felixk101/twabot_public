@@ -5,7 +5,7 @@ const emotionColorMap = require('./emotionColorMap.json');
 const TransformOptions = require('./TransformOptions');
 
 //Chart.defaults.global.animationSteps = 30;
-Chart.defaults.global.animation = false;
+//Chart.defaults.global.animation = false;
 const msgPerTimeCount = 20;
 exports.msgPerTimeCount = msgPerTimeCount;
 
