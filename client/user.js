@@ -114,7 +114,6 @@ let meinVue = new Vue({
 
 function getCanvases(type){
     let canvases = [];
-    canvases.push(document.getElementById('overview_' + type));
-    //canvases.push(document.getElementById('detail_' + type));
+    canvases.push(document.getElementById('canvas_' + type));
     return canvases;
 }

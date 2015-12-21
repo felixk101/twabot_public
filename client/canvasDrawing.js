@@ -17,7 +17,12 @@ exports.updateFractal = function (data, canvases) {
     }
 };
 
-exports.initMsgPerTime = function (canvases, chartOptions={responsive: true}) {
+const msgPerTimeChartOptions = {
+    responsive: true,
+    animation: false
+};
+
+exports.initMsgPerTime = function (canvases, chartOptions=msgPerTimeChartOptions) {
     let msgPerTimeChartData = {
         labels: [],
         datasets: [{
@@ -59,7 +64,7 @@ exports.updateMsgPerTime = function (charts, dataset) {
     }
 };
 
-const chartOptionsGlobal = {
+const fallingEmtionsChartOptions = {
     responsive: true,
     scaleOverride : true,
     scaleSteps : 4,
@@ -67,7 +72,7 @@ const chartOptionsGlobal = {
     scaleStartValue : 0
 };
 
-exports.initFallingEmotions = function (canvases, chartOptions=chartOptionsGlobal) {
+exports.initFallingEmotions = function (canvases, chartOptions=fallingEmtionsChartOptions) {
     let fallingEmotionsChartData = {
         labels: [],
         datasets: [{
