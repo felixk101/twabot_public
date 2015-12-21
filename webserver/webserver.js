@@ -98,7 +98,7 @@ class Webserver{
                             .then((analysisList) => {
                                 let packagedContent = {};
                                 if (type == 'fallingEmotions') {
-                                    packagedContent[type] = analysisList[0];
+                                    packagedContent[type] = analysisList[analysisList.length-1];
                                 } else if (type == 'msgPerTime') {
                                     if (analysisList.length > msgPerTimeCount)
                                         packagedContent[type] = analysisList.slice(
