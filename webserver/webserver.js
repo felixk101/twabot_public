@@ -105,7 +105,6 @@ class Webserver{
                                             analysisList.length - msgPerTimeCount, analysisList.length);
                                     else
                                         packagedContent[type] = analysisList;
-                                    console.log(packagedContent);
                                 } else {
                                     packagedContent[type] = analysisList;
                                 }

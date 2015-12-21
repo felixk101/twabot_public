@@ -13,9 +13,8 @@ let meinVue = new Vue({
     data: {
         channelName: "",
         fractal: [],
-        //fallingEmotions: fallingEmotionsFrame,
         msgPerTimeChart: null,
-        fallingEmotionsCharts: null
+        fallingEmotionsChart: null
     },
 
     ready: function() {
@@ -85,12 +84,12 @@ let meinVue = new Vue({
 
         fractalUpdate : function() {
                                                                     // slice the array to a maximum size
-            CanvasDrawing.updateFractal(this.fractal,getCanvases('fractal'));
+            CanvasDrawing.updateFractal(this.fractal,getCanvas('fractal'));
         },
 
         msgPerTimeUpdate : function (updateData) {
             if (this.msgPerTimeChart == null) {
-                this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime(getCanvases('msgPerTime')));
+                this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime(getCanvas('msgPerTime')));
                 this.$nextTick(() => {
                     CanvasDrawing.updateMsgPerTime(this.msgPerTimeChart, updateData);
                 });
@@ -100,20 +99,18 @@ let meinVue = new Vue({
         },
 
         fallingEmotionsUpdate : function (updateData) {
-            if (this.fallingEmotionsCharts == null) {
-                this.$set('fallingEmotionsCharts', CanvasDrawing.initFallingEmotions(getCanvases('fallingEmotions')));
+            if (this.fallingEmotionsChart == null) {
+                this.$set('fallingEmotionsChart', CanvasDrawing.initFallingEmotions(getCanvas('fallingEmotions')));
                 this.$nextTick(() => {
-                    CanvasDrawing.updateFallingEmotions(this.fallingEmotionsCharts, updateData);
+                    CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
                 });
             }
             else
-                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsCharts, updateData);
+                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
         }
     }
 });
 
-function getCanvases(type){
-    let canvases = [];
-    canvases.push(document.getElementById('canvas_' + type));
-    return canvases;
+function getCanvas(type){
+    return document.getElementById('canvas_' + type);
 }

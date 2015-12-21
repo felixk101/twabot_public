@@ -9,12 +9,10 @@ const TransformOptions = require('./TransformOptions');
 const msgPerTimeCount = 20;
 exports.msgPerTimeCount = msgPerTimeCount;
 
-exports.updateFractal = function (data, canvases) {
-    for (let canvas of canvases){
-        let ctx = canvas.getContext('2d');
-        let transformOptions = new TransformOptions(canvas.width, canvas.height);
-        drawFractal(ctx, transformOptions, data);
-    }
+exports.updateFractal = function (data) {
+    let ctx = canvas.getContext('2d');
+    let transformOptions = new TransformOptions(canvas.width, canvas.height);
+    drawFractal(ctx, transformOptions, data);
 };
 
 const msgPerTimeChartOptions = {
@@ -22,7 +20,7 @@ const msgPerTimeChartOptions = {
     animation: false
 };
 
-exports.initMsgPerTime = function (canvases, chartOptions=msgPerTimeChartOptions) {
+exports.initMsgPerTime = function (canvas, chartOptions=msgPerTimeChartOptions) {
     let msgPerTimeChartData = {
         labels: [],
         datasets: [{
@@ -40,28 +38,24 @@ exports.initMsgPerTime = function (canvases, chartOptions=msgPerTimeChartOptions
         msgPerTimeChartData.labels.push("");
         msgPerTimeChartData.datasets[0].data.push(0);
     }
-    let charts = [];
-    for (let canvas of canvases) {
-        let ctx = canvas.getContext('2d');
 
-        // Build the chart
-        let chart = new Chart(ctx).Line(msgPerTimeChartData, chartOptions);
-        charts.push(chart);
-    }
-    return charts;
+    let ctx = canvas.getContext('2d');
+
+    // Build the chart
+    let chart = new Chart(ctx).Line(msgPerTimeChartData, chartOptions);
+
+    return chart;
 };
 
-exports.updateMsgPerTime = function (charts, dataset) {
-    for (let chart of charts) {
-        for (let data of dataset) {
-            let chartLength = chart.datasets[0].points.length;
-            for (let i = 0; i < chartLength - 1; i++) {
-                chart.datasets[0].points[i].value = chart.datasets[0].points[i + 1].value;
-            }
-            chart.datasets[0].points[chartLength - 1].value = data;
+exports.updateMsgPerTime = function (chart, dataset) {
+    for (let data of dataset) {
+        let chartLength = chart.datasets[0].points.length;
+        for (let i = 0; i < chartLength - 1; i++) {
+            chart.datasets[0].points[i].value = chart.datasets[0].points[i + 1].value;
         }
-        chart.update();
+        chart.datasets[0].points[chartLength - 1].value = data;
     }
+    chart.update();
 };
 
 const fallingEmtionsChartOptions = {
@@ -72,7 +66,7 @@ const fallingEmtionsChartOptions = {
     scaleStartValue : 0
 };
 
-exports.initFallingEmotions = function (canvases, chartOptions=fallingEmtionsChartOptions) {
+exports.initFallingEmotions = function (canvas, chartOptions=fallingEmtionsChartOptions) {
     let fallingEmotionsChartData = {
         labels: [],
         datasets: [{
@@ -89,32 +83,26 @@ exports.initFallingEmotions = function (canvases, chartOptions=fallingEmtionsCha
         fallingEmotionsChartData.datasets[0].data.push(0);
     }
 
-    let charts = [];
-    for (let canvas of canvases) {
-        let ctx = canvas.getContext('2d');
+    let ctx = canvas.getContext('2d');
 
-        // Build the chart
-        let chart = new Chart(ctx).Bar(fallingEmotionsChartData, chartOptions);
+    // Build the chart
+    let chart = new Chart(ctx).Bar(fallingEmotionsChartData, chartOptions);
 
-        console.log(chart);
-        // Set the barcolors
-        for (let i=0; i<chart.datasets[0].bars.length; i++){
-            chart.datasets[0].bars[i].fillColor = emotionColorMap[chart.datasets[0].bars[i].label];
-        }
-
-        chart.update();
-        charts.push(chart);
+    console.log(chart);
+    // Set the barcolors
+    for (let i=0; i<chart.datasets[0].bars.length; i++){
+        chart.datasets[0].bars[i].fillColor = emotionColorMap[chart.datasets[0].bars[i].label];
     }
-    return charts;
+
+    chart.update();
+    return chart;
 };
 
-exports.updateFallingEmotions = function (charts, data) {
-    for (let chart of charts) {
-        for (let i=0; i<chart.datasets[0].bars.length; i++) {
-            chart.datasets[0].bars[i].value = data[chart.datasets[0].bars[i].label];
-        }
-        chart.update();
+exports.updateFallingEmotions = function (chart, data) {
+    for (let i=0; i<chart.datasets[0].bars.length; i++) {
+        chart.datasets[0].bars[i].value = data[chart.datasets[0].bars[i].label];
     }
+    chart.update();
 };
 
 
