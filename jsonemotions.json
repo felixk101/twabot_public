@@ -6,119 +6,119 @@
 	},
 	":)":
 	{
-		"happy": {"confidence":100, "strength":60},
+		"happy": {"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	":(":
 	{
-		"sad": {"confidence":100, "strength":40},
+		"sad": {"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	":D":
 	{
-		"happy": {"confidence":100, "strength":95},
+		"happy": {"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	":O":
 	{
-		"surprised": {"confidence":100, "strength":80},
+		"surprised": {"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	":P":
 	{
-		"happy": {"confidence":100, "strength":20},
+		"happy": {"confidence":100, "strength":50},
 		"amused": {"confidence":100, "strength":50},
 		"canBeChanged": false
 	},
 	"^^":
 	{
 		"happy": {"confidence":100, "strength":50},
-		"amused": {"confidence":100, "strength":30},
+		"amused": {"confidence":100, "strength":50},
 		"canBeChanged": false
 	},
 	":'(":
 	{
-		"sad": {"confidence":100, "strength":50},
+		"sad": {"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	"<3":
 	{
-		"loving":{"confidence":100, "strength":75},
+		"loving":{"confidence":100, "strength":100},
 		"canBeChanged": false
 	},
 	"Kappa":
 	{
-		"provoking": {"confidence":100, "strength":100},
-		"amused": {"confidence":100},
+		"provoking": {"confidence":100, "strength":85},
+		"amused": {"confidence":15},
 		"canBeChanged": false
 	},
 	"DansGame":
 	{
-		"surprised": {"confidence":60, "strength":40},
-		"embarassed": {"confidence":60, "strength":40},
-		"provoking": {"confidence":80, "strength":90},
+		"surprised": {"confidence":60, "strength":30},
+		"embarassed": {"confidence":60, "strength":30},
+		"provoking": {"confidence":80, "strength":40},
 		"canBeChanged": false
 	},
 	"ResidentSleeper":
 	{
-		"bored": {"confidence":100, "strength":100},
-		"annoyed": {"confidence":100, "strength":90},
+		"bored": {"confidence":100, "strength":80},
+		"annoyed": {"confidence":100, "strength":20},
 		"canBeChanged": false
 	},
 	"TriHard":
 	{
-		"excited": {"confidence":80, "strength":60},
+		"excited": {"confidence":80, "strength":50},
 		"happy": {"confidence":50, "strength":30},
-		"provoking": {"confidence":40, "strength":40},
+		"provoking": {"confidence":40, "strength":20},
 		"canBeChanged": false
 	},
 	"HeyGuys":
 	{
-		"happy": {"confidence":90, "strength": 90},
+		"happy": {"confidence":90, "strength": 70},
 		"loving": {"confidence":70, "strength": 30},
 		"canBeChanged": false
 	},
 	"SwiftRage":
 	{
-		"rage": {"confidence":100, "strength": 100},
-		"annoyed": {"confidence":95, "strength": 50},
+		"rage": {"confidence":100, "strength": 80},
+		"annoyed": {"confidence":95, "strength": 20},
 		"canBeChanged": false
 	},
 	"OpieOP":
 	{
-		"embarassed": {"confidence":100, "strength":60},
-		"amused": {"confidence":50, "strength":20},
-		"provoking": {"confidence":90, "strength":70},
+		"embarassed": {"confidence":100, "strength":50},
+		"amused": {"confidence":50, "strength":15},
+		"provoking": {"confidence":90, "strength":35},
 		"canBeChanged": false
 	},
 	"FailFish":
 	{
-		"embarassed": {"confidence":100, "strength":90},
-		"annoyed": {"confidence":95, "strength":40},
-		"amused": {"confidence":80, "strength":25},
+		"embarassed": {"confidence":100, "strength":70},
+		"annoyed": {"confidence":95, "strength":20},
+		"amused": {"confidence":80, "strength":10},
 		"canBeChanged": false
 	},
 	"FrankerZ":
 	{
-		"loving": {"confidence":25, "strength":10},
+		"loving": {"confidence":25, "strength":100},
 		"canBeChanged": true
 	},
 	"PogChamp":
 	{
-		"surprised": {"confidence":100, "strength":100},
-		"amused": {"confidence":95, "strength":40},
-		"provoking": {"confidence":20, "strength":25},
+		"surprised": {"confidence":100, "strength":70},
+		"amused": {"confidence":95, "strength":10},
+		"provoking": {"confidence":20, "strength":20},
 		"canBeChanged": false
 	},
 	"4Head":
 	{
-		"amused": {"confidence":100, "strength":100},
+		"amused": {"confidence":100, "strength":80},
 		"provoking": {"confidence":30, "strength":20},
 		"canBeChanged":false
 	},
 	"EleGiggle":
 	{
-		"amused": {"confidence":100, "strength":100},
+		"amused": {"confidence":100, "strength":85},
 		"provoking": {"confidence":20, "strength":15},
 		"canBeChanged":false
 	}
