@@ -6,7 +6,7 @@ class Trainer{
     constructor(){
 		this.busy = false
 		setInterval(function() {
-			let data = JSON.stringify(emotions);
+			let data = JSON.stringify(emotions, null, '\t');
 			fs.writeFile('./trained-emotions.json',data,function(err) {
 				if (err) {
 					console.log(err);
@@ -64,7 +64,7 @@ class Trainer{
 							if (!emotions[word][property]) {
 								emotions[word][property] = {};
 							}
-							if (emotions[word][property].strength) {
+							if (emotions[word][property].strength && emotions[word][property].strength <= 100) {
 								emotions[word][property].strength += 1;
 							} else {
 								emotions[word][property].strength = 1;
