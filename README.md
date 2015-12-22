@@ -26,4 +26,6 @@ The project is devided in 3 parts:
 
 ##Running the project
 1. `npm start` (with root permissions)
+2. Wait 30 Seconds (don't ask)
+3. Open a browser and visit http://localhost/
 
