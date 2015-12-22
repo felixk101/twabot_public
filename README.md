@@ -25,7 +25,7 @@ The project is devided in 3 parts:
 4. `npm install` (with root permissions)
 
 ##Running the project
-1. `npm start` (with root permissions)
+1. `npm start` 
 2. Wait 30 Seconds (don't ask)
 3. Open a browser and visit http://localhost/index.html
 
