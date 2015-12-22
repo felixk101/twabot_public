@@ -55,11 +55,7 @@ class Analyzer{
 				total += self.emotion[e]
 			});
 			//can be modified in case the values get too high
-			if (total > 1000) {
-				self.decayRate = self.defaultdecayRate;
-			} else {
-				self.decayRate = self.defaultdecayRate;
-			}
+			self.decayRate = self.defaultdecayRate*total/1000;
 		}, periodLength);
 
 		setInterval(function() {
