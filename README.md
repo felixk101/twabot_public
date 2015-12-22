@@ -22,7 +22,7 @@ The project is devided in 3 parts:
   - replace PASS with your oauth token
   - replace DBHOST with address of rethinkdb-database server
   - replace DBPORT with port of rethinkdb-database
-4. `npm install` (with root permissions)
+4. `npm install` (try it without root permissions first)
 
 ##Running the project
 1. `npm start` 
