@@ -13,17 +13,17 @@ The project is devided in 3 parts:
 1. Displaying the analysed data with a webfrontend. Provided by Andreas Wundlechner
 
 ##Dependencies:
-_Node 4.2.3
-_RethinkDB 2.2.1
+-Node 4.2.3
+-RethinkDB 2.2.1
 
 ## Setup:
 1. Register Twitch account and get Auth token from http://www.twitchapps.com/tmi/
 2. Setup a rethinkDB server
 2. Modify credentials/credentials.js:
-  _replace NICK with your nickname
-  _replace PASS with your oauth token
-  _replace DBHOST with address of rethinkdb-database server
-  _replace DBPORT with port of rethinkdb-database
+  *replace NICK with your nickname
+  *replace PASS with your oauth token
+  *replace DBHOST with address of rethinkdb-database server
+  *replace DBPORT with port of rethinkdb-database
 4. `npm install` (with root permissions)
 
 ##Running the project
