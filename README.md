@@ -21,6 +21,7 @@ The project is devided in 3 parts:
 1. Register Twitch account and get Auth token from http://www.twitchapps.com/tmi/
 2. Setup a rethinkDB server
 2. Modify credentials/credentials.js:
+
   -replace NICK with your nickname
 
   -replace PASS with your oauth token
@@ -28,6 +29,7 @@ The project is devided in 3 parts:
   -replace DBHOST with address of rethinkdb-database server
  
   -replace DBPORT with port of rethinkdb-database
+  
 4. `npm install` (with root permissions)
 
 ##Running the project
