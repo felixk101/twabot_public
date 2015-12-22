@@ -65,7 +65,12 @@ const fallingEmtionsChartOptions = {
     scaleStepWidth : 250,
     scaleStartValue : 0
 };
-
+/**
+ *
+ * @param canvas
+ * @param chartOptions
+ * @returns {*}
+ */
 exports.initFallingEmotions = function (canvas, chartOptions=fallingEmtionsChartOptions) {
     let fallingEmotionsChartData = {
         labels: [],

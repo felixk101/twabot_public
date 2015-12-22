@@ -9,8 +9,9 @@ const fractalCount = 20;
 
 
 class Webserver{
-    constructor(twabot){
+    constructor(twabot, port=8080){
         this.twabot = twabot;
+        this.port = port;
         this.app = express();
         this.server = http.Server(this.app);
         this.io = socketio(this.server);
@@ -132,32 +133,32 @@ class Webserver{
     }
 
     startServer() {
-        this.server.listen(80);
+        this.server.listen(this.port);
         console.log("Webserver started on port 80");
     }
-};
+}
 
 function convertToLightweightChannel(channel){
-    return new Promise((resolve, reject) => {
-        let legacyDataPromises = [];
-        for (let type of analyzerTypes){
-            legacyDataPromises.push(channel.rethinkDB.getElementsSince(type, 20000));
-        }
-        Promise.all(legacyDataPromises)
-            .then((analysisLists) => {
-                let newChannel = {
-                    name: channel.name,
-                    viewers: channel.viewers,
-                    logo: channel.logo
-                };
-                for (let analysisList of analysisLists){
-                    let type = analysisList[0].type;
-                    newChannel[type] = sliceAnalysis(analysisList, type);
-                }
-                resolve(newChannel);
-            })
-            .catch((err) => reject(err));
-    });
+    let legacyDataPromises = [];
+    for (let type of analyzerTypes){
+        legacyDataPromises.push(channel.rethinkDB.getElementsSince(type, 20000));
+    }
+    return Promise.all(legacyDataPromises)
+        .then((analysisLists) => {
+            let newChannel = {
+                name: channel.name,
+                viewers: channel.viewers,
+                logo: channel.logo
+            };
+            for (let analysisList of analysisLists){
+                let type = analysisList[0].type;
+                newChannel[type] = sliceAnalysis(analysisList, type);
+            }
+            return Promise.resolve(newChannel);
+        })
+        .catch((err) => {
+            return Promise.reject(err);
+        });
 }
 
 function sliceAnalysis(analysisList, type){
