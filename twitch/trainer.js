@@ -1,6 +1,8 @@
 "use strict";
 let emotions = require('../jsonemotions.json');
+let significants = JSON.parse(JSON.stringify(emotions));
 let fs = require('fs');
+let commonwords = require('common-words');
 
 class Trainer{
     constructor(){
@@ -12,6 +14,14 @@ class Trainer{
 					console.log(err);
 				} else {
 					//console.log('Wrote to trained-emotions.json');
+				}
+			});
+			data = JSON.stringify(significants, null, '\t');
+			fs.writeFile('./significant-trained-emotions.json',data,function(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					//console.log('Wrote to significant-trained-emotions.json');
 				}
 			});
 			//fs.readFile('./trained-emotions.json',function(err, data) {
@@ -66,6 +76,10 @@ class Trainer{
 							}
 							if (emotions[word][property].strength && emotions[word][property].strength <= 100) {
 								emotions[word][property].strength += 1;
+								if (emotions[word][property].strength > 25 && !this.isCommon(word)) {
+									//console.log('emotions.'+word+'.'+property+'.strength = '+emotions[word][property].strength+' > 25 ?!');
+									significants[word] = emotions[word];
+								}
 							} else {
 								emotions[word][property].strength = 1;
 							}
@@ -77,7 +91,15 @@ class Trainer{
 		//console.log(emotions);
 		//console.log('emotions now has',Object.keys(emotions).length,'entries');
 		}
-			}
+	}
+
+	isCommon(string) {
+		commonwords.forEach(function(obj) {
+			if (obj.word == string) 
+				return true
+		});
+		return false;
+	}
 }
 exports.Trainer = Trainer;
 
