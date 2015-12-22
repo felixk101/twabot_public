@@ -7,12 +7,11 @@ let fs = require('fs');
 let mpt = require('./msgpertime/msgPerTime.js');
 let ept = require('./fractal/emotionPerTime.js');
 let fal = require('./fractal/fallingEmotionPerTime.js')
-let emotions = require('../jsonemotions.json');
+let emotions = require('./jsonemotions.json');
 
 class Analyzer{
 
     constructor(channelName,rethinkDB,viewers){
-
         this.trainmode=false;
         this.rethinkDB=rethinkDB;
 		//this.analyzers=[new mpt.Analyzer()];
