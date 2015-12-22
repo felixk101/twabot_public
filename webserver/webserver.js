@@ -9,7 +9,9 @@ const fractalCount = 20;
 
 
 class Webserver{
-    constructor(twabot, port=8080){
+    constructor(twabot, port){
+        if (!port)
+            port = 8080;
         this.twabot = twabot;
         this.port = port;
         this.app = express();
