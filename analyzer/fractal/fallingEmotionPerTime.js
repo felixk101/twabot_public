@@ -1,5 +1,6 @@
 "use strict";
 let jsonfile = require('./../../jsonemotions.json')
+let fs = require('fs');
 const equal = require('deep-equal');
 /*
  * The FallingEmotionPerTime Analyzer determines what emotions are sent in a time period and creates a nice decaying display
@@ -33,7 +34,8 @@ class Analyzer{
 		}
 		//the decayRate of emotions depends on the number of viewers
 		//and on the period length
-		this.decayRate = viewers/3000*5 * periodLength/1000;
+		this.defaultdecayRate = viewers/400 * periodLength/100;
+		this.decayRate = this.defaultdecayRate;
 	
 		//deep copy, but fast
 		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
@@ -41,6 +43,7 @@ class Analyzer{
 
 		//advance the period of measurement and reset counter
 		setInterval(function(){
+			let total = 0;
 			//only push the analysis when this period is done
 			self.pushAnalysis();
 			self.periodStart = Date.now();
@@ -49,8 +52,26 @@ class Analyzer{
 			//subtract the decayrate, but don't let values go below zero
 			ems.map((e) => {
 				self.emotion[e] = Math.max(Math.round(self.emotion[e]-self.decayRate), 0)
+				total += self.emotion[e]
 			});
+			//can be modified in case the values get too high
+			if (total > 1000) {
+				self.decayRate = self.defaultdecayRate;
+			} else {
+				self.decayRate = self.defaultdecayRate;
+			}
 		}, periodLength);
+
+		setInterval(function() {
+			fs.readFile('./significant-trained-emotions.json', function(err,data) {
+				if (err) {
+					console.log(err);
+				} else {
+					jsonfile = JSON.parse(data);
+				}
+			}, 5000);
+		});
+
     }
 
 	process(message, timeStamp) {
@@ -72,7 +93,6 @@ class Analyzer{
 			//at least one emotion detected
 		}
 		//we should update the data either way
-
 		this.rethinkDB.writeData('fallingEmotions',this.emotion);
 	}
 

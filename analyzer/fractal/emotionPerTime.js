@@ -1,5 +1,6 @@
 "use strict";
 let jsonfile = require('./../../jsonemotions.json')
+let fs = require('fs');
 const equal = require('deep-equal');
 /*
  * The EmotionPerTime Analyzer determines what emotions are sent in a certain time period
@@ -44,7 +45,18 @@ class Analyzer{
 			self.emotion = JSON.parse(JSON.stringify(self.startemotion))
 		}, periodLength);
 
-    }
+		setInterval(function() {
+			fs.readFile('./significant-trained-emotions.json', function(err,data) {
+				if (err) {
+					console.log(err);
+				} else {
+					jsonfile = JSON.parse(data);
+				}
+			}, 5000);
+
+		});
+	}
+
 	process(message, timeStamp) {
 		if (timeStamp > this.periodStart && timeStamp < this.periodEnd) {
 			this.analyzeEmotions(message);
