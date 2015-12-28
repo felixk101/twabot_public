@@ -16,16 +16,15 @@ class RethinkDB{
         this.isConnecting=false;
     }
 
+    /**
+     * This function will create a connection to the rethinkdb server and saves it in the
+     * variable 'this.con'. After a successful connection, the function will check if a table for this channel
+     * already exist. If it dosen't exist, the function will create a table and the associated secondaryIndex.
+     * Then it will call the createNewStream Method.
+     *
+     * @param streamName is the name of the stream
+     */
     connect(streamName){
-        /*
-        * This function will create a connection to the rethinkdb server and saves it in the
-        * variable 'this.con'. After a successful connection, the function will check if a table for this channel
-        * already exist. If it dosen't exist, the function will create a table and the associated secondaryIndex.
-        * Then it will call the createNewStream Method.
-        *
-        * parms:
-        *   streamName: The name of the stream.
-        * */
         this.streamName=streamName;
         this.isConnecting=true;
         console.log('Connection to rethinkdb started Version 2')
@@ -74,15 +73,18 @@ class RethinkDB{
         })
     }
 
+    /**
+     * This function will check if a table for the stream with the name 'streamName' already exist. If it dosen't
+     * it will create a new list and save the id in the variable 'this.streamID'. If the table exist, it will take
+     * the ID and save it as well in the variable 'this.streamID'.
+     *
+     * Then it check if the table has all specified secondaryIndexs and the function
+     * will add all missing secondaryIndexs. If this is done the table will be ready to use.
+     *
+     * @param streamName is the name of the new stream.
+     * @returns {string} An information string which will be returned if the server is not available.
+     */
     createNewStream(streamName){
-        /*
-        * This function will check if a table for the stream with the name 'streamName' already exist. If it dosen't
-        * it will create a new list and save the id in the variable 'this.streamID'. If the table exist, it will take
-        * the ID and save it as well in the variable 'this.streamID'.
-        *
-        * Then it check if the table has all specified secondaryIndexs and the function
-        * will add all missing secondaryIndexs. If this is done the table will be ready to use.
-        * */
         if(!this.connected && !this.isConnecting){
            return 'RethinkDB is not connected';
         }
@@ -161,14 +163,17 @@ class RethinkDB{
         })
     }
 
+    /**
+     * If the a connection to the rethinkdb exist, the function will write data in the table with
+     * the name 'this.streamID'.
+     *
+     * Every entry has a id, timestamp, data and type key. The type specify the analyse type and data will
+     * hold the data.
+     *
+     * @param type
+     * @param data
+     */
     writeData(type,data){
-        /*
-        * If the a connection to the rethinkdb exist, the function will write data in the table with
-        * the name 'this.streamID'.
-        *
-        * Every entry has a id, timestamp, data and type key. The type specify the analyse type and data will
-        * hold the data.
-        * */
         if(!this.connected ){
             return;
         }
@@ -191,17 +196,18 @@ class RethinkDB{
         return this.streamID;
     }
 
+    /**
+     * This function will return a promise with a stream that will fire a data event if the table
+     * that he has subscribe to get changed.
+     *
+     * !!!!!! Important !!!!!!!
+     * The stream has to been closed by hand or a memory leak will arise at the rethinkdb
+     *
+     * @param analyzeType This specify the data you will receive.
+     * @returns Promise
+     */
     getChangeFeed(analyzeType){
-        /*
-        * This function will return a promise with a stream that will fire a data event if the table
-        * that he has subscribe to get changed.
-        *
-        * !!!!!! Important !!!!!!!
-        * The stream has to been closed by hand or a memory leak will arise at the rethinkdb
-        *
-        * param:
-        *   analyzeType: This specify the data you will receive.
-        * */
+
         if(!this.connected){
             Promise.reject('RethinkDB is not connected');
         }
@@ -209,10 +215,13 @@ class RethinkDB{
         return r.table(this.channelName+'_'+this.streamID).filter(r.row('type').eq(analyzeType)).changes().run(this.con);
     }
 
+    /**
+     * This function will return a promise with all values with the analyse type 'type'.
+     *
+     * @param type
+     * @returns {*|Promise.<T>}
+     */
     getTableWithType(type){
-        /*
-        * This function will return a promise with all values with the analyse type 'type'.
-        * */
         if(!this.connected){
             Promise.reject('RethinkDB is not connected');
         }
@@ -224,10 +233,12 @@ class RethinkDB{
 
     }
 
+    /**
+     * This function will return a promise with the whole stream table.
+     *
+     * @returns {*|Promise.<T>}
+     */
     getWholeStream(){
-        /*
-        * This function will return a promise with the whole stream table.
-        * */
         if(!this.connected){
             Promise.reject('RethinkDB is not connected');
         }
@@ -238,11 +249,15 @@ class RethinkDB{
             })
     }
 
+    /**
+     * This function will return a promise with a list of elements that have a timestamp that
+     * got created during now and now - time.
+     *
+     * @param type defines which type of analyse will be returned
+     * @param time
+     * @returns {*|Promise.<T>}
+     */
     getElementsSince(type,time){
-        /*
-         * This function will return a promise with a list of elements that have a timestamp that
-         * got created during now and now-time.
-         * */
         if(!this.connected){
             Promise.reject('RethinkDB is not connected');
         }
@@ -284,8 +299,11 @@ class RethinkDB{
 
     }
 
+    /**
+     * This function will close the connection to the rethinkDB 5 seconds after the call
+     *
+     */
     close(){
-        /*This function will close the connection to the rethinkDB 5 seconds after the call.*/
         if(!this.connected){
             return;
         }
@@ -297,3 +315,5 @@ class RethinkDB{
     }
 }
 exports.RethinkDB=RethinkDB;
+
+if (require.main === module) {}

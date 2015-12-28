@@ -23,21 +23,23 @@ class Channel{
         this.gotUpdated=false;
     }
 
-    isOnline(){
-        /*This function checks if the channel is online*/
-        console.log(this.client.destroyed);
-    }
-
+    /**
+     * This function will close the connection to the Twitch IRC server
+     *
+     */
     closeChat(){
-        /*This function will close the connection to the Twitch IRC server*/
-
         this.client.end();
         this.rethinkDB.close();
         console.log('Chat of '+this.name+' closed');
     }
 
+    /**
+     * This function will start the connection attempt
+     *
+     * @param streamName
+     * @returns {Promise}
+     */
     connect(streamName){
-        /*This function will start the connection attempt*/
         console.log("Start Connecting to",this.name,streamName);
         return new Promise(function(resolve,reject){
             if(credentials.DBACTIVE) {
@@ -55,20 +57,24 @@ class Channel{
 
     }
 
+    /**
+     * This function will start reading the chat of the channel 'chan'
+     *
+     * @param chan
+     * @returns {*}
+     */
     fetchChat(chan){
-
-        //fs.open('logs/'+chan+'.json', 'a',function(err,fd){
-        //    if(err){
-        //        return err;
-        //    }
-        //});
 
         return this.getChannelHost(chan,this.client);
     }
 
-    getChannelHost(chan,client){
-        /*This function will look for a twitch irc server that runs the chat of the channel.
-        * If he finds a server a connection will be created.*/
+    /**
+     * This function will look for a twitch irc server that runs the chat of the channel.
+     * If he finds a server a connection will be created.
+     *
+     * @param chan
+     */
+    getChannelHost(chan){
         console.log('Looking up https://api.twitch.tv/api/channels/'+chan+'/chat_properties');
         //Ask Twitch for information about the channel, including chat servers
 
@@ -82,7 +88,7 @@ class Channel{
                 this.host=body.chat_servers[0].split(":")[0];
                 this.port=parseInt(body.chat_servers[0].split(":")[1]);
 
-                this.connectToChat({host: this.host, port: this.port},chan,client);
+                this.connectToChat({host: this.host, port: this.port},chan);
 
             } else {
                 console.error('ERROR: Could not find any info about channel \''+chan+'\'. (error:'+error+')');
@@ -92,9 +98,15 @@ class Channel{
 
     }
 
-    connectToChat(options,chan,client) {
-        /*This function will connect to the Twitch irc server. After a successful connection, it will receive
-        * chatt messages thru the data-Event.*/
+    /**
+     * This function will connect to the Twitch irc server. After a successful connection, it will receive
+     * chatt messages thru the data-Event.
+     *
+     * @param options is a json object with the ip and port of the chat-server
+     * @param chan is the name of the channel
+     */
+    connectToChat(options,chan) {
+
         console.log('Connecting to server with arguments:',options);
         this.client = net.connect(options, () => {
             console.log('Connected to Server, Channel: '+chan);
@@ -119,25 +131,23 @@ class Channel{
                     let timestamp = dateobject.toJSON();
 					this.analyser.analyzeData(new Date()+"|"+input);
 					this.trainer.process(input);
-                    //console.log(timestamp+'|'+sender + ":" + message);
-                    //fs.appendFile('logs/'+chan+'.log', this.getTimestamp()+'|'+input+'\n', function (err) {
-                    //    if(err) {
-                    //        console.log('error writing log:',err);
-                    //    }
-                    //});
                 }
             });
             this.client.on('end', () => {
                 console.log('Chat of '+this.getChannelName()+' has disconectd');
             });
 
-            this.client.on('uncaughtException',(err)=>{
+            this.client.on('error',(err)=>{
                 console.error(err);
             })
         });
     }
 
-
+    /**
+     * This function will return the current time as a string
+     *
+     * @returns {string}
+     */
     getTimestamp() {
         let date = new Date();
         return (date.getUTCDate() + '.' + date.getUTCMonth() + '.' + date.getUTCFullYear() + ';' + date.getUTCHours() +

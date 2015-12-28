@@ -27,22 +27,27 @@ class ChannelCrawler{
 		this.emotional = this.getMostEmotionalChannels();
 		this.trainer = new trainer.Trainer();
     }
+
+    /**
+     * This function creates a GET-Request to the address url with the arguments limit and offset.
+     * Twitch holds a list of all active streams ordered by the Viewer count. The stream at the start of the list
+     * has the most viewers.
+     * With the argument offset, you will chose where you will start in the list and with the argument limit you will
+     * determine the number of Streams you will get.
+     * For instace if you want to get 50 streams at the position 200
+     * of the list you have to type 'url'?limit=50&offset=50.
+     *
+     * @param offset
+     * @returns {Promise} a promise with a http-response body
+     */
     getChannels(offset) {
-        /*This function creates a GET-Request to the address url with the arguments limit and offset.
-         * Twitch holds a list of all active streams ordered by the Viewer count. The stream at the start of the list
-         * has the most viewers.
-         * With the argument offset, you will chose where you will start in the list and with the argument limit you will
-         * determine the number of Streams you will get.
-         * For instace if you want to get 50 streams at the position 200
-         * of the list you have to type 'url'?limit=50&offset=50.
-         *
-         * params:
-         *  offset: The starting position of the list of streams.
-         * */
         console.log('Attempting to access Twitch API...');
 
         return new Promise(function(resolve,reject){
             request({url: url + '?limit='+this.channelLimit+'&offset=' + offset, json: true}, function (err, response, body) {
+                if(err){
+                    reject(err);
+                }
 
                 let newChannels=[]
                 let viewerCount=-1;
@@ -76,7 +81,7 @@ class ChannelCrawler{
                     resolve(viewerCount);
 
                 }).catch(function (err) {
-                    //console.log("Test");
+
                     reject(err);
                     return;
                 });
@@ -85,11 +90,15 @@ class ChannelCrawler{
         }.bind(this))
     }
 
-    * registerChannels(offset) {
-    /*This function creates a GET-Request to the address 'https://api.twitch.tv/kraken/streams/summary.'
+    /**
+     * This function creates a GET-Request to the address 'https://api.twitch.tv/kraken/streams/summary.'
      * Twitch will send a json object wich contains three vaules, first one is the number of active streamms
      * the second one is the total number of viewers on Twitch at the moment and the third value is a list of
-     * links with one link*/
+     * links with one link
+     *
+     * @param offset
+     */
+    * registerChannels(offset) {
 
     yield setTimeout(function(){
         this.getChannels(offset).then(function(result){
@@ -104,12 +113,13 @@ class ChannelCrawler{
             }
 
         }.bind(this)).catch(function(err){
-            console.error('Promise error: '+err)
+            console.error('channelCrawler.registerChannels: '+err)
 
         });
 
-    }.bind(this),31000)
-}
+        }.bind(this),31000)
+    }
+
     startCrawler(){
         /*
         * This function will start the channelcrawler.
@@ -125,16 +135,16 @@ class ChannelCrawler{
 
     }
 
+    /**
+     *
+     * This function will give a sorted list of the most viewed channels.
+     * The most viewed channel will have the index 0.
+     * With the argument count is it possible to specify the size of the list that will be returned.
+     *
+     * @param count the number of the channels that the returnArray will contain
+     * @returns {Array} a array with the most viewed channels.
+     */
     getMostViewedChannels(count){
-        /*
-        * This function will give a sorted list of the most viewed channels.
-        * The most viewed channel will have the index 0.
-        * With the argument count is it possible to specify the size of the list that will be returned.
-        *
-        * arguments:
-        *   count:  The size of the list that will be returned.
-        *
-        * */
         let channelList=[];
         for(let x in this.activeChannels){
             channelList.push(this.activeChannels[x]);
@@ -156,22 +166,31 @@ class ChannelCrawler{
 
     }
 
+    /**
+     * This function will delete the channel with the name 'name' from the activeChannel dictionary.
+     *
+     * @param name of the channel which will be deleted.
+     */
     deleteChannel(name){
-        /**
-         * This function will delete the channel with the name 'name' from the activeChannel dictionary.
-         */
-
-        delete this.activeChannels[name];
+        if(typeof this.activeChannels[name]!=='undefined') {
+            delete this.activeChannels[name];
+            console.log('The channel ' + name + ' got deleted');
+        }else{
+            console.error('The channel '+name+' was not deleted because this channel doesn\'t exist.')
+        }
     }
 
+    /**
+     * This function will close the chat of a channel and ends the TCP connection.
+     *
+     * @param name of the channel wich will be closed
+     */
     closeChannel(name){
-        /*
-        * This function will close the chat of a channel and ends the TCP connection.
-        * */
         if(typeof this.activeChannels[name]!=='undefined') {
             this.activeChannels[name].closeChat();
         }
     }
+
 	getMostEmotionalChannels() {
 		let self=this;
 		
@@ -211,6 +230,6 @@ exports.ChannelCrawler=ChannelCrawler;
 if (require.main === module){
 
     let crawler=new ChannelCrawler();
-    crawler.registerChannels(0).next()
+    crawler.registerChannels(0).next();
 	//crawler.getMostEmotionalChannels();
 }
