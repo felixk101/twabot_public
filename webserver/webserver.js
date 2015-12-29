@@ -136,7 +136,7 @@ class Webserver{
 
     startServer() {
         this.server.listen(this.port);
-        console.log("Webserver started on port 80");
+        console.log("Webserver started on port " + this.port);
     }
 }
 
