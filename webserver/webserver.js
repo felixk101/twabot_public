@@ -71,7 +71,7 @@ class Webserver{
 
         this.app.use('/user.html', (req, res) => {
             if (req.query.channel)
-                res.redirect('/user/'+req.query.channel);
+                res.redirect('/user/'+req.query.channel.toLowerCase());
             else
                 res.redirect('/');
         });
