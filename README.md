@@ -2,7 +2,7 @@
 
 See Twitch Chat's mood at a glance.
 ##About
-A project by Lukas Edelböck, Felix Kampfer, and Andreas Wundlechner
+A project by Lukas Edelböck, Felix Kampfer, and Andreas Wundlechner (3 students from IN3 without database knowledge from other lectures).
 
 The project is devided in 3 parts:
 
