@@ -1,4 +1,7 @@
 "use strict";
+/**
+ * Created by Andreas Wundlechner
+ */
 
 const Chart = require('chart.js');
 const emotionColorMap = require('./emotionColorMap.json');

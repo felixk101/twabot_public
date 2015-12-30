@@ -1,4 +1,9 @@
 "use strict";
+/**
+ * Created by Andreas Wundlechner
+ *
+ * This "class" handles the transform actions on a canvas context.
+ */
 
 class TransformOptions{
     constructor(width, height, scaleX=1, scaleY=1, translateX=0, translateY=0){
@@ -26,6 +31,10 @@ class TransformOptions{
         this.translateY = y;
     }
 
+    /**
+     * Apply the options to a context, so it is ready for drawing.
+     * @param ctx The context which will be transformed.
+     */
     apply(ctx){
         ctx.scale(this.scaleX, this.scaleY);
         ctx.translate(this.translateX * this.width / this.scaleX,
