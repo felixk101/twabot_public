@@ -7,6 +7,17 @@ const analyzerTypes = require('./analyzerTypes.json');
 const msgPerTimeCount = 20;
 const fractalCount = 20;
 
+const msgPerTimePeriodLength = 2500;
+const fallingEmotionsPeriodLength = 100;
+
+const elementsSincePeriodLengths = {
+    msgPerTime: msgPerTimePeriodLength * (msgPerTimeCount + 4),
+    fallingEmotions: fallingEmotionsPeriodLength * 4,
+    fractal: 0
+};
+
+const activeChannelsCount = 3;
+
 
 class Webserver{
     constructor(twabot, port){
@@ -24,7 +35,7 @@ class Webserver{
 
     __registerSites(){
         this.app.use('/overview/activeChannels/', (req, res) => {
-            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(6);
+            let overviewList = this.twabot.channelCrawler.getMostViewedChannels(activeChannelsCount);
             let overviewPromises = [];
             for (let channel of overviewList){
                 if (channel)
@@ -42,11 +53,18 @@ class Webserver{
 
         this.app.use('/overview/emotionChannels/', (req, res) => {
             let emotionChannels = this.twabot.channelCrawler.getMostEmotionalChannels();
-            let emotionPromises = [];
+            let emotionChannelRequests = {};
             for (let emotion in emotionChannels){
-                if (emotionChannels[emotion])
-                    emotionPromises.push(convertToLightweightChannel(emotionChannels[emotion]));
+                if (emotionChannels[emotion]) {
+                    let channelName = emotionChannels[emotion].name;
+                    emotionChannelRequests[channelName] = emotionChannels[emotion];
+                }
             }
+            let emotionPromises = [];
+            for (let channelRequest in emotionChannelRequests){
+                emotionPromises.push(convertToLightweightChannel(emotionChannelRequests[channelRequest]));
+            }
+
             Promise.all(emotionPromises)
                 .then((emotionList) => {
                     let emotionChannelsOutput = {};
@@ -99,7 +117,7 @@ class Webserver{
                 if (channel) {
                     for (let type of analyzerTypes) {
                         // Send all the legacy data to the client for its history
-                        channel.rethinkDB.getElementsSince(type, 20000)
+                        channel.rethinkDB.getElementsSince(type, elementsSincePeriodLengths[type])
                             .then((analysisList) => {
                                 let packagedContent = {};
                                 packagedContent[type] = sliceAnalysis(analysisList, type);
@@ -141,26 +159,30 @@ class Webserver{
 }
 
 function convertToLightweightChannel(channel){
-    let legacyDataPromises = [];
-    for (let type of analyzerTypes){
-        legacyDataPromises.push(channel.rethinkDB.getElementsSince(type, 20000));
-    }
-    return Promise.all(legacyDataPromises)
-        .then((analysisLists) => {
-            let newChannel = {
-                name: channel.name,
-                viewers: channel.viewers,
-                logo: channel.logo
-            };
-            for (let analysisList of analysisLists){
-                let type = analysisList[0].type;
-                newChannel[type] = sliceAnalysis(analysisList, type);
-            }
-            return Promise.resolve(newChannel);
-        })
-        .catch((err) => {
-            return Promise.reject(err);
-        });
+    return new Promise((resolve, reject) => {
+        let legacyDataPromises = [];
+        for (let type of analyzerTypes){
+            legacyDataPromises.push(channel.rethinkDB.getElementsSince(type, elementsSincePeriodLengths[type]));
+        }
+        Promise.all(legacyDataPromises)
+            .then((analysisLists) => {
+                let newChannel = {
+                    name: channel.name,
+                    viewers: channel.viewers,
+                    logo: channel.logo
+                };
+
+                for (let analysisList of analysisLists){
+                    let type = analysisList[0].type;
+                    newChannel[type] = sliceAnalysis(analysisList, type);
+                }
+                resolve(newChannel);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
+
 }
 
 function sliceAnalysis(analysisList, type){
@@ -171,12 +193,13 @@ function sliceAnalysis(analysisList, type){
             return analysisList.slice(analysisList.length - msgPerTimeCount, analysisList.length);
         else
             return analysisList;
-    } else { // fractal
+    } else if (type == 'fractal') {
         if (analysisList.length > fractalCount)
             return analysisList.slice(analysisList.length - fractalCount, analysisList.length);
         else
             return analysisList;
     }
+    throw new Error('Unknown type: ' + type);
 }
 
 module.exports = Webserver;

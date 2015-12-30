@@ -60,6 +60,7 @@ exports.updateMsgPerTime = function (chart, dataset) {
 
 const fallingEmtionsChartOptions = {
     responsive: true,
+    animation: false,
     scaleOverride : true,
     scaleSteps : 4,
     scaleStepWidth : 250,

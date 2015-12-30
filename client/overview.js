@@ -25,17 +25,16 @@ let meinVue = new Vue({
                     this.$nextTick(this.drawThumbnailsActive);
                 })
                 .error(function(error){
-                    this.$set("activeChannels", require("./userMock.json").activeChannels);
-                    this.$nextTick(this.drawThumbnailsActive);
+                    console.log(error);
                 });
 
             this.$http.get('/overview/emotionChannels/')
                 .success(function(channels){
-                    console.log(channels);
                     this.$set("emotionChannels", channels);
                     this.$nextTick(this.drawThumbnailsEmotion);
                 })
                 .error(function(error){
+                    console.log(error);
                 });
         },
 

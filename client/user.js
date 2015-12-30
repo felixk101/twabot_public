@@ -6,15 +6,15 @@ const url = require('url');
 const CanvasDrawing = require('./canvasDrawing.js');
 const msgPerTimeCount = CanvasDrawing.msgPerTimeCount;
 
+let msgPerTimeChart = null;
+let fallingEmotionsChart = null;
 
 let meinVue = new Vue({
     el: '#user',
 
     data: {
-        channelName: "",
-        fractal: [],
-        msgPerTimeChart: null,
-        fallingEmotionsChart: null
+        channelName: ""
+        //fractal: []
     },
 
     ready: function() {
@@ -72,31 +72,20 @@ let meinVue = new Vue({
 
 
 
-        fractalUpdate : function() {
-                                                                    // slice the array to a maximum size
-            CanvasDrawing.updateFractal(this.fractal,getCanvas('fractal'));
-        },
+        //fractalUpdate : function() {
+        //    CanvasDrawing.updateFractal(this.fractal,getCanvas('fractal'));
+        //},
 
         msgPerTimeUpdate : function (updateData) {
-            if (this.msgPerTimeChart == null) {
-                this.$set('msgPerTimeChart', CanvasDrawing.initMsgPerTime(getCanvas('msgPerTime')));
-                this.$nextTick(() => {
-                    CanvasDrawing.updateMsgPerTime(this.msgPerTimeChart, updateData);
-                });
-            }
-            else
-                CanvasDrawing.updateMsgPerTime(this.msgPerTimeChart, updateData);
+            if (msgPerTimeChart == null)
+                msgPerTimeChart = CanvasDrawing.initMsgPerTime(getCanvas('msgPerTime'));
+            CanvasDrawing.updateMsgPerTime(msgPerTimeChart, updateData);
         },
 
         fallingEmotionsUpdate : function (updateData) {
-            if (this.fallingEmotionsChart == null) {
-                this.$set('fallingEmotionsChart', CanvasDrawing.initFallingEmotions(getCanvas('fallingEmotions')));
-                this.$nextTick(() => {
-                    CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
-                });
-            }
-            else
-                CanvasDrawing.updateFallingEmotions(this.fallingEmotionsChart, updateData);
+            if (fallingEmotionsChart == null)
+                fallingEmotionsChart = CanvasDrawing.initFallingEmotions(getCanvas('fallingEmotions'));
+            CanvasDrawing.updateFallingEmotions(fallingEmotionsChart, updateData);
         }
     }
 });
