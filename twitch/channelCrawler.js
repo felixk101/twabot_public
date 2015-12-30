@@ -12,7 +12,7 @@
 var request=require('request');
 var Channel=require('./channel');
 var emotions=require('../listemotions.json');
-var db=require('../rethinkdb/rethinkdb')
+var db=require('../rethinkdb/rethinkdb');
 let trainer=require('./trainer.js');
 var url='https://api.twitch.tv/kraken/streams';
 
@@ -22,7 +22,7 @@ class ChannelCrawler{
         this.url='https://api.twitch.tv/kraken/streams';
         this.activeChannels={};
         this.newChannelList=[];
-        this.channelLimit=50;
+        this.channelLimit=20;
         this.crawlerActive=false;
 		this.emotional = this.getMostEmotionalChannels();
 		this.trainer = new trainer.Trainer();
@@ -49,7 +49,7 @@ class ChannelCrawler{
                     reject(err);
                 }
 
-                let newChannels=[]
+                let newChannels=[];
                 let viewerCount=-1;
                 for (let x = 0; x < this.channelLimit; x++) {
                     //console.log(body.streams[x]);

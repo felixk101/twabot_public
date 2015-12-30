@@ -6,7 +6,7 @@ let fs = require('fs');
 //analyzers
 let mpt = require('./msgpertime/msgPerTime.js');
 let ept = require('./fractal/emotionPerTime.js');
-let fal = require('./fractal/fallingEmotionPerTime.js')
+let fal = require('./fractal/fallingEmotionPerTime.js');
 let emotions = require('../jsonemotions.json');
 
 class Analyzer{
@@ -46,7 +46,7 @@ class Analyzer{
     }
 
     getTimeStamp(data){
-        let timeStamp=data.split('|')[0]
+        let timeStamp=data.split('|')[0];
         return timeStamp;
     }
 

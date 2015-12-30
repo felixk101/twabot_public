@@ -347,7 +347,7 @@ if(psychotic){result.hostname=result.host=isAbsolute?'':srcPath.length?srcPath.s
 //this especially happens in cases like
 //url.resolveObject('mailto:local1@domain1', 'local2@domain2')
 var authInHost=result.host&&result.host.indexOf('@')>0?result.host.split('@'):false;if(authInHost){result.auth=authInHost.shift();result.host=result.hostname=authInHost.shift()}}mustEndAbs=mustEndAbs||result.host&&srcPath.length;if(mustEndAbs&&!isAbsolute){srcPath.unshift('')}if(!srcPath.length){result.pathname=null;result.path=null}else {result.pathname=srcPath.join('/')} //to support request.http
-if(!util.isNull(result.pathname)||!util.isNull(result.search)){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'')}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1)}host=host.substr(0,host.length-port.length)}if(host)this.hostname=host}},{"./util":7,"punycode":2,"querystring":5}],7:[function(require,module,exports){'use strict';module.exports={isString:function isString(arg){return typeof arg==='string'},isObject:function isObject(arg){return (typeof arg==="undefined"?"undefined":_typeof(arg))==='object'&&arg!==null},isNull:function isNull(arg){return arg===null},isNullOrUndefined:function isNullOrUndefined(arg){return arg==null}}},{}],8:[function(require,module,exports){var TransformOptions=(function(){function TransformOptions(width,height){var scaleX=arguments.length<=2||arguments[2]===undefined?1:arguments[2];var scaleY=arguments.length<=3||arguments[3]===undefined?1:arguments[3];var translateX=arguments.length<=4||arguments[4]===undefined?0:arguments[4];var translateY=arguments.length<=5||arguments[5]===undefined?0:arguments[5];_classCallCheck(this,TransformOptions);this.scaleX=scaleX;this.scaleY=scaleY;this.translateX=translateX;this.translateY=translateY;this.width=width;this.height=height}_createClass(TransformOptions,[{key:"setScale",value:function setScale(x,y){this.scaleX=x;this.scaleY=y} /**
+if(!util.isNull(result.pathname)||!util.isNull(result.search)){result.path=(result.pathname?result.pathname:'')+(result.search?result.search:'')}result.auth=relative.auth||result.auth;result.slashes=result.slashes||relative.slashes;result.href=result.format();return result};Url.prototype.parseHost=function(){var host=this.host;var port=portPattern.exec(host);if(port){port=port[0];if(port!==':'){this.port=port.substr(1)}host=host.substr(0,host.length-port.length)}if(host)this.hostname=host}},{"./util":7,"punycode":2,"querystring":5}],7:[function(require,module,exports){'use strict';module.exports={isString:function isString(arg){return typeof arg==='string'},isObject:function isObject(arg){return (typeof arg==="undefined"?"undefined":_typeof(arg))==='object'&&arg!==null},isNull:function isNull(arg){return arg===null},isNullOrUndefined:function isNullOrUndefined(arg){return arg==null}}},{}],8:[function(require,module,exports){"use strict";var TransformOptions=(function(){function TransformOptions(width,height){var scaleX=arguments.length<=2||arguments[2]===undefined?1:arguments[2];var scaleY=arguments.length<=3||arguments[3]===undefined?1:arguments[3];var translateX=arguments.length<=4||arguments[4]===undefined?0:arguments[4];var translateY=arguments.length<=5||arguments[5]===undefined?0:arguments[5];_classCallCheck(this,TransformOptions);this.scaleX=scaleX;this.scaleY=scaleY;this.translateX=translateX;this.translateY=translateY;this.width=width;this.height=height}_createClass(TransformOptions,[{key:"setScale",value:function setScale(x,y){this.scaleX=x;this.scaleY=y} /**
     * Translation is relative to the width and heigth.
     * Example: Width is 300, x is 2/3 => the drawing starts at 200
     * @param x
@@ -363,7 +363,7 @@ var chart=new Chart(ctx).Line(msgPerTimeChartData,chartOptions);return chart};ex
  */exports.initFallingEmotions=function(canvas){var chartOptions=arguments.length<=1||arguments[1]===undefined?fallingEmtionsChartOptions:arguments[1];var fallingEmotionsChartData={labels:[],datasets:[{fillColor:"rgba(220,220,220,1)",strokeColor:"rgba(220,220,220,1)",highlightFill:"rgba(220,220,220,1)",highlightStroke:"rgba(220,220,220,1)",data:[],dataColors:[]}]};for(var emotion in emotionColorMap){fallingEmotionsChartData.labels.push(emotion);fallingEmotionsChartData.datasets[0].data.push(0)}var ctx=canvas.getContext('2d'); // Build the chart
 var chart=new Chart(ctx).Bar(fallingEmotionsChartData,chartOptions); // Set the barcolors
 for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].fillColor=emotionColorMap[chart.datasets[0].bars[i].label]}chart.update();return chart};exports.updateFallingEmotions=function(chart,data){for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].value=data[chart.datasets[0].bars[i].label]}chart.update()};function drawFractal(ctx,transformOptions,data){ctx.save();transformOptions.apply(ctx);ctx.clearRect(0,0,transformOptions.width,transformOptions.height); // for emotions:
-drawPath(ctx,transformOptions);ctx.restore()}function drawPath(ctx,transformOptions){ctx.moveTo(0,transformOptions.height/2);ctx.beginPath();ctx.lineTo(transformOptions.width,transformOptions.height/2);ctx.closePath()}},{"./TransformOptions":8,"./emotionColorMap.json":10,"chart.js":12}],10:[function(require,module,exports){module.exports={"amused":"rgb(255,255,153)","annoyed":"rgb(255,153,153)","bored":"rgb(160,160,160)","embarassed":"rgb(,,)","excited":"rgb(0,255,0)","happy":"rgb(255,255,0)","loving":"rgb(255,0,255)","provoking":"rgb(140,0,0)","rage":"rgb(255,0,0)","sad":"rgb(0,0,255)","surprised":"rgb(153,355,153)"}},{}],11:[function(require,module,exports){'use strict';var Vue=require('vue');Vue.use(require('vue-resource'));var url=require('url');var CanvasDrawing=require('./canvasDrawing.js');var msgPerTimeCount=CanvasDrawing.msgPerTimeCount;var msgPerTimeChart=null;var fallingEmotionsChart=null;var meinVue=new Vue({el:'#user',data:{channelName:"" //fractal: []
+drawPath(ctx,transformOptions);ctx.restore()}function drawPath(ctx,transformOptions){ctx.moveTo(0,transformOptions.height/2);ctx.beginPath();ctx.lineTo(transformOptions.width,transformOptions.height/2);ctx.closePath()}},{"./TransformOptions":8,"./emotionColorMap.json":10,"chart.js":12}],10:[function(require,module,exports){module.exports={"amused":"rgb(255,255,153)","annoyed":"rgb(255,153,153)","bored":"rgb(160,160,160)","embarassed":"rgb(,,)","excited":"rgb(0,255,0)","happy":"rgb(255,255,0)","loving":"rgb(255,0,255)","provoking":"rgb(140,0,0)","rage":"rgb(255,0,0)","sad":"rgb(0,0,255)","surprised":"rgb(153,355,153)"}},{}],11:[function(require,module,exports){"use strict";var Vue=require('vue');Vue.use(require('vue-resource'));var url=require('url');var CanvasDrawing=require('./canvasDrawing.js');var msgPerTimeCount=CanvasDrawing.msgPerTimeCount;var msgPerTimeChart=null;var fallingEmotionsChart=null;var meinVue=new Vue({el:'#user',data:{channelName:"" //fractal: []
 },ready:function ready(){var channelName=this.getChannelName();this.$set('channelName',channelName);this.fetchDiagrammData(channelName)},methods:{getChannelName:function getChannelName(){var path=url.parse(document.URL);var pathname=path.pathname.split('/');var index=pathname.indexOf('user');return pathname[index+1]},fetchDiagrammData:function fetchDiagrammData(channelName){var _this=this;var socket=io();socket.on('connect',function(){socket.emit('registerChannel',channelName)});socket.on('legacyData',function(data){for(var type in data){if(type=='fallingEmotions'){_this.fallingEmotionsUpdate(data[type].data)}else if(type=='msgPerTime'){var updateData=[];var _iteratorNormalCompletion2=true;var _didIteratorError2=false;var _iteratorError2=undefined;try{for(var _iterator2=data[type][Symbol.iterator](),_step2;!(_iteratorNormalCompletion2=(_step2=_iterator2.next()).done);_iteratorNormalCompletion2=true){var msgData=_step2.value;updateData.push(msgData.data)}}catch(err) {_didIteratorError2=true;_iteratorError2=err}finally {try{if(!_iteratorNormalCompletion2&&_iterator2.return){_iterator2.return()}}finally {if(_didIteratorError2){throw _iteratorError2}}}_this.msgPerTimeUpdate(updateData)}else if(type=='fractal'){ //this.fractal.push(data[type].data);
 //this.fractalUpdate();
 }}});socket.on('updateData',function(data){for(var type in data){if(type=='fallingEmotions'){_this.fallingEmotionsUpdate(data[type].data)}if(type=='msgPerTime'){_this.msgPerTimeUpdate([data[type].data])}if(type=='fractal'){ //this.fractal.push(data[type].data);
@@ -773,7 +773,7 @@ helpers.each(dataset.points,function(point){if(point.hasValue()){point.draw()}})
      *
      * @param {String} url
      */Url.parse=function(url){if(ie){el.href=url;url=el.href}el.href=url;return {href:el.href,protocol:el.protocol?el.protocol.replace(/:$/,''):'',port:el.port,host:el.host,hostname:el.hostname,pathname:el.pathname.charAt(0)==='/'?el.pathname:'/'+el.pathname,search:el.search?el.search.replace(/^\?/,''):'',hash:el.hash?el.hash.replace(/^#/,''):''}};function serialize(params,obj,scope){var array=_.isArray(obj),plain=_.isPlainObject(obj),hash;_.each(obj,function(value,key){hash=_.isObject(value)||_.isArray(value);if(scope){key=scope+'['+(plain||hash?key:'')+']'}if(!scope&&array){params.add(value.name,value.value)}else if(hash){serialize(params,value,key)}else {params.add(key,value)}})}function encodeUriSegment(value){return encodeUriQuery(value,true).replace(/%26/gi,'&').replace(/%3D/gi,'=').replace(/%2B/gi,'+')}function encodeUriQuery(value,spaces){return encodeURIComponent(value).replace(/%40/gi,'@').replace(/%3A/gi,':').replace(/%24/g,'$').replace(/%2C/gi,',').replace(/%20/g,spaces?'%20':'+')}return _.url=Url}},{}],21:[function(require,module,exports){(function(process){ /*!
- * Vue.js v1.0.12
+ * Vue.js v1.0.13
  * (c) 2015 Evan You
  * Released under the MIT License.
  */'use strict';function set(obj,key,val){if(hasOwn(obj,key)){obj[key]=val;return}if(obj._isVue){set(obj._data,key,val);return}var ob=obj.__ob__;if(!ob){obj[key]=val;return}ob.convert(key,val);ob.dep.notify();if(ob.vms){var i=ob.vms.length;while(i--){var vm=ob.vms[i];vm._proxy(key);vm._digest()}}return val} /**
@@ -1030,12 +1030,7 @@ value=oneTime?value.slice(1):value;tokens.push({tag:true,value:value.trim(),html
 ',null,'+ // oldValue (null for read)
 JSON.stringify(dir.filters)+ // filter descriptors
 ',false)'; // write?
-}}} /**
- * Replace all interpolation tags in a piece of text.
- *
- * @param {String} text
- * @return {String}
- */function removeTags(text){return text.replace(tagRE,'')}var text$1=Object.freeze({compileRegex:compileRegex,parseText:parseText,tokensToExp:tokensToExp,removeTags:removeTags});var delimiters=['{{','}}'];var unsafeDelimiters=['{{{','}}}'];var config=Object.defineProperties({ /**
+}}}var text$1=Object.freeze({compileRegex:compileRegex,parseText:parseText,tokensToExp:tokensToExp});var delimiters=['{{','}}'];var unsafeDelimiters=['{{{','}}}'];var config=Object.defineProperties({ /**
    * Whether to print debug messages.
    * Also enables stack trace for warnings.
    *
@@ -1376,7 +1371,7 @@ ob.dep.notify();return result})}); /**
  * @param {Number} index
  * @param {*} val
  * @return {*} - replaced element
- */def(arrayProto,'$set',function $set(index,val){if(index>=this.length){this.length=index+1}return this.splice(index,1,val)[0]}); /**
+ */def(arrayProto,'$set',function $set(index,val){if(index>=this.length){this.length=Number(index)+1}return this.splice(index,1,val)[0]}); /**
  * Convenience method to remove the element at given index.
  *
  * @param {Number} index
@@ -1417,11 +1412,11 @@ var subs=toArray(this.subs);for(var i=0,l=subs.length;i<l;i++){subs[i].update()}
  * value type is Object.
  *
  * @param {Object} obj
- */Observer.prototype.walk=function(obj){var keys=Object.keys(obj);var i=keys.length;while(i--){this.convert(keys[i],obj[keys[i]])}}; /**
+ */Observer.prototype.walk=function(obj){var keys=Object.keys(obj);for(var i=0,l=keys.length;i<l;i++){this.convert(keys[i],obj[keys[i]])}}; /**
  * Observe a list of Array items.
  *
  * @param {Array} items
- */Observer.prototype.observeArray=function(items){var i=items.length;while(i--){observe(items[i])}}; /**
+ */Observer.prototype.observeArray=function(items){for(var i=0,l=items.length;i<l;i++){observe(items[i])}}; /**
  * Convert a property into getter/setter so we can emit
  * the events when the property is accessed/changed.
  *
@@ -1452,7 +1447,7 @@ var subs=toArray(this.subs);for(var i=0,l=subs.length;i<l;i++){subs[i].update()}
  *
  * @param {Object|Array} target
  * @param {Object} proto
- */function copyAugment(target,src,keys){var i=keys.length;var key;while(i--){key=keys[i];def(target,key,src[key])}} /**
+ */function copyAugment(target,src,keys){for(var i=0,l=keys.length;i<l;i++){var key=keys[i];def(target,key,src[key])}} /**
  * Attempt to create an observer instance for a value,
  * returns the new observer if successfully observed,
  * or the existing observer if the value already has one.
@@ -1754,7 +1749,7 @@ if(!this.vm._isBeingDestroyed){this.vm._watchers.$remove(this)}var depIds=Object
  * is collected as a "deep" dependency.
  *
  * @param {*} val
- */function traverse(val){var i,keys;if(isArray(val)){i=val.length;while(i--){traverse(val[i])}}else if(isObject(val)){keys=Object.keys(val);i=keys.length;while(i--){traverse(val[keys[i]])}}}var cloak={bind:function bind(){var el=this.el;this.vm.$once('hook:compiled',function(){el.removeAttribute('v-cloak')})}};var ref={bind:function bind(){process.env.NODE_ENV!=='production'&&warn('v-ref:'+this.arg+' must be used on a child '+'component. Found on <'+this.el.tagName.toLowerCase()+'>.')}};var el={priority:1500,bind:function bind(){ /* istanbul ignore if */if(!this.arg){return}var id=this.id=camelize(this.arg);var refs=(this._scope||this.vm).$els;if(hasOwn(refs,id)){refs[id]=this.el}else {defineReactive(refs,id,this.el)}},unbind:function unbind(){var refs=(this._scope||this.vm).$els;if(refs[this.id]===this.el){refs[this.id]=null}}};var prefixes=['-webkit-','-moz-','-ms-'];var camelPrefixes=['Webkit','Moz','ms'];var importantRE=/!important;?$/;var propCache=Object.create(null);var testEl=null;var style={deep:true,update:function update(value){if(typeof value==='string'){this.el.style.cssText=value}else if(isArray(value)){this.handleObject(value.reduce(extend,{}))}else {this.handleObject(value||{})}},handleObject:function handleObject(value){ // cache object styles so that only changed props
+ */function traverse(val){var i,keys;if(isArray(val)){i=val.length;while(i--){traverse(val[i])}}else if(isObject(val)){keys=Object.keys(val);i=keys.length;while(i--){traverse(val[keys[i]])}}}var cloak={bind:function bind(){var el=this.el;this.vm.$once('pre-hook:compiled',function(){el.removeAttribute('v-cloak')})}};var ref={bind:function bind(){process.env.NODE_ENV!=='production'&&warn('v-ref:'+this.arg+' must be used on a child '+'component. Found on <'+this.el.tagName.toLowerCase()+'>.')}};var ON=700;var MODEL=800;var BIND=850;var TRANSITION=1100;var EL=1500;var COMPONENT=1500;var PARTIAL=1750;var SLOT=1750;var FOR=2000;var IF=2000;var el={priority:EL,bind:function bind(){ /* istanbul ignore if */if(!this.arg){return}var id=this.id=camelize(this.arg);var refs=(this._scope||this.vm).$els;if(hasOwn(refs,id)){refs[id]=this.el}else {defineReactive(refs,id,this.el)}},unbind:function unbind(){var refs=(this._scope||this.vm).$els;if(refs[this.id]===this.el){refs[this.id]=null}}};var prefixes=['-webkit-','-moz-','-ms-'];var camelPrefixes=['Webkit','Moz','ms'];var importantRE=/!important;?$/;var propCache=Object.create(null);var testEl=null;var style={deep:true,update:function update(value){if(typeof value==='string'){this.el.style.cssText=value}else if(isArray(value)){this.handleObject(value.reduce(extend,{}))}else {this.handleObject(value||{})}},handleObject:function handleObject(value){ // cache object styles so that only changed props
 // are actually updated.
 var cache=this.cache||(this.cache={});var name,val;for(name in cache){if(!(name in value)){this.handleSingle(name,null);delete cache[name]}}for(name in value){val=value[name];if(val!==cache[name]){cache[name]=val;this.handleSingle(name,val)}}},handleSingle:function handleSingle(prop,value){prop=normalize(prop);if(!prop)return; // unsupported prop
 // cast possible numbers/booleans into strings
@@ -1778,19 +1773,21 @@ var disallowedInterpAttrRE=/^v-|^:|^@|^(is|transition|transition-mode|debounce|t
 // because they only affect the initial state of the element
 var attrWithPropsRE=/^(value|checked|selected|muted)$/; // these attributes should set a hidden property for
 // binding v-model to object values
-var modelProps={value:'_value','true-value':'_trueValue','false-value':'_falseValue'};var bind={priority:850,bind:function bind(){var attr=this.arg;var tag=this.el.tagName; // should be deep watch on object mode
+var modelProps={value:'_value','true-value':'_trueValue','false-value':'_falseValue'};var bind={priority:BIND,bind:function bind(){var attr=this.arg;var tag=this.el.tagName; // should be deep watch on object mode
 if(!attr){this.deep=true} // handle interpolation bindings
 if(this.descriptor.interp){ // only allow binding on native attributes
 if(disallowedInterpAttrRE.test(attr)||attr==='name'&&(tag==='PARTIAL'||tag==='SLOT')){process.env.NODE_ENV!=='production'&&warn(attr+'="'+this.descriptor.raw+'": '+'attribute interpolation is not allowed in Vue.js '+'directives and special attributes.');this.el.removeAttribute(attr);this.invalid=true} /* istanbul ignore if */if(process.env.NODE_ENV!=='production'){var raw=attr+'="'+this.descriptor.raw+'": '; // warn src
 if(attr==='src'){warn(raw+'interpolation in "src" attribute will cause '+'a 404 request. Use v-bind:src instead.')} // warn style
 if(attr==='style'){warn(raw+'interpolation in "style" attribute will cause '+'the attribute to be discarded in Internet Explorer. '+'Use v-bind:style instead.')}}}},update:function update(value){if(this.invalid){return}var attr=this.arg;if(this.arg){this.handleSingle(attr,value)}else {this.handleObject(value||{})}}, // share object handler with v-bind:class
-handleObject:style.handleObject,handleSingle:function handleSingle(attr,value){if(!this.descriptor.interp&&attrWithPropsRE.test(attr)&&attr in this.el){this.el[attr]=attr==='value'?value==null // IE9 will set input.value to "null" for null...
+handleObject:style.handleObject,handleSingle:function handleSingle(attr,value){var el=this.el;var interp=this.descriptor.interp;if(!interp&&attrWithPropsRE.test(attr)&&attr in el){el[attr]=attr==='value'?value==null // IE9 will set input.value to "null" for null...
 ?'':value:value} // set model props
-var modelProp=modelProps[attr];if(modelProp){this.el[modelProp]=value; // update v-model if present
-var model=this.el.__v_model;if(model){model.listener()}} // do not set value attribute for textarea
-if(attr==='value'&&this.el.tagName==='TEXTAREA'){this.el.removeAttribute(attr);return} // update attribute
-if(value!=null&&value!==false){if(xlinkRE.test(attr)){this.el.setAttributeNS(xlinkNS,attr,value)}else {this.el.setAttribute(attr,value)}}else {this.el.removeAttribute(attr)}}}; // keyCode aliases
-var keyCodes={esc:27,tab:9,enter:13,space:32,'delete':46,up:38,left:37,right:39,down:40};function keyFilter(handler,keys){var codes=keys.map(function(key){var charCode=key.charCodeAt(0);if(charCode>47&&charCode<58){return parseInt(key,10)}if(key.length===1){charCode=key.toUpperCase().charCodeAt(0);if(charCode>64&&charCode<91){return charCode}}return keyCodes[key]});return function keyHandler(e){if(codes.indexOf(e.keyCode)>-1){return handler.call(this,e)}}}function stopFilter(handler){return function stopHandler(e){e.stopPropagation();return handler.call(this,e)}}function preventFilter(handler){return function preventHandler(e){e.preventDefault();return handler.call(this,e)}}var on={acceptStatement:true,priority:700,bind:function bind(){ // deal with iframes
+var modelProp=modelProps[attr];if(!interp&&modelProp){el[modelProp]=value; // update v-model if present
+var model=el.__v_model;if(model){model.listener()}} // do not set value attribute for textarea
+if(attr==='value'&&el.tagName==='TEXTAREA'){el.removeAttribute(attr);return} // update attribute
+if(value!=null&&value!==false){if(attr==='class'){ // handle edge case #1960:
+// class interpolation should not overwrite Vue transition class
+if(el.__v_trans){value+=' '+el.__v_trans.id+'-transition'}setClass(el,value)}else if(xlinkRE.test(attr)){el.setAttributeNS(xlinkNS,attr,value)}else {el.setAttribute(attr,value)}}else {el.removeAttribute(attr)}}}; // keyCode aliases
+var keyCodes={esc:27,tab:9,enter:13,space:32,'delete':46,up:38,left:37,right:39,down:40};function keyFilter(handler,keys){var codes=keys.map(function(key){var charCode=key.charCodeAt(0);if(charCode>47&&charCode<58){return parseInt(key,10)}if(key.length===1){charCode=key.toUpperCase().charCodeAt(0);if(charCode>64&&charCode<91){return charCode}}return keyCodes[key]});return function keyHandler(e){if(codes.indexOf(e.keyCode)>-1){return handler.call(this,e)}}}function stopFilter(handler){return function stopHandler(e){e.stopPropagation();return handler.call(this,e)}}function preventFilter(handler){return function preventHandler(e){e.preventDefault();return handler.call(this,e)}}var on={acceptStatement:true,priority:ON,bind:function bind(){ // deal with iframes
 if(this.el.tagName==='IFRAME'&&this.arg!=='load'){var self=this;this.iframeBind=function(){on$1(self.el.contentWindow,self.arg,self.handler)};this.on('load',this.iframeBind)}},update:function update(handler){ // stub a noop for v-on with no value,
 // e.g. @mousedown.prevent
 if(!this.descriptor.raw){handler=function(){}}if(typeof handler!=='function'){process.env.NODE_ENV!=='production'&&warn('v-on:'+this.arg+'="'+this.expression+'" expects a function value, '+'got '+handler);return} // apply modifiers
@@ -1848,7 +1845,7 @@ if(debounce){this.listener=_debounce(this.listener,debounce)} // Support jQuery 
 // jQuery variable in tests.
 this.hasjQuery=typeof jQuery==='function';if(this.hasjQuery){jQuery(el).on('change',this.listener);if(!lazy){jQuery(el).on('input',this.listener)}}else {this.on('change',this.listener);if(!lazy){this.on('input',this.listener)}} // IE9 doesn't fire input event on backspace/del/cut
 if(!lazy&&isIE9){this.on('cut',function(){nextTick(self.listener)});this.on('keyup',function(e){if(e.keyCode===46||e.keyCode===8){self.listener()}})} // set initial value if present
-if(el.hasAttribute('value')||el.tagName==='TEXTAREA'&&el.value.trim()){this.afterBind=this.listener}},update:function update(value){this.el.value=_toString(value)},unbind:function unbind(){var el=this.el;if(this.hasjQuery){jQuery(el).off('change',this.listener);jQuery(el).off('input',this.listener)}}};var handlers={text:text$2,radio:radio,select:select,checkbox:checkbox};var model={priority:800,twoWay:true,handlers:handlers,params:['lazy','number','debounce'], /**
+if(el.hasAttribute('value')||el.tagName==='TEXTAREA'&&el.value.trim()){this.afterBind=this.listener}},update:function update(value){this.el.value=_toString(value)},unbind:function unbind(){var el=this.el;if(this.hasjQuery){jQuery(el).off('change',this.listener);jQuery(el).off('input',this.listener)}}};var handlers={text:text$2,radio:radio,select:select,checkbox:checkbox};var model={priority:MODEL,twoWay:true,handlers:handlers,params:['lazy','number','debounce'], /**
    * Possible elements:
    *   <select>
    *   <textarea>
@@ -1981,9 +1978,9 @@ var linker;var cid=vm.constructor.cid;if(cid>0){var cacheId=cid+(isString?el:el.
  * @param {Vue} host
  * @param {Object} scope
  * @param {Fragment} parentFrag
- */FragmentFactory.prototype.create=function(host,scope,parentFrag){var frag=cloneNode(this.template);return new Fragment(this.linker,this.vm,frag,host,scope,parentFrag)};var vIf={priority:2000,bind:function bind(){var el=this.el;if(!el.__vue__){ // check else block
+ */FragmentFactory.prototype.create=function(host,scope,parentFrag){var frag=cloneNode(this.template);return new Fragment(this.linker,this.vm,frag,host,scope,parentFrag)};var vIf={priority:IF,bind:function bind(){var el=this.el;if(!el.__vue__){ // check else block
 var next=el.nextElementSibling;if(next&&getAttr(next,'v-else')!==null){remove(next);this.elseFactory=new FragmentFactory(this.vm,next)} // check main block
-this.anchor=createAnchor('v-if');replace(el,this.anchor);this.factory=new FragmentFactory(this.vm,el)}else {process.env.NODE_ENV!=='production'&&warn('v-if="'+this.expression+'" cannot be '+'used on an instance root element.');this.invalid=true}},update:function update(value){if(this.invalid)return;if(value){if(!this.frag){this.insert()}}else {this.remove()}},insert:function insert(){if(this.elseFrag){this.elseFrag.remove();this.elseFrag=null}this.frag=this.factory.create(this._host,this._scope,this._frag);this.frag.before(this.anchor)},remove:function remove(){if(this.frag){this.frag.remove();this.frag=null}if(this.elseFactory&&!this.elseFrag){this.elseFrag=this.elseFactory.create(this._host,this._scope,this._frag);this.elseFrag.before(this.anchor)}},unbind:function unbind(){if(this.frag){this.frag.destroy()}}};var uid$1=0;var vFor={priority:2000,params:['track-by','stagger','enter-stagger','leave-stagger'],bind:function bind(){ // support "item in items" syntax
+this.anchor=createAnchor('v-if');replace(el,this.anchor);this.factory=new FragmentFactory(this.vm,el)}else {process.env.NODE_ENV!=='production'&&warn('v-if="'+this.expression+'" cannot be '+'used on an instance root element.');this.invalid=true}},update:function update(value){if(this.invalid)return;if(value){if(!this.frag){this.insert()}}else {this.remove()}},insert:function insert(){if(this.elseFrag){this.elseFrag.remove();this.elseFrag=null}this.frag=this.factory.create(this._host,this._scope,this._frag);this.frag.before(this.anchor)},remove:function remove(){if(this.frag){this.frag.remove();this.frag=null}if(this.elseFactory&&!this.elseFrag){this.elseFrag=this.elseFactory.create(this._host,this._scope,this._frag);this.elseFrag.before(this.anchor)}},unbind:function unbind(){if(this.frag){this.frag.destroy()}}};var uid$1=0;var vFor={priority:FOR,params:['track-by','stagger','enter-stagger','leave-stagger'],bind:function bind(){ // support "item in items" syntax
 var inMatch=this.expression.match(/(.*) in (.*)/);if(inMatch){var itMatch=inMatch[1].match(/\((.*),(.*)\)/);if(itMatch){this.iterator=itMatch[1].trim();this.alias=itMatch[2].trim()}else {this.alias=inMatch[1].trim()}this.expression=inMatch[2]}if(!this.alias){process.env.NODE_ENV!=='production'&&warn('Alias is required in v-for.');return} // uid as a cache identifier
 this.id='__v-for__'+ ++uid$1; // check if this is an option list,
 // so that we know if we need to update the <select>'s
@@ -2278,7 +2275,7 @@ isHidden(this.el)){return}var type=this.typeCache[className];if(type)return type
  *
  * @param {Element} el
  * @return {Boolean}
- */function isHidden(el){return !(el.offsetWidth||el.offsetHeight||el.getClientRects().length)}var transition={priority:1100,update:function update(id,oldId){var el=this.el; // resolve on owner vm
+ */function isHidden(el){return !(el.offsetWidth||el.offsetHeight||el.getClientRects().length)}var transition={priority:TRANSITION,update:function update(id,oldId){var el=this.el; // resolve on owner vm
 var hooks=resolveAsset(this.vm.$options,'transitions',id);id=id||'v'; // apply on closest vm
 el.__v_trans=new Transition(el,id,hooks,this.el.__vue__||this.vm);if(oldId){removeClass(el,oldId+'-transition')}addClass(el,id+'-transition')}};var bindingModes=config._propBindingModes;var propDef={bind:function bind(){var child=this.vm;var parent=child._context; // passed in from compiler directly
 var prop=this.descriptor.prop;var childKey=prop.path;var parentKey=prop.parentPath;var twoWay=prop.mode===bindingModes.TWO_WAY;var parentWatcher=this.parentWatcher=new Watcher(parent,parentKey,function(val){val=coerceProp(prop,val);if(assertProp(prop,val)){child[childKey]=val}},{twoWay:twoWay,filters:prop.filters, // important: props need to be observed on the
@@ -2287,10 +2284,10 @@ scope:this._scope}); // set the child initial value.
 initProp(child,prop,parentWatcher.value); // setup two-way binding
 if(twoWay){ // important: defer the child watcher creation until
 // the created hook (after data observation)
-var self=this;child.$once('hook:created',function(){self.childWatcher=new Watcher(child,childKey,function(val){parentWatcher.set(val)},{ // ensure sync upward before parent sync down.
+var self=this;child.$once('pre-hook:created',function(){self.childWatcher=new Watcher(child,childKey,function(val){parentWatcher.set(val)},{ // ensure sync upward before parent sync down.
 // this is necessary in cases e.g. the child
 // mutates a prop array, then replaces it. (#1683)
-sync:true})})}},unbind:function unbind(){this.parentWatcher.teardown();if(this.childWatcher){this.childWatcher.teardown()}}};var component={priority:1500,params:['keep-alive','transition-mode','inline-template'], /**
+sync:true})})}},unbind:function unbind(){this.parentWatcher.teardown();if(this.childWatcher){this.childWatcher.teardown()}}};var component={priority:COMPONENT,params:['keep-alive','transition-mode','inline-template'], /**
    * Setup. Two possible usages:
    *
    * - static:
@@ -2656,7 +2653,7 @@ if(dirName==='for'||dirName==='router-view'){descriptor.ref=findRef(el)}var fn=f
  */function compileDirectives(attrs,options){var i=attrs.length;var dirs=[];var attr,name,value,rawName,rawValue,dirName,arg,modifiers,dirDef,tokens;while(i--){attr=attrs[i];name=rawName=attr.name;value=rawValue=attr.value;tokens=parseText(value); // reset arg
 arg=null; // check modifiers
 modifiers=parseModifiers(name);name=name.replace(modifierRE,''); // attribute interpolations
-if(tokens){value=tokensToExp(tokens);if(name==='class'){pushDir('class',internalDirectives['class'],true)}else {arg=name;pushDir('bind',publicDirectives.bind,true)} // warn against mixing mustaches with v-bind
+if(tokens){value=tokensToExp(tokens);arg=name;pushDir('bind',publicDirectives.bind,true); // warn against mixing mustaches with v-bind
 if(process.env.NODE_ENV!=='production'){if(name==='class'&&Array.prototype.some.call(attrs,function(attr){return attr.name===':class'||attr.name==='v-bind:class'})){warn('class="'+rawValue+'": Do not mix mustache interpolation '+'and v-bind for "class" on the same element. Use one or the other.')}}}else  // special attribute: transition
 if(transitionRE.test(name)){modifiers.literal=!bindRE.test(name);pushDir('transition',internalDirectives.transition)}else  // event handlers
 if(onRE.test(name)){arg=name.replace(onRE,'');pushDir('on',publicDirectives.on)}else  // attribute bindings
@@ -2821,7 +2818,7 @@ var self=this;Object.defineProperty(self,key,{configurable:true,enumerable:true,
    * Trigger all handlers for a hook
    *
    * @param {String} hook
-   */Vue.prototype._callHook=function(hook){var handlers=this.$options[hook];if(handlers){for(var i=0,j=handlers.length;i<j;i++){handlers[i].call(this)}}this.$emit('hook:'+hook)}}function noop(){} /**
+   */Vue.prototype._callHook=function(hook){this.$emit('pre-hook:'+hook);var handlers=this.$options[hook];if(handlers){for(var i=0,j=handlers.length;i<j;i++){handlers[i].call(this)}}this.$emit('hook:'+hook)}}function noop(){} /**
  * A directive links a DOM element with a piece of data,
  * which is the result of evaluating an expression.
  * It registers a watcher with the expression and calls
@@ -2854,9 +2851,7 @@ if(process.env.NODE_ENV!=='production'&&this.el){this.el._vue_directives=this.el
  *
  * @param {Object} def
  */Directive.prototype._bind=function(){var name=this.name;var descriptor=this.descriptor; // remove attribute
-if((name!=='cloak'||this.vm._isCompiled)&&this.el&&this.el.removeAttribute){var attr=descriptor.attr||'v-'+name;if(attr!=='class'){this.el.removeAttribute(attr)}else { // for class interpolations, only remove the parts that
-// need to be interpolated.
-setClass(this.el,removeTags(this.el.getAttribute('class')).trim().replace(/\s+/g,' '))}} // copy def properties
+if((name!=='cloak'||this.vm._isCompiled)&&this.el&&this.el.removeAttribute){var attr=descriptor.attr||'v-'+name;this.el.removeAttribute(attr)} // copy def properties
 var def=descriptor.def;if(typeof def==='function'){this.update=def}else {extend(this,def)} // setup directive params
 this._setupParams(); // initial bind
 if(this.bind){this.bind()}this._bound=true;if(this.literal){this.update&&this.update(descriptor.raw)}else if((this.expression||this.modifiers)&&(this.update||this.twoWay)&&!this._checkStatement()){ // wrapped updater for context
@@ -2877,7 +2872,7 @@ val=getAttr(this.el,key);if(val!=null){this.params[mappedKey]=val===''?true:val}
  * @param {String} expression
  */Directive.prototype._setupParamWatcher=function(key,expression){var self=this;var called=false;var unwatch=(this._scope||this.vm).$watch(expression,function(val,oldVal){self.params[key]=val; // since we are in immediate mode,
 // only call the param change callbacks if this is not the first update.
-if(called){var cb=self.paramWatchers&&self.paramWatchers[key];if(cb){cb.call(self,val,oldVal)}}else {called=true}},{immediate:true});(this._paramUnwatchFns||(this._paramUnwatchFns=[])).push(unwatch)}; /**
+if(called){var cb=self.paramWatchers&&self.paramWatchers[key];if(cb){cb.call(self,val,oldVal)}}else {called=true}},{immediate:true,user:false});(this._paramUnwatchFns||(this._paramUnwatchFns=[])).push(unwatch)}; /**
  * Check if the directive is a function caller
  * and if the expression is a callable one. If both true,
  * we wrap up the expression and use it as the event
@@ -3086,7 +3081,7 @@ var args=toArray(arguments,1);args.unshift(this);if(typeof plugin.install==='fun
    *                 - {Boolean} deep
    *                 - {Boolean} immediate
    * @return {Function} - unwatchFn
-   */Vue.prototype.$watch=function(expOrFn,cb,options){var vm=this;var parsed;if(typeof expOrFn==='string'){parsed=parseDirective(expOrFn);expOrFn=parsed.expression}var watcher=new Watcher(vm,expOrFn,cb,{deep:options&&options.deep,sync:options&&options.sync,filters:parsed&&parsed.filters});if(options&&options.immediate){cb.call(vm,watcher.value)}return function unwatchFn(){watcher.teardown()}}; /**
+   */Vue.prototype.$watch=function(expOrFn,cb,options){var vm=this;var parsed;if(typeof expOrFn==='string'){parsed=parseDirective(expOrFn);expOrFn=parsed.expression}var watcher=new Watcher(vm,expOrFn,cb,{deep:options&&options.deep,sync:options&&options.sync,filters:parsed&&parsed.filters,user:!options||options.user!==false});if(options&&options.immediate){cb.call(vm,watcher.value)}return function unwatchFn(){watcher.teardown()}}; /**
    * Evaluate a text directive, including filters.
    *
    * @param {String} text
@@ -3325,7 +3320,7 @@ var filters={orderBy:orderBy,filterBy:filterBy,limitBy:limitBy, /**
    * @param {Function} handler
    * @param {Number} delay = 300
    * @return {Function}
-   */debounce:function debounce(handler,delay){if(!handler)return;if(!delay){delay=300}return _debounce(handler,delay)}};var partial={priority:1750,params:['name'], // watch changes to name for dynamic partials
+   */debounce:function debounce(handler,delay){if(!handler)return;if(!delay){delay=300}return _debounce(handler,delay)}};var partial={priority:PARTIAL,params:['name'], // watch changes to name for dynamic partials
 paramWatchers:{name:function name(value){vIf.remove.call(this);if(value){this.insert(value)}}},bind:function bind(){this.anchor=createAnchor('v-partial');replace(this.el,this.anchor);this.insert(this.params.name)},insert:function insert(id){var partial=resolveAsset(this.vm.$options,'partials',id);if(process.env.NODE_ENV!=='production'){assertAsset(partial,'partial',id)}if(partial){this.factory=new FragmentFactory(this.vm,partial);vIf.insert.call(this)}},unbind:function unbind(){if(this.frag){this.frag.destroy()}}}; // This is the elementDirective that handles <content>
 // transclusions. It relies on the raw content of an
 // instance being stored as `$options._content` during
@@ -3335,7 +3330,7 @@ paramWatchers:{name:function name(value){vIf.remove.call(this);if(value){this.in
 // AFTER all named slots have selected their content. So
 // we need to give them different priorities in the compilation
 // process. (See #1965)
-var slot={priority:1750,bind:function bind(){var host=this.vm;var raw=host.$options._content;if(!raw){this.fallback();return}var context=host._context;var slotName=this.params&&this.params.name;if(!slotName){ // Default slot
+var slot={priority:SLOT,bind:function bind(){var host=this.vm;var raw=host.$options._content;if(!raw){this.fallback();return}var context=host._context;var slotName=this.params&&this.params.name;if(!slotName){ // Default slot
 this.tryCompile(extractFragment(raw.childNodes,raw,true),context,host)}else { // Named slot
 var selector='[slot="'+slotName+'"]';var nodes=raw.querySelectorAll(selector);if(nodes.length){this.tryCompile(extractFragment(nodes,raw),context,host)}else {this.fallback()}}},tryCompile:function tryCompile(content,context,host){if(content.hasChildNodes()){this.compile(content,context,host)}else {this.fallback()}},compile:function compile(content,context,host){if(content&&context){var scope=host?host._scope:this._scope;this.unlink=context.$compile(content,host,scope,this._frag)}if(content){replace(this.el,content)}else {remove(this.el)}},fallback:function fallback(){this.compile(extractContent(this.el,true),this.vm)},unbind:function unbind(){if(this.unlink){this.unlink()}}};var namedSlot=extend(extend({},slot),{priority:slot.priority+1,params:['name']}); /**
  * Extract qualified content nodes from a node list.
@@ -3351,7 +3346,7 @@ var selector='[slot="'+slotName+'"]';var nodes=raw.querySelectorAll(selector);if
 // intact. this ensures proper re-compilation in cases
 // where the outlet is inside a conditional block
 if(main&&!node.__v_selected){append(node)}else if(!main&&node.parentNode===parent){node.__v_selected=true;append(node)}}return frag;function append(node){if(isTemplate(node)&&!node.hasAttribute('v-if')&&!node.hasAttribute('v-for')){node=parseTemplate(node)}node=cloneNode(node);frag.appendChild(node)}}var elementDirectives={slot:slot,_namedSlot:namedSlot, // same as slot but with higher priority
-partial:partial};Vue.version='1.0.12'; /**
+partial:partial};Vue.version='1.0.13'; /**
  * Vue and every constructor that extends Vue has an
  * associated options object, which can be accessed during
  * compilation steps as `this.constructor.options`.

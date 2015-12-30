@@ -1,5 +1,5 @@
 "use strict";
-let jsonfile = require('./../../jsonemotions.json')
+let jsonfile = require('./../../jsonemotions.json');
 let fs = require('fs');
 const equal = require('deep-equal');
 /*
@@ -30,15 +30,15 @@ class Analyzer{
                 "provoking":0.0,
 				"rage":0.0,
                 "sad":0.0,
-                "surprised":0.0,
-		}
+                "surprised":0.0
+		};
 		//the decayRate of emotions depends on the number of viewers
 		//and on the period length
 		this.defaultdecayRate = viewers/400 * periodLength/100;
 		this.decayRate = this.defaultdecayRate;
 	
 		//deep copy, but fast
-		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
+		this.emotion = JSON.parse(JSON.stringify(this.startemotion));
 		let self = this;
 
 		//advance the period of measurement and reset counter
@@ -48,10 +48,10 @@ class Analyzer{
 			self.pushAnalysis();
 			self.periodStart = Date.now();
 			self.periodEnd = self.periodStart + periodLength;
-			let ems = Object.keys(self.emotion)
+			let ems = Object.keys(self.emotion);
 			//subtract the decayrate, but don't let values go below zero
 			ems.map((e) => {
-				self.emotion[e] = Math.max(Math.round(self.emotion[e]-self.decayRate), 0)
+				self.emotion[e] = Math.max(Math.round(self.emotion[e]-self.decayRate), 0);
 				total += self.emotion[e]
 			});
 			//can be modified in case the values get too high

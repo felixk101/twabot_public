@@ -48,7 +48,7 @@ class Channel{
             let err=this.fetchChat(this.name);
 
             if(err){
-                reject(err)
+                reject(err);
                 return;
             }else{
                 resolve(1)

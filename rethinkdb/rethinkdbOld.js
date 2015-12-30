@@ -3,7 +3,7 @@
  * Created by Lukas on 22.11.2015.
  */
 const r=require('rethinkdb');
-const credentials=require('./../credentials/credentials.js')
+const credentials=require('./../credentials/credentials.js');
 
 class RethinkDB{
     /*
@@ -55,7 +55,7 @@ class RethinkDB{
         *   streamName: The name of the currentStream.
         * */
         this.streamName=streamName;
-        console.log("Connection to rethinkdb started")
+        console.log("Connection to rethinkdb started");
         // Connect to the rethinkDB
         r.connect({host:credentials.DBHOST,port:credentials.DBPORT})
         .then((result)=>{
@@ -158,7 +158,7 @@ class RethinkDB{
                                 console.error("Error"+err)
                             })
                     })
-                })
+                });
 
                 /*All Promises in the list 'createNewStreamTables' are executed.*/
                 return Promise.all(createNewStreamTables);
@@ -311,7 +311,7 @@ class RethinkDB{
         * */
         let now=new Date();
         let past=new Date(now-time);
-        console.log(new Date(now),new Date(past))
+        console.log(new Date(now),new Date(past));
         return r.table("TimeTable").filter(r.row('timestamp').during(new Date(past),new Date(now))).run(con)
             .then((result)=>{
                 return result.toArray();

@@ -1,5 +1,5 @@
 "use strict";
-let jsonfile = require('./../../jsonemotions.json')
+let jsonfile = require('./../../jsonemotions.json');
 let fs = require('fs');
 const equal = require('deep-equal');
 /*
@@ -16,7 +16,7 @@ class Analyzer{
 		this.channelName=channelName;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
-		this.counter = 0
+		this.counter = 0;
 		this.startemotion = {
 				"amused":0.0,
 				"annoyed":0.0,
@@ -30,10 +30,10 @@ class Analyzer{
                 "provoking":0.0,
 				"rage":0.0,
                 "sad":0.0,
-                "surprised":0.0,
-		}
+                "surprised":0.0
+		};
 		//deep copy, but fast - 
-		this.emotion = JSON.parse(JSON.stringify(this.startemotion))
+		this.emotion = JSON.parse(JSON.stringify(this.startemotion));
 		let self = this;
 
 		//advance the period of measurement and reset counter

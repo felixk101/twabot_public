@@ -3,7 +3,7 @@
  * Created by lukas on 17.12.15.
  */
 const r=require('rethinkdb');
-const credentials=require('./../credentials/credentials.js')
+const credentials=require('./../credentials/credentials.js');
 
 class RethinkDB{
     constructor(channelName,streamName){
@@ -27,7 +27,7 @@ class RethinkDB{
     connect(streamName){
         this.streamName=streamName;
         this.isConnecting=true;
-        console.log('Connection to rethinkdb started Version 2')
+        console.log('Connection to rethinkdb started Version 2');
         /* Connect to the rethinkDB */
         r.connect({host:credentials.DBHOST,port:credentials.DBPORT})
             .then((result)=>{
@@ -288,7 +288,7 @@ class RethinkDB{
                             return -1;
                         }
                         return 0;
-                    })
+                    });
                     return Promise.resolve(resultList);
                 })
                 .catch((err)=>{

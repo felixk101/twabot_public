@@ -14,7 +14,7 @@ class Analyzer{
 		this.channelName=channelName;
 		this.periodStart=Date.now();
 		this.periodEnd=Date.now() + periodLength;
-		this.counter = 0
+		this.counter = 0;
 	
 		let self = this;
 

@@ -1,7 +1,5 @@
 "use strict";
 
-//This script only works on windows
-
 const exec = require('child_process').execSync;
 const platform = require('os').platform();
 const destinationFolder = "public";
@@ -26,7 +24,7 @@ function update_build() {
         exec("babel -o " + destinationFolder + "/buildUser.js " + destinationFolder + "/bundleUser.js --presets es2015");
         exec("rm " + destinationFolder + "/bundleUser.js");
     }
-};
+}
 
 if (require.main === module) {
     update_build();

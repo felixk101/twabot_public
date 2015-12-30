@@ -1,3 +1,4 @@
+"use strict";
 
 class TransformOptions{
     constructor(width, height, scaleX=1, scaleY=1, translateX=0, translateY=0){

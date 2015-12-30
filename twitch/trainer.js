@@ -6,7 +6,7 @@ let commonwords = require('common-words');
 
 class Trainer{
     constructor(){
-		this.busy = false
+		this.busy = false;
 		setInterval(function() {
 			let data = JSON.stringify(emotions, null, '\t');
 			fs.writeFile('./trained-emotions.json',data,function(err) {

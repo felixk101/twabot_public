@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const Vue = require('vue');
 Vue.use(require('vue-resource'));
