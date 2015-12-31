@@ -361,18 +361,68 @@ if(!util.isNull(result.pathname)||!util.isNull(result.search)){result.path=(resu
      * @param ctx The context which will be transformed.
      */},{key:"apply",value:function apply(ctx){ctx.scale(this.scaleX,this.scaleY);ctx.translate(this.translateX*this.width/this.scaleX,this.translateY*this.height/this.scaleY)}}]);return TransformOptions})();module.exports=TransformOptions},{}],9:[function(require,module,exports){"use strict" /**
  * Created by Andreas Wundlechner
- */;var Chart=require('chart.js');var emotionColorMap=require('./emotionColorMap.json');var TransformOptions=require('./TransformOptions'); //Chart.defaults.global.animationSteps = 30;
-//Chart.defaults.global.animation = false;
-var msgPerTimeCount=20;exports.msgPerTimeCount=msgPerTimeCount;exports.updateFractal=function(data){var ctx=canvas.getContext('2d');var transformOptions=new TransformOptions(canvas.width,canvas.height);drawFractal(ctx,transformOptions,data)};var msgPerTimeChartOptions={responsive:true,animation:false};exports.initMsgPerTime=function(canvas){var chartOptions=arguments.length<=1||arguments[1]===undefined?msgPerTimeChartOptions:arguments[1];var msgPerTimeChartData={labels:[],datasets:[{label:"Messages Per Time",fillColor:"rgba(100,100,100,0.3)",strokeColor:"rgba(180,180,180,1)",pointColor:"rgba(180,180,180,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(190,190,190,1)",data:[]}]};for(var i=0;i<msgPerTimeCount;i++){msgPerTimeChartData.labels.push("");msgPerTimeChartData.datasets[0].data.push(0)}var ctx=canvas.getContext('2d'); // Build the chart
-var chart=new Chart(ctx).Line(msgPerTimeChartData,chartOptions);return chart};exports.updateMsgPerTime=function(chart,dataset){var _iteratorNormalCompletion=true;var _didIteratorError=false;var _iteratorError=undefined;try{for(var _iterator=dataset[Symbol.iterator](),_step;!(_iteratorNormalCompletion=(_step=_iterator.next()).done);_iteratorNormalCompletion=true){var data=_step.value;var chartLength=chart.datasets[0].points.length;for(var i=0;i<chartLength-1;i++){chart.datasets[0].points[i].value=chart.datasets[0].points[i+1].value}chart.datasets[0].points[chartLength-1].value=data}}catch(err) {_didIteratorError=true;_iteratorError=err}finally {try{if(!_iteratorNormalCompletion&&_iterator.return){_iterator.return()}}finally {if(_didIteratorError){throw _iteratorError}}}chart.update()};var fallingEmtionsChartOptions={responsive:true,animation:false,scaleOverride:true,scaleSteps:4,scaleStepWidth:250,scaleStartValue:0}; /**
  *
- * @param canvas
- * @param chartOptions
- * @returns {*}
- */exports.initFallingEmotions=function(canvas){var chartOptions=arguments.length<=1||arguments[1]===undefined?fallingEmtionsChartOptions:arguments[1];var fallingEmotionsChartData={labels:[],datasets:[{fillColor:"rgba(220,220,220,1)",strokeColor:"rgba(220,220,220,1)",highlightFill:"rgba(220,220,220,1)",highlightStroke:"rgba(220,220,220,1)",data:[],dataColors:[]}]};for(var emotion in emotionColorMap){fallingEmotionsChartData.labels.push(emotion);fallingEmotionsChartData.datasets[0].data.push(0)}var ctx=canvas.getContext('2d'); // Build the chart
-var chart=new Chart(ctx).Bar(fallingEmotionsChartData,chartOptions); // Set the barcolors
-for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].fillColor=emotionColorMap[chart.datasets[0].bars[i].label]}chart.update();return chart};exports.updateFallingEmotions=function(chart,data){for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].value=data[chart.datasets[0].bars[i].label]}chart.update()};function drawFractal(ctx,transformOptions,data){ctx.save();transformOptions.apply(ctx);ctx.clearRect(0,0,transformOptions.width,transformOptions.height); // for emotions:
-drawPath(ctx,transformOptions);ctx.restore()}function drawPath(ctx,transformOptions){ctx.moveTo(0,transformOptions.height/2);ctx.beginPath();ctx.lineTo(transformOptions.width,transformOptions.height/2);ctx.closePath()}},{"./TransformOptions":8,"./emotionColorMap.json":10,"chart.js":12}],10:[function(require,module,exports){module.exports={"amused":"rgb(255,255,153)","annoyed":"rgb(255,153,153)","bored":"rgb(160,160,160)","embarassed":"rgb(,,)","excited":"rgb(0,255,0)","happy":"rgb(255,255,0)","loving":"rgb(255,0,255)","provoking":"rgb(140,0,0)","rage":"rgb(255,0,0)","sad":"rgb(0,0,255)","surprised":"rgb(153,355,153)"}},{}],11:[function(require,module,exports){"use strict" /**
+ * This script handles all the canvas operations (with chart.js)
+ *
+ * The code corresponding to the fractal analysis isn't finished,
+ * so for performance optimisation it is commented out.
+ * The missing fractal is caused by too less time.
+ */;var Chart=require('chart.js');var emotionColorMap=require('./emotionColorMap.json');var TransformOptions=require('./TransformOptions'); // Global chart.js options
+//Chart.defaults.global.animationSteps = 30;
+//Chart.defaults.global.animation = false;
+// Amount of messages per time measurements to display.
+var msgPerTimeCount=20; //exports.updateFractal = function (data) {
+//    let ctx = canvas.getContext('2d');
+//    let transformOptions = new TransformOptions(canvas.width, canvas.height);
+//    drawFractal(ctx, transformOptions, data);
+//};
+// The standard options for the messages per time charts.
+var msgPerTimeChartOptions={responsive:true,animation:false}; /**
+ * Initializes a chart.js object to display the messages per time analysis.
+ * @param canvas The canvas, where the chart should be drawn.
+ * @param chartOptions The options for the chart.
+ * @returns {*} The chart.js object.
+ */exports.initMsgPerTime=function(canvas){var chartOptions=arguments.length<=1||arguments[1]===undefined?msgPerTimeChartOptions:arguments[1]; // Create the necessary data structure for chart.js.
+var msgPerTimeChartData={labels:[],datasets:[{label:"Messages Per Time",fillColor:"rgba(100,100,100,0.3)",strokeColor:"rgba(180,180,180,1)",pointColor:"rgba(180,180,180,1)",pointStrokeColor:"#fff",pointHighlightFill:"#fff",pointHighlightStroke:"rgba(190,190,190,1)",data:[]}]}; // Add empty measurements for the right chart size.
+for(var i=0;i<msgPerTimeCount;i++){msgPerTimeChartData.labels.push("");msgPerTimeChartData.datasets[0].data.push(0)} // Build the chart.
+var ctx=canvas.getContext('2d');var chart=new Chart(ctx).Line(msgPerTimeChartData,chartOptions);return chart}; /**
+ * This function updates a given messages per time chart with the new dataset.
+ * @param chart A messages per time chart.
+ * @param dataset The new measurements to display (as a list).
+ */exports.updateMsgPerTime=function(chart,dataset){ // Update for every data bit.
+var _iteratorNormalCompletion=true;var _didIteratorError=false;var _iteratorError=undefined;try{for(var _iterator=dataset[Symbol.iterator](),_step;!(_iteratorNormalCompletion=(_step=_iterator.next()).done);_iteratorNormalCompletion=true){var data=_step.value;var chartLength=chart.datasets[0].points.length;for(var i=0;i<chartLength-1;i++){chart.datasets[0].points[i].value=chart.datasets[0].points[i+1].value}chart.datasets[0].points[chartLength-1].value=data} // Update the chart appearance.
+}catch(err) {_didIteratorError=true;_iteratorError=err}finally {try{if(!_iteratorNormalCompletion&&_iterator.return){_iterator.return()}}finally {if(_didIteratorError){throw _iteratorError}}}chart.update()}; // The standard options for the falling emotions charts.
+var fallingEmtionsChartOptions={responsive:true,animation:false,scaleOverride:true,scaleSteps:4,scaleStepWidth:250,scaleStartValue:0}; /**
+ * Initializes a chart.js object to display the falling emotions analysis.
+ * @param canvas The canvas, where the chart should be drawn.
+ * @param chartOptions The options for the chart.
+ * @returns {*} The chart.js object.
+ */exports.initFallingEmotions=function(canvas){var chartOptions=arguments.length<=1||arguments[1]===undefined?fallingEmtionsChartOptions:arguments[1]; // Create the necessary data structure for chart.js.
+var fallingEmotionsChartData={labels:[],datasets:[{fillColor:"rgba(220,220,220,1)",strokeColor:"rgba(220,220,220,1)",highlightFill:"rgba(220,220,220,1)",highlightStroke:"rgba(220,220,220,1)",data:[],dataColors:[]}]}; // Create the bars for the emotions.
+for(var emotion in emotionColorMap){fallingEmotionsChartData.labels.push(emotion);fallingEmotionsChartData.datasets[0].data.push(0)} // Build the chart.
+var ctx=canvas.getContext('2d');var chart=new Chart(ctx).Bar(fallingEmotionsChartData,chartOptions); // Set the bar colors to the color of the emotion.
+for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].fillColor=emotionColorMap[chart.datasets[0].bars[i].label]}chart.update();return chart}; /**
+ * This function updates a given falling emotions chart with the new data.
+ * @param chart A falling emotions chart.
+ * @param data The new measurement.
+ */exports.updateFallingEmotions=function(chart,data){ // Update the bars.
+for(var i=0;i<chart.datasets[0].bars.length;i++){chart.datasets[0].bars[i].value=data[chart.datasets[0].bars[i].label]} // Update the appearance.
+chart.update()}; //function drawFractal(ctx, transformOptions, data){
+//    ctx.save();
+//    transformOptions.apply(ctx);
+//    ctx.clearRect(0,0,transformOptions.width,transformOptions.height);
+//
+//    // for emotions:
+//    drawPath(ctx, transformOptions);
+//    ctx.restore();
+//}
+//function drawPath(ctx, transformOptions){
+//    ctx.moveTo(0,transformOptions.height/2);
+//    ctx.beginPath();
+//    ctx.lineTo(transformOptions.width, transformOptions.height/2);
+//    ctx.closePath();
+//}
+},{"./TransformOptions":8,"./emotionColorMap.json":10,"chart.js":12}],10:[function(require,module,exports){module.exports={"amused":"rgb(255,255,153)","annoyed":"rgb(255,153,153)","bored":"rgb(160,160,160)","embarassed":"rgb(,,)","excited":"rgb(0,255,0)","happy":"rgb(255,255,0)","loving":"rgb(255,0,255)","provoking":"rgb(140,0,0)","rage":"rgb(255,0,0)","sad":"rgb(0,0,255)","surprised":"rgb(153,355,153)"}},{}],11:[function(require,module,exports){"use strict" /**
  * Created by Andreas Wundlechner
  *
  * This script will run, when the user selects a channel from the overview.
