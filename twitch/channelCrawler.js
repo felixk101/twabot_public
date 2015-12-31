@@ -227,9 +227,4 @@ class ChannelCrawler{
 
 exports.ChannelCrawler=ChannelCrawler;
 
-if (require.main === module){
-
-    let crawler=new ChannelCrawler();
-    crawler.registerChannels(0).next();
-	//crawler.getMostEmotionalChannels();
-}
+if (require.main === module){}
