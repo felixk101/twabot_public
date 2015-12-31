@@ -164,13 +164,4 @@ class Channel{
 }
 
 exports.Channel=Channel;
-if (require.main === module) {
-    let chann=new Channel('lirik',500);
-    chann.connect(' GAIMEZ - store: dbh.la/lirik - twitter: @LIRIK GAIMEZ - store: dbh.la/lirik - twitter: @LIRIK ');
-    setTimeout(()=>{
-        chann.rethinkDB.getTableWithType('raw')
-            .then((result)=>{
-                console.log(result)
-            })
-    },8000)
-}
+if (require.main === module) {}
