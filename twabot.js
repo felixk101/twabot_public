@@ -63,7 +63,7 @@ class Twabot{
      *
      */
     startChannelUpdate(){
-        this.updateChannels(Object.keys(this.channelCrawler.activeChannels).length/50+1).next();
+        this.updateChannels(parseInt(Object.keys(this.channelCrawler.activeChannels).length/50+1)).next();
     }
 
     /**
